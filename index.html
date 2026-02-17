@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東映特撮 ランダムピッカー</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Zen+Dots&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="sentai"] {
+    --primary: #E03030;
+    --primary-rgb: 224,48,48;
+    --accent: #FF4444;
+    --title-color: #FFD700;
+    --title-glow: rgba(255,215,0,0.3);
+    --dark: #0A0A0F;
+    --darker: #050508;
+    --silver: #C0C0D0;
+    --glow-color: rgba(224,48,48,0.12);
+    --secondary: #2244CC;
+    --secondary-rgb: 34,68,204;
+    --btn-gradient: linear-gradient(135deg, #E03030, #CC2020);
+    --btn-border-glow: linear-gradient(135deg, #FFD700, #E03030, #FFD700);
+    --card-top-bar: linear-gradient(90deg, #E03030, #FFD700, #E03030);
+    --title-rgb: 255,215,0;
+    --cat-sentai: #FF6666;
+    --cat-sentai-rgb: 224,48,48;
+    --cat-rider: #6688FF;
+    --cat-rider-rgb: 34,68,204;
+    --cat-metal: #C0C0D0;
+    --cat-metal-rgb: 192,192,208;
+    --cat-project: #FF4455;
+    --cat-project-rgb: 204,17,34;
+  }
+
+  [data-theme="rider"] {
+    --primary: #4ADE40;
+    --primary-rgb: 74,222,64;
+    --accent: #66FF55;
+    --title-color: #4ADE40;
+    --title-glow: rgba(74,222,64,0.3);
+    --dark: #060A06;
+    --darker: #030603;
+    --silver: #A0B8A0;
+    --glow-color: rgba(74,222,64,0.08);
+    --secondary: #FFD700;
+    --secondary-rgb: 255,215,0;
+    --btn-gradient: linear-gradient(135deg, #4ADE40, #2EAA28);
+    --btn-border-glow: linear-gradient(135deg, #FFD700, #4ADE40, #FFD700);
+    --card-top-bar: linear-gradient(90deg, #4ADE40, #FFD700, #4ADE40);
+    --title-rgb: 74,222,64;
+    --cat-sentai: #FF6666;
+    --cat-sentai-rgb: 224,48,48;
+    --cat-rider: #4ADE40;
+    --cat-rider-rgb: 74,222,64;
+    --cat-metal: #A0B8A0;
+    --cat-metal-rgb: 160,184,160;
+    --cat-project: #66FF55;
+    --cat-project-rgb: 74,222,64;
+  }
+
+  [data-theme="metal"] {
+    --primary: #4488FF;
+    --primary-rgb: 68,136,255;
+    --accent: #66AAFF;
+    --title-color: #C0D0E8;
+    --title-glow: rgba(192,208,232,0.3);
+    --dark: #06080E;
+    --darker: #03040A;
+    --silver: #B0B8CC;
+    --glow-color: rgba(68,136,255,0.08);
+    --secondary: #C0D0E8;
+    --secondary-rgb: 192,208,232;
+    --btn-gradient: linear-gradient(135deg, #4488FF, #2266DD);
+    --btn-border-glow: linear-gradient(135deg, #C0D0E8, #4488FF, #C0D0E8);
+    --card-top-bar: linear-gradient(90deg, #4488FF, #C0D0E8, #4488FF);
+    --title-rgb: 192,208,232;
+    --cat-sentai: #FF6666;
+    --cat-sentai-rgb: 224,48,48;
+    --cat-rider: #66CC66;
+    --cat-rider-rgb: 80,180,80;
+    --cat-metal: #66AAFF;
+    --cat-metal-rgb: 68,136,255;
+    --cat-project: #AABBDD;
+    --cat-project-rgb: 170,187,221;
+  }
+
+  [data-theme="bili"] {
+    --primary: #00D4FF;
+    --primary-rgb: 0,212,255;
+    --accent: #33DFFF;
+    --title-color: #FF5C8A;
+    --title-glow: rgba(255,92,138,0.35);
+    --dark: #0D1219;
+    --darker: #080C12;
+    --silver: #8EA4BE;
+    --glow-color: rgba(0,212,255,0.08);
+    --secondary: #FF5C8A;
+    --secondary-rgb: 255,92,138;
+    --btn-gradient: linear-gradient(135deg, #00D4FF, #00A8D6);
+    --btn-border-glow: linear-gradient(135deg, #FF5C8A, #00D4FF, #FF5C8A);
+    --card-top-bar: linear-gradient(90deg, #00D4FF, #FF5C8A, #00D4FF);
+    --title-rgb: 255,92,138;
+    --cat-sentai: #FF5C8A;
+    --cat-sentai-rgb: 255,92,138;
+    --cat-rider: #00D4FF;
+    --cat-rider-rgb: 0,212,255;
+    --cat-metal: #8EA4BE;
+    --cat-metal-rgb: 120,150,180;
+    --cat-project: #33DFFF;
+    --cat-project-rgb: 0,180,220;
+  }
+
+  /* === BILI FONT OVERRIDE === */
+  [data-theme="bili"] body,
+  [data-theme="bili"] .filter-btn,
+  [data-theme="bili"] .list-toggle-btn,
+  [data-theme="bili"] .list-search,
+  [data-theme="bili"] .list-ctrl-btn,
+  [data-theme="bili"] .timeline-toggle,
+  [data-theme="bili"] .tl-desc,
+  [data-theme="bili"] .tl-tag,
+  [data-theme="bili"] .card-title,
+  [data-theme="bili"] .card-meta,
+  [data-theme="bili"] .card-category,
+  [data-theme="bili"] .ttfc-link,
+  [data-theme="bili"] .list-entry,
+  [data-theme="bili"] .history-chip,
+  [data-theme="bili"] .stats-bar {
+    font-family: 'Zen Maru Gothic', 'Noto Sans KR', sans-serif;
+  }
+  [data-theme="bili"] .jp-title {
+    font-family: 'Zen Maru Gothic', 'Zen Dots', cursive;
+    letter-spacing: 2px;
+  }
+  [data-theme="bili"] .spin-btn {
+    font-family: 'Zen Maru Gothic', 'Zen Dots', cursive;
+    letter-spacing: 2px;
+  }
+  [data-theme="bili"] .kr-subtitle {
+    font-family: 'Zen Maru Gothic', 'Noto Sans KR', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* === THEME TOGGLE === */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 50;
+    display: flex; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px; overflow: hidden;
+    backdrop-filter: blur(8px);
+  }
+  .theme-opt {
+    padding: 8px 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    background: transparent; border: none;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .theme-opt:hover { color: rgba(255,255,255,0.6); }
+  .theme-opt.active {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 12px rgba(var(--primary-rgb),0.35);
+  }
+  .theme-opt .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .theme-opt[data-t="sentai"] .dot { background: #E03030; }
+  .theme-opt[data-t="rider"] .dot { background: #4ADE40; }
+  .theme-opt[data-t="metal"] .dot { background: #4488FF; }
+  .theme-opt[data-t="bili"] .dot { background: #00D4FF; }
+  .theme-opt.active .dot { background: #fff !important; border-color: #fff !important; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--darker);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.4s ease;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .bg-glow {
+    position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 50px 20px 30px;
+  }
+
+  header .jp-title {
+    font-family: 'Zen Dots', cursive;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    color: var(--title-color);
+    text-shadow: 0 0 30px var(--title-glow);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+
+  header .kr-subtitle {
+    font-size: 1rem;
+    color: var(--silver);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    width: 120px; height: 2px; margin: 20px auto;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+
+  /* === FILTER === */
+  .filter-section {
+    position: relative; z-index: 1;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+    padding: 0 20px 30px;
+    max-width: 800px; margin: 0 auto;
+  }
+
+  .filter-btn {
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: #999;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .filter-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    opacity: 0; transition: opacity 0.3s;
+    z-index: -1;
+  }
+
+  .filter-btn:hover { border-color: var(--primary); color: #ccc; }
+
+  .filter-btn.active {
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(var(--primary-rgb),0.2);
+  }
+  .filter-btn.active::before { opacity: 1; }
+
+  .filter-btn .count {
+    display: inline-block; margin-left: 6px;
+    font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 400;
+  }
+  .filter-btn.active .count { color: rgba(255,255,255,0.7); }
+
+  /* === SLOT === */
+  .slot-container {
+    position: relative; z-index: 1;
+    max-width: 600px; margin: 0 auto; padding: 0 20px;
+  }
+
+  .slot-window {
+    position: relative; height: 220px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden; margin-bottom: 30px;
+  }
+
+  .slot-window::before, .slot-window::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 60px;
+    z-index: 2; pointer-events: none;
+  }
+  .slot-window::before { top: 0; background: linear-gradient(to bottom, var(--darker), transparent); }
+  .slot-window::after { bottom: 0; background: linear-gradient(to top, var(--darker), transparent); }
+
+  .slot-highlight {
+    position: absolute; top: 50%; left: 0; right: 0;
+    height: 64px; transform: translateY(-50%);
+    border-top: 2px solid var(--primary); border-bottom: 2px solid var(--primary);
+    background: rgba(var(--primary-rgb),0.05);
+    z-index: 1; pointer-events: none;
+    box-shadow: inset 0 0 30px rgba(var(--primary-rgb),0.1);
+  }
+
+  .slot-reel {
+    position: absolute; left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center;
+    transition: none;
+  }
+
+  .slot-item {
+    height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap; padding: 0 20px;
+    width: 100%; text-align: center;
+  }
+  .slot-item.center { color: #fff; font-size: 1.2rem; }
+
+  /* === BUTTONS === */
+  .btn-row {
+    display: flex; justify-content: center; gap: 14px;
+    margin-bottom: 40px; flex-wrap: wrap;
+  }
+
+  .spin-btn {
+    position: relative;
+    width: 180px; height: 56px;
+    background: var(--btn-gradient);
+    border: none; border-radius: 8px;
+    color: #fff;
+    font-family: 'Zen Dots', cursive;
+    font-size: 1.2rem; letter-spacing: 3px;
+    cursor: pointer; transition: all 0.3s; overflow: hidden;
+  }
+
+  .spin-btn::before {
+    content: ''; position: absolute; inset: -2px;
+    background: var(--btn-border-glow);
+    border-radius: 10px; z-index: -1; opacity: 0; transition: opacity 0.3s;
+  }
+
+  .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(var(--primary-rgb),0.4); }
+  .spin-btn:hover::before { opacity: 1; }
+  .spin-btn:active { transform: translateY(0); }
+  .spin-btn.spinning { pointer-events: none; animation: pulse-btn 0.5s ease infinite; }
+
+  @keyframes pulse-btn {
+    0%, 100% { box-shadow: 0 0 20px rgba(var(--primary-rgb),0.3); }
+    50% { box-shadow: 0 0 40px rgba(var(--primary-rgb),0.6); }
+  }
+
+  .list-toggle-btn {
+    height: 56px; padding: 0 24px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; color: #aaa;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .list-toggle-btn:hover { border-color: var(--title-color); color: #fff; background: rgba(var(--title-rgb),0.06); }
+  .list-toggle-btn.active { border-color: var(--title-color); color: var(--title-color); background: rgba(var(--title-rgb),0.08); }
+  .list-toggle-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  /* === LIST PANEL === */
+  .list-panel {
+    position: relative; z-index: 1;
+    max-width: 700px; margin: 0 auto 30px; padding: 0 20px;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .list-panel.open { max-height: 5000px; }
+
+  .list-inner {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 24px; margin-bottom: 10px;
+  }
+
+  .list-group-title {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 2px;
+    padding: 8px 14px; border-radius: 6px; margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .list-group-title.sentai { background: rgba(var(--cat-sentai-rgb),0.15); color: var(--cat-sentai); }
+  .list-group-title.rider { background: rgba(var(--cat-rider-rgb),0.15); color: var(--cat-rider); }
+  .list-group-title.metal { background: rgba(var(--cat-metal-rgb),0.1); color: var(--cat-metal); }
+  .list-group-title.project { background: rgba(var(--cat-project-rgb),0.2); color: var(--cat-project); }
+
+  .list-group { margin-bottom: 24px; }
+  .list-group:last-child { margin-bottom: 0; }
+
+  .list-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 4px;
+  }
+
+  .list-entry {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 6px;
+    font-size: 0.82rem; color: rgba(255,255,255,0.6);
+    transition: all 0.2s; cursor: pointer; user-select: none;
+  }
+  .list-entry:hover { background: rgba(255,255,255,0.04); color: #fff; }
+  .list-entry.checked { opacity: 0.35; text-decoration: line-through; }
+  .list-entry .num { font-size: 0.7rem; color: rgba(255,255,255,0.2); min-width: 24px; text-align: right; font-weight: 700; }
+  .list-entry .year { margin-left: auto; font-size: 0.7rem; color: rgba(255,255,255,0.25); white-space: nowrap; }
+  .list-entry .check-box {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 2px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .list-entry.checked .check-box {
+    background: var(--primary); border-color: var(--primary);
+  }
+  .list-entry .check-box svg { width: 12px; height: 12px; fill: white; opacity: 0; }
+  .list-entry.checked .check-box svg { opacity: 1; }
+
+  .list-controls {
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .list-ctrl-btn {
+    padding: 6px 14px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.5);
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .list-ctrl-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .list-ctrl-btn.danger { border-color: rgba(var(--primary-rgb),0.3); color: var(--cat-sentai); }
+  .list-ctrl-btn.danger:hover { background: rgba(var(--primary-rgb),0.15); }
+
+  .list-search {
+    width: 100%; padding: 12px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; color: #fff;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.9rem; outline: none;
+    margin-bottom: 20px; transition: border-color 0.3s;
+  }
+  .list-search::placeholder { color: rgba(255,255,255,0.25); }
+  .list-search:focus { border-color: rgba(var(--title-rgb),0.4); }
+
+  .list-count-info {
+    text-align: center; font-size: 0.75rem;
+    color: rgba(255,255,255,0.25); margin-bottom: 16px; letter-spacing: 1px;
+  }
+
+  /* === RESULT CARD === */
+  .result-card {
+    max-width: 600px; margin: 0 auto 40px; padding: 0 20px;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.5s ease; position: relative; z-index: 1;
+  }
+  .result-card.show { opacity: 1; transform: translateY(0); }
+
+  .card-inner {
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 30px; position: relative; overflow: hidden;
+  }
+  .card-inner::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--card-top-bar);
+  }
+
+  .card-category {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px;
+  }
+  .card-category.sentai { background: rgba(var(--cat-sentai-rgb),0.2); color: var(--cat-sentai); border: 1px solid rgba(var(--cat-sentai-rgb),0.3); }
+  .card-category.rider { background: rgba(var(--cat-rider-rgb),0.2); color: var(--cat-rider); border: 1px solid rgba(var(--cat-rider-rgb),0.3); }
+  .card-category.metal { background: rgba(var(--cat-metal-rgb),0.15); color: var(--cat-metal); border: 1px solid rgba(var(--cat-metal-rgb),0.3); }
+  .card-category.project { background: rgba(var(--cat-project-rgb),0.2); color: var(--cat-project); border: 1px solid rgba(var(--cat-project-rgb),0.3); }
+
+  .card-title { font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 900; margin-bottom: 6px; line-height: 1.3; }
+  .card-title-jp { font-size: 0.95rem; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+  .card-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  .card-meta span { display: flex; align-items: center; gap: 6px; }
+  .card-meta .label { color: rgba(255,255,255,0.3); }
+
+  .ttfc-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 18px; padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(var(--cat-rider-rgb),0.15), rgba(var(--cat-rider-rgb),0.08));
+    border: 1px solid rgba(var(--cat-rider-rgb),0.3);
+    border-radius: 8px;
+    color: var(--cat-rider);
+    font-size: 0.85rem; font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .ttfc-link:hover {
+    background: linear-gradient(135deg, rgba(var(--cat-rider-rgb),0.25), rgba(var(--cat-rider-rgb),0.15));
+    border-color: rgba(var(--cat-rider-rgb),0.5);
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(var(--cat-rider-rgb),0.2);
+  }
+  .ttfc-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+  /* === LOGO === */
+  .poster-wrap {
+    width: 100%; display: flex; justify-content: center; margin-bottom: 20px;
+  }
+  .poster-img {
+    max-width: 320px; max-height: 180px; width: auto; height: auto;
+    border-radius: 8px;
+    filter: drop-shadow(0 4px 20px rgba(255,255,255,0.08));
+    opacity: 0; transition: opacity 0.5s ease;
+    object-fit: contain; background: transparent;
+  }
+  .poster-img.loaded { opacity: 1; }
+
+
+  /* === HISTORY === */
+  .history-section {
+    position: relative; z-index: 1;
+    max-width: 600px; margin: 0 auto; padding: 0 20px 60px;
+  }
+  .history-title { font-size: 0.8rem; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .history-chip {
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px; font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+  .flash-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: white; opacity: 0; pointer-events: none; transition: opacity 0.1s;
+  }
+  .flash-overlay.active { opacity: 0.15; transition: opacity 0.05s; }
+
+  .stats-bar {
+    position: relative; z-index: 1;
+    text-align: center; padding: 15px 20px;
+    font-size: 0.75rem; color: rgba(255,255,255,0.2); letter-spacing: 2px;
+  }
+
+  /* === TIMELINE === */
+  .timeline-section {
+    margin-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 12px;
+  }
+
+  .timeline-toggle {
+    display: flex; align-items: center; gap: 8px;
+    background: none; border: none; color: rgba(255,255,255,0.5);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.8rem; cursor: pointer;
+    padding: 4px 0; width: 100%;
+    transition: color 0.2s;
+  }
+  .timeline-toggle:hover { color: rgba(255,255,255,0.8); }
+  .timeline-toggle svg {
+    width: 14px; height: 14px; fill: currentColor;
+    transition: transform 0.3s;
+  }
+  .timeline-toggle.open svg { transform: rotate(90deg); }
+
+  .timeline-list {
+    display: none; margin-top: 10px;
+    max-height: 300px; overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+  }
+  .timeline-list.open { display: block; }
+
+  .tl-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 6px 0;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .tl-item:last-child { border-bottom: none; }
+
+  .tl-num {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.7rem;
+    min-width: 18px;
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .tl-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 44px;
+    text-align: center;
+  }
+  .tl-tag.ep { background: rgba(var(--cat-rider-rgb),0.15); color: var(--cat-rider); }
+  .tl-tag.movie { background: rgba(255,170,0,0.15); color: #FFAA44; }
+  .tl-tag.special { background: rgba(170,68,255,0.15); color: #BB88FF; }
+  .tl-tag.vs { background: rgba(var(--cat-sentai-rgb),0.15); color: var(--cat-sentai); }
+
+  .tl-desc {
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 480px) {
+    header { padding: 30px 15px 20px; }
+    .filter-btn { padding: 8px 14px; font-size: 0.78rem; }
+    .slot-window { height: 180px; }
+    .slot-item { height: 54px; font-size: 0.9rem; }
+    .slot-item.center { font-size: 1rem; }
+    .slot-highlight { height: 54px; }
+    .card-inner { padding: 22px; }
+    .list-items { grid-template-columns: 1fr; }
+    .btn-row { gap: 10px; }
+    .spin-btn { width: 150px; font-size: 1rem; }
+    .list-toggle-btn { padding: 0 16px; font-size: 0.82rem; }
+    .tl-item { font-size: 0.72rem; }
+    .tl-tag { font-size: 0.62rem; min-width: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="theme-toggle" id="themeToggle">
+  <button class="theme-opt active" data-t="sentai" onclick="setTheme('sentai')"><span class="dot"></span>戦隊</button>
+  <button class="theme-opt" data-t="rider" onclick="setTheme('rider')"><span class="dot"></span>ライダー</button>
+  <button class="theme-opt" data-t="metal" onclick="setTheme('metal')"><span class="dot"></span>メタル</button>
+  <button class="theme-opt" data-t="bili" onclick="setTheme('bili')"><span class="dot"></span><img src="https://s-qwer.op.gg/images/lol/teams/632_1672191537262.png" style="height:14px;vertical-align:middle;filter:brightness(0) invert(1);opacity:0.8" alt="BLG"></button>
+</div>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="flash-overlay" id="flash"></div>
+
+<header>
+  <div class="jp-title">東映特撮</div>
+  <div class="kr-subtitle">랜덤 피커</div>
+  <div class="divider"></div>
+</header>
+
+<div class="filter-section" id="filters"></div>
+
+<div class="slot-container">
+  <div class="slot-window">
+    <div class="slot-highlight"></div>
+    <div class="slot-reel" id="reel"></div>
+  </div>
+</div>
+
+<div class="btn-row">
+  <button class="spin-btn" id="spinBtn" onclick="spin()">HENSHIN</button>
+  <button class="list-toggle-btn" id="listBtn" onclick="toggleList()">
+    <svg viewBox="0 0 24 24"><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></svg>
+    뽑기 리스트
+  </button>
+</div>
+
+<div class="list-panel" id="listPanel">
+  <div class="list-inner">
+    <input type="text" class="list-search" id="listSearch" placeholder="작품명 검색 (한글 / 일본어)" oninput="renderList()">
+    <div class="list-count-info" id="listCountInfo"></div>
+    <div id="listContent"></div>
+  </div>
+</div>
+
+<div class="result-card" id="resultCard">
+  <div class="card-inner">
+    <div class="poster-wrap" id="posterWrap" style="display:none"></div>
+    <div class="card-category" id="cardCategory"></div>
+    <div class="card-title" id="cardTitle"></div>
+    <div class="card-title-jp" id="cardTitleJp"></div>
+    <div class="card-meta" id="cardMeta"></div>
+    <a class="ttfc-link" id="ttfcLink" href="https://tokusatsu-fc.jp/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M21 3H3a2 2 0 00-2 2v14a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3 3.5-4.5L19 15H5z"/></svg>
+      TTFCで見る
+    </a>
+    <div class="timeline-section" id="timelineSection" style="display:none">
+      <button class="timeline-toggle" id="timelineToggle" onclick="toggleTimeline()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span id="timelineLabel">시청순서 보기</span>
+      </button>
+      <div class="timeline-list" id="timelineList"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="history-section">
+  <div class="history-title">뽑기 기록</div>
+  <div class="history-list" id="historyList"></div>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<script>
+// === THEME ===
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('toku_theme', t); } catch(e) {}
+  document.querySelectorAll('.theme-opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.t === t);
+  });
+}
+(function() {
+  let saved = 'sentai';
+  try { saved = localStorage.getItem('toku_theme') || 'sentai'; } catch(e) {}
+  if (saved === 'black') saved = 'sentai';
+  setTheme(saved);
+})();
+
+const DATA = [
+  // ===== 슈퍼 전대 시리즈 =====
+  { name: "비밀전대 고레인저", jp: "秘密戦隊ゴレンジャー", year: "1975-1977", cat: "sentai", ep: 84, ttfcId: 2391 },
+  { name: "잭커 전격대", jp: "ジャッカー電撃隊", year: "1977", cat: "sentai", ep: 35, ttfcId: 2713 },
+  { name: "배틀피버 J", jp: "バトルフィーバーJ", year: "1979-1980", cat: "sentai", ep: 52, ttfcId: 2813 },
+  { name: "전자전대 덴지맨", jp: "電子戦隊デンジマン", year: "1980-1981", cat: "sentai", ep: 51, ttfcId: 2969 },
+  { name: "태양전대 선발칸", jp: "太陽戦隊サンバルカン", year: "1981-1982", cat: "sentai", ep: 50, ttfcId: 3021 },
+  { name: "대전대 고글파이브", jp: "大戦隊ゴーグルファイブ", year: "1982-1983", cat: "sentai", ep: 50, ttfcId: 3072 },
+  { name: "과학전대 다이나맨", jp: "科学戦隊ダイナマン", year: "1983-1984", cat: "sentai", ep: 51, ttfcId: 3123 },
+  { name: "초전자 바이오맨", jp: "超電子バイオマン", year: "1984-1985", cat: "sentai", ep: 51, ttfcId: 3175 },
+  { name: "전격전대 체인지맨", jp: "電撃戦隊チェンジマン", year: "1985-1986", cat: "sentai", ep: 55, ttfcId: 3227 },
+  { name: "초신성 플래시맨", jp: "超新星フラッシュマン", year: "1986-1987", cat: "sentai", ep: 50, ttfcId: 3283 },
+  { name: "광전대 마스크맨", jp: "光戦隊マスクマン", year: "1987-1988", cat: "sentai", ep: 51, ttfcId: 3334 },
+  { name: "초수전대 라이브맨", jp: "超獣戦隊ライブマン", year: "1988-1989", cat: "sentai", ep: 49, ttfcId: 3386 },
+  { name: "고속전대 터보레인저", jp: "高速戦隊ターボレンジャー", year: "1989-1990", cat: "sentai", ep: 51, ttfcId: 3436 },
+  { name: "지구전대 파이브맨", jp: "地球戦隊ファイブマン", year: "1990-1991", cat: "sentai", ep: 48, ttfcId: 5370 },
+  { name: "조인전대 제트맨", jp: "鳥人戦隊ジェットマン", year: "1991-1992", cat: "sentai", ep: 51, ttfcId: 1270 },
+  { name: "공룡전대 쥬레인저", jp: "恐竜戦隊ジュウレンジャー", year: "1992-1993", cat: "sentai", ep: 50, ttfcId: 1322 },
+  { name: "오성전대 다이레인저", jp: "五星戦隊ダイレンジャー", year: "1993-1994", cat: "sentai", ep: 50, ttfcId: 1373 },
+  { name: "닌자전대 카쿠레인저", jp: "忍者戦隊カクレンジャー", year: "1994-1995", cat: "sentai", ep: 53, ttfcId: 3488 },
+  { name: "초력전대 오레인저", jp: "超力戦隊オーレンジャー", year: "1995-1996", cat: "sentai", ep: 48, ttfcId: 3542 },
+  { name: "격주전대 카레인저", jp: "激走戦隊カーレンジャー", year: "1996-1997", cat: "sentai", ep: 48, ttfcId: 1729 },
+  { name: "전자전대 메가레인저", jp: "電磁戦隊メガレンジャー", year: "1997-1998", cat: "sentai", ep: 51, ttfcId: 1068 },
+  { name: "성수전대 긴가맨", jp: "星獣戦隊ギンガマン", year: "1998-1999", cat: "sentai", ep: 50, ttfcId: 1626 },
+  { name: "구급전대 고고파이브", jp: "救急戦隊ゴーゴーファイブ", year: "1999-2000", cat: "sentai", ep: 50, ttfcId: 1476 },
+  { name: "미래전대 타임레인저", jp: "未来戦隊タイムレンジャー", year: "2000-2001", cat: "sentai", ep: 51, ttfcId: 1677 },
+  { name: "백수전대 가오레인저", jp: "百獣戦隊ガオレンジャー", year: "2001-2002", cat: "sentai", ep: 51, ttfcId: 1424 },
+  { name: "인풍전대 허리켄저", jp: "忍風戦隊ハリケンジャー", year: "2002-2003", cat: "sentai", ep: 51, ttfcId: 1218 },
+  { name: "폭룡전대 아바레인저", jp: "爆竜戦隊アバレンジャー", year: "2003-2004", cat: "sentai", ep: 50, ttfcId: 1120 },
+  { name: "특수전대 데카레인저", jp: "特捜戦隊デカレンジャー", year: "2004-2005", cat: "sentai", ep: 50, ttfcId: 1017 },
+  { name: "마법전대 마지레인저", jp: "魔法戦隊マジレンジャー", year: "2005-2006", cat: "sentai", ep: 49, ttfcId: 1527 },
+  { name: "굉굉전대 보우켄저", jp: "轟轟戦隊ボウケンジャー", year: "2006-2007", cat: "sentai", ep: 49, ttfcId: 5686 },
+  { name: "수권전대 게키레인저", jp: "獣拳戦隊ゲキレンジャー", year: "2007-2008", cat: "sentai", ep: 49, ttfcId: 5819 },
+  { name: "염신전대 고온저", jp: "炎神戦隊ゴーオンジャー", year: "2008-2009", cat: "sentai", ep: 50, ttfcId: 5869 },
+  { name: "사무라이전대 신켄저", jp: "侍戦隊シンケンジャー", year: "2009-2010", cat: "sentai", ep: 49, ttfcId: 5920 },
+  { name: "천장전대 고세이저", jp: "天装戦隊ゴセイジャー", year: "2010-2011", cat: "sentai", ep: 50, ttfcId: 4879 },
+  { name: "해적전대 고카이저", jp: "海賊戦隊ゴーカイジャー", year: "2011-2012", cat: "sentai", ep: 51, ttfcId: 4930 },
+  { name: "특명전대 고버스터즈", jp: "特命戦隊ゴーバスターズ", year: "2012-2013", cat: "sentai", ep: 50, ttfcId: 7620 },
+  { name: "비공인전대 아키바레인저", jp: "非公認戦隊アキバレンジャー", year: "2012", cat: "sentai", ep: 13, ttfcId: 7550 },
+  { name: "비공인전대 아키바레인저 시즌 통산", jp: "非公認戦隊アキバレンジャー シーズン痛", year: "2013", cat: "sentai", ep: 13, ttfcId: 7564 },
+  { name: "수전전대 쿄류저", jp: "獣電戦隊キョウリュウジャー", year: "2013-2014", cat: "sentai", ep: 48, ttfcId: 4982 },
+  { name: "열차전대 토큐저", jp: "烈車戦隊トッキュウジャー", year: "2014-2015", cat: "sentai", ep: 47, ttfcId: 5421 },
+  { name: "수리검전대 닌닌저", jp: "手裏剣戦隊ニンニンジャー", year: "2015-2016", cat: "sentai", ep: 47, ttfcId: 7763 },
+  { name: "동물전대 쥬오우저", jp: "動物戦隊ジュウオウジャー", year: "2016-2017", cat: "sentai", ep: 48, ttfcId: 10208 },
+  { name: "우주전대 큐레인저", jp: "宇宙戦隊キュウレンジャー", year: "2017-2018", cat: "sentai", ep: 48, ttfcId: 17412 },
+  { name: "수전전대 쿄류저 브레이브", jp: "獣電戦隊キョウリュウジャーブレイブ", year: "2017", cat: "sentai", ep: 12, ttfcId: 19043 },
+  { name: "쾌도전대 루팡레인저 VS 경찰전대 패트레인저", jp: "快盗戦隊ルパンレンジャーVS警察戦隊パトレンジャー", year: "2018-2019", cat: "sentai", ep: 51, ttfcId: 28039 },
+  { name: "4주 연속 스페셜 슈퍼전대 최강 배틀!!", jp: "4週連続スペシャル スーパー戦隊最強バトル!!", year: "2019", cat: "sentai", ep: 4, ttfcId: 33820 },
+  { name: "기사룡전대 류소우저", jp: "騎士竜戦隊リュウソウジャー", year: "2019-2020", cat: "sentai", ep: 48, ttfcId: 33833 },
+  { name: "마진전대 키라메이저", jp: "魔進戦隊キラメイジャー", year: "2020-2021", cat: "sentai", ep: 45, ttfcId: 39679 },
+  { name: "기계전대 젠카이저", jp: "機界戦隊ゼンカイジャー", year: "2021-2022", cat: "sentai", ep: 49, ttfcId: 47648 },
+  { name: "폭상전대 돈브라더스", jp: "暴太郎戦隊ドンブラザーズ", year: "2022-2023", cat: "sentai", ep: 50, ttfcId: 48704 },
+  { name: "왕님전대 킹오우저", jp: "王様戦隊キングオージャー", year: "2023-2024", cat: "sentai", ep: 50, ttfcId: 49597 },
+  { name: "폭상전대 붕붕저", jp: "爆上戦隊ブンブンジャー", year: "2024-2025", cat: "sentai", ep: 50, ttfcId: 50492 },
+  { name: "넘버원전대 고쥬저", jp: "No.1戦隊ゴジュージャー", year: "2025-2026", cat: "sentai", ep: null, ttfcId: 50772 },
+
+  // ===== 가면라이더 시리즈 =====
+  { name: "가면라이더", jp: "仮面ライダー", year: "1971-1973", cat: "rider", ep: 98, ttfcId: 5970 },
+  { name: "가면라이더 V3", jp: "仮面ライダーV3", year: "1973-1974", cat: "rider", ep: 52, ttfcId: 6288 },
+  { name: "가면라이더 X", jp: "仮面ライダーX", year: "1974", cat: "rider", ep: 35, ttfcId: 6390 },
+  { name: "가면라이더 아마존", jp: "仮面ライダーアマゾン", year: "1974-1975", cat: "rider", ep: 24, ttfcId: 6069 },
+  { name: "가면라이더 스트롱거", jp: "仮面ライダーストロンガー", year: "1975", cat: "rider", ep: 39, ttfcId: 6897 },
+  { name: "신 가면라이더 (스카이라이더)", jp: "新・仮面ライダー(スカイライダー)", year: "1979-1980", cat: "rider", ep: 54, ttfcId: 5631 },
+  { name: "가면라이더 슈퍼-1", jp: "仮面ライダースーパー1", year: "1980-1981", cat: "rider", ep: 48, ttfcId: 6341 },
+  { name: "가면라이더 ZX", jp: "仮面ライダーZX", year: "1984", cat: "rider", ep: 1, ttfcId: 6428 },
+  { name: "가면라이더 BLACK", jp: "仮面ライダーBLACK", year: "1987-1988", cat: "rider", ep: 51, ttfcId: 6094 },
+  { name: "가면라이더 BLACK RX", jp: "仮面ライダーBLACK RX", year: "1988-1989", cat: "rider", ep: 47, ttfcId: 6190 },
+  { name: "진 가면라이더: 서장", jp: "真・仮面ライダー 序章", year: "1992", cat: "rider", ep: 1, ttfcId: 2316 },
+  { name: "가면라이더 ZO", jp: "仮面ライダーZO", year: "1993", cat: "rider", ep: null, ttfcId: 2276 },
+  { name: "가면라이더 J", jp: "仮面ライダーJ", year: "1994", cat: "rider", ep: null, ttfcId: 2278 },
+  { name: "가면라이더 쿠우가", jp: "仮面ライダークウガ", year: "2000-2001", cat: "rider", ep: 49, ttfcId: 909 },
+  { name: "가면라이더 아기토", jp: "仮面ライダーアギト", year: "2001-2002", cat: "rider", ep: 51, ttfcId: 959 },
+  { name: "가면라이더 류우키", jp: "仮面ライダー龍騎", year: "2002-2003", cat: "rider", ep: 50, ttfcId: 5479 },
+  { name: "가면라이더 555 (파이즈)", jp: "仮面ライダー555", year: "2003-2004", cat: "rider", ep: 50, ttfcId: 5768 },
+  { name: "가면라이더 블레이드", jp: "仮面ライダー剣", year: "2004-2005", cat: "rider", ep: 49, ttfcId: 1778 },
+  { name: "가면라이더 히비키", jp: "仮面ライダー響鬼", year: "2005-2006", cat: "rider", ep: 48, ttfcId: 5534 },
+  { name: "가면라이더 THE FIRST", jp: "仮面ライダー THE FIRST", year: "2005", cat: "rider", ep: null, ttfcId: 6694 },
+  { name: "가면라이더 카부토", jp: "仮面ライダーカブト", year: "2006-2007", cat: "rider", ep: 49, ttfcId: 6644 },
+  { name: "가면라이더 덴오", jp: "仮面ライダー電王", year: "2007-2008", cat: "rider", ep: 49, ttfcId: 6824 },
+  { name: "가면라이더 THE NEXT", jp: "仮面ライダー THE NEXT", year: "2007", cat: "rider", ep: null, ttfcId: 6698 },
+  { name: "가면라이더 키바", jp: "仮面ライダーキバ", year: "2008-2009", cat: "rider", ep: 48, ttfcId: 1577 },
+  { name: "가면라이더 디케이드", jp: "仮面ライダーディケイド", year: "2009", cat: "rider", ep: 31, ttfcId: 5736 },
+  { name: "가면라이더 더블", jp: "仮面ライダーW", year: "2009-2010", cat: "rider", ep: 49, ttfcId: 6238 },
+  { name: "가면라이더 오즈", jp: "仮面ライダーOOO", year: "2010-2011", cat: "rider", ep: 48, ttfcId: 4727 },
+  { name: "가면라이더 포제", jp: "仮面ライダーフォーゼ", year: "2011-2012", cat: "rider", ep: 48, ttfcId: 4776 },
+  { name: "가면라이더 위자드", jp: "仮面ライダーウィザード", year: "2012-2013", cat: "rider", ep: 53, ttfcId: 4825 },
+  { name: "가면라이더 가이무", jp: "仮面ライダー鎧武", year: "2013-2014", cat: "rider", ep: 47, ttfcId: 5206 },
+  { name: "가면라이더 드라이브", jp: "仮面ライダードライブ", year: "2014-2015", cat: "rider", ep: 48, ttfcId: 6522 },
+  { name: "가면라이더 고스트", jp: "仮面ライダーゴースト", year: "2015-2016", cat: "rider", ep: 50, ttfcId: 7712 },
+  { name: "가면라이더 에그제이드", jp: "仮面ライダーエグゼイド", year: "2016-2017", cat: "rider", ep: 45, ttfcId: 13322 },
+  { name: "가면라이더 아마존즈 시즌1", jp: "仮面ライダーアマゾンズ Season1", year: "2016", cat: "rider", ep: 13, ttfcId: 17305 },
+  { name: "가면라이더 아마존즈 시즌2", jp: "仮面ライダーアマゾンズ Season2", year: "2017", cat: "rider", ep: 13, ttfcId: 34624 },
+  { name: "가면라이더 빌드", jp: "仮面ライダービルド", year: "2017-2018", cat: "rider", ep: 49, ttfcId: 24843 },
+  { name: "가면라이더 지오", jp: "仮面ライダージオウ", year: "2018-2019", cat: "rider", ep: 49, ttfcId: 31702 },
+  { name: "가면라이더 제로원", jp: "仮面ライダーゼロワン", year: "2019-2020", cat: "rider", ep: 45, ttfcId: 36303 },
+  { name: "가면라이더 세이버", jp: "仮面ライダーセイバー", year: "2020-2021", cat: "rider", ep: 47, ttfcId: 45337 },
+  { name: "가면라이더 리바이스", jp: "仮面ライダーリバイス", year: "2021-2022", cat: "rider", ep: 50, ttfcId: 48461 },
+  { name: "가면라이더 BLACK SUN", jp: "仮面ライダーBLACK SUN", year: "2022", cat: "rider", ep: 10, ttfcId: 50268 },
+  { name: "가면라이더 기츠", jp: "仮面ライダーギーツ", year: "2022-2023", cat: "rider", ep: 49, ttfcId: 49199 },
+  { name: "가면라이더 갓챠드", jp: "仮面ライダーガッチャード", year: "2023-2024", cat: "rider", ep: 49, ttfcId: 50142 },
+  { name: "가면라이더 가브", jp: "仮面ライダーガヴ", year: "2024-2025", cat: "rider", ep: null, ttfcId: 50733 },
+  { name: "가면라이더 젯츠", jp: "仮面ライダーゼッツ", year: "2025-2026", cat: "rider", ep: null, ttfcId: 50815 },
+
+  // ===== 메탈 히어로 시리즈 =====
+  { name: "우주형사 갸반", jp: "宇宙刑事ギャバン", year: "1982-1983", cat: "metal", ep: 44, ttfcId: 2129 },
+  { name: "우주형사 샤리반", jp: "宇宙刑事シャリバン", year: "1983-1984", cat: "metal", ep: 51, ttfcId: 2174 },
+  { name: "우주형사 샤이더", jp: "宇宙刑事シャイダー", year: "1984-1985", cat: "metal", ep: 49, ttfcId: 2226 },
+  { name: "거수특수 쟈스피온", jp: "巨獣特捜ジャスピオン", year: "1985-1986", cat: "metal", ep: 46, ttfcId: 1171 },
+  { name: "시공전사 스필반", jp: "時空戦士スピルバン", year: "1986-1987", cat: "metal", ep: 44, ttfcId: 2578 },
+  { name: "초인기 메탈더", jp: "超人機メタルダー", year: "1987-1988", cat: "metal", ep: 39, ttfcId: 2773 },
+  { name: "세계닌자전 지라이야", jp: "世界忍者戦ジライヤ", year: "1988-1989", cat: "metal", ep: 50, ttfcId: 1828 },
+  { name: "기동형사 지반", jp: "機動刑事ジバン", year: "1989-1990", cat: "metal", ep: 52, ttfcId: 1879 },
+  { name: "특경 윈스펙터", jp: "特警ウインスペクター", year: "1990-1991", cat: "metal", ep: 49, ttfcId: 2341 },
+  { name: "특구지령 솔브레인", jp: "特救指令ソルブレイン", year: "1991-1992", cat: "metal", ep: 53, ttfcId: 2659 },
+  { name: "특수 엑시드래프트", jp: "特捜エクシードラフト", year: "1992-1993", cat: "metal", ep: 49, ttfcId: 2919 },
+  { name: "특수로보 잔퍼슨", jp: "特捜ロボジャンパーソン", year: "1993-1994", cat: "metal", ep: 50, ttfcId: 3638 },
+  { name: "블루 스왓", jp: "ブルースワット", year: "1994-1995", cat: "metal", ep: 51, ttfcId: 3689 },
+  { name: "중갑 비파이터", jp: "重甲ビーファイター", year: "1995-1996", cat: "metal", ep: 53, ttfcId: 3741 },
+  { name: "비파이터 카부토", jp: "ビーファイターカブト", year: "1996-1997", cat: "metal", ep: 50, ttfcId: 3795 },
+  { name: "비로보 카부탁", jp: "ビーロボカブタック", year: "1997-1998", cat: "metal", ep: 52, ttfcId: 3846 },
+  { name: "철완탐정 로보탁", jp: "テツワン探偵ロボタック", year: "1998-1999", cat: "metal", ep: 45, ttfcId: 3899 },
+
+  // ===== PROJECT R.E.D. =====
+  { name: "초우주형사 갸반 인피니티", jp: "超宇宙刑事ギャバン∞(インフィニティ)", year: "2026-", cat: "project", ep: null, ttfcId: 50842 },
+];
+
+const CAT_NAMES = {
+  sentai: "슈퍼 전대",
+  rider: "가면라이더",
+  metal: "메탈 히어로",
+  project: "PROJECT R.E.D."
+};
+
+const CAT_ORDER = ["sentai", "rider", "metal", "project"];
+
+let activeFilters = new Set(CAT_ORDER);
+let historyArr = [];
+let spinning = false;
+let listOpen = false;
+let checkedShows;
+try { checkedShows = new Set(JSON.parse(localStorage.getItem('toku_checked') || '[]')); }
+catch(e) { checkedShows = new Set(); }
+
+function saveChecked() {
+  localStorage.setItem('toku_checked', JSON.stringify([...checkedShows]));
+}
+
+function getFiltered() {
+  return DATA.filter(d => activeFilters.has(d.cat) && !checkedShows.has(d.jp));
+}
+
+function getAllFilteredIncludeChecked() {
+  return DATA.filter(d => activeFilters.has(d.cat));
+}
+
+function initFilters() {
+  const container = document.getElementById('filters');
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn active';
+  allBtn.innerHTML = `전체<span class="count">${DATA.length}</span>`;
+  allBtn.dataset.cat = 'all';
+  allBtn.onclick = () => toggleFilter('all');
+  container.appendChild(allBtn);
+
+  CAT_ORDER.forEach(key => {
+    const count = DATA.filter(d => d.cat === key).length;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn active';
+    btn.innerHTML = `${CAT_NAMES[key]}<span class="count">${count}</span>`;
+    btn.dataset.cat = key;
+    btn.onclick = () => toggleFilter(key);
+    container.appendChild(btn);
+  });
+  updateFilterCounts();
+  updateStats();
+}
+
+function updateFilterCounts() {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const cat = btn.dataset.cat;
+    if (cat === 'all') {
+      const available = DATA.filter(d => !checkedShows.has(d.jp)).length;
+      btn.querySelector('.count').textContent = available;
+    } else {
+      const available = DATA.filter(d => d.cat === cat && !checkedShows.has(d.jp)).length;
+      btn.querySelector('.count').textContent = available;
+    }
+  });
+}
+
+function toggleFilter(cat) {
+  const btns = document.querySelectorAll('.filter-btn');
+  if (cat === 'all') {
+    if (CAT_ORDER.every(c => activeFilters.has(c))) return;
+    activeFilters = new Set(CAT_ORDER);
+    btns.forEach(b => b.classList.add('active'));
+  } else {
+    if (activeFilters.has(cat)) {
+      if (activeFilters.size <= 1) return;
+      activeFilters.delete(cat);
+    } else {
+      activeFilters.add(cat);
+    }
+    btns.forEach(b => {
+      if (b.dataset.cat === 'all') b.classList.toggle('active', CAT_ORDER.every(c => activeFilters.has(c)));
+      else b.classList.toggle('active', activeFilters.has(b.dataset.cat));
+    });
+  }
+  updateStats();
+  initReel();
+  if (listOpen) renderList();
+}
+
+function updateStats() {
+  const total = getAllFilteredIncludeChecked().length;
+  const available = getFiltered().length;
+  const checked = total - available;
+  document.getElementById('statsBar').textContent = checked > 0
+    ? `총 ${total}개 중 ${checked}개 제외 → ${available}개 작품에서 랜덤 선택`
+    : `총 ${available}개 작품에서 랜덤 선택`;
+}
+
+// === LIST ===
+function toggleList() {
+  listOpen = !listOpen;
+  document.getElementById('listPanel').classList.toggle('open', listOpen);
+  document.getElementById('listBtn').classList.toggle('active', listOpen);
+  if (listOpen) renderList();
+}
+
+function renderList() {
+  const search = document.getElementById('listSearch').value.toLowerCase().trim();
+  const allFiltered = getAllFilteredIncludeChecked();
+  const searched = search
+    ? allFiltered.filter(d => d.name.toLowerCase().includes(search) || d.jp.toLowerCase().includes(search))
+    : allFiltered;
+
+  const checkedInFilter = allFiltered.filter(d => checkedShows.has(d.jp)).length;
+  const availableCount = allFiltered.length - checkedInFilter;
+
+  document.getElementById('listCountInfo').innerHTML = search
+    ? `검색 결과: ${searched.length}개`
+    : `전체 ${allFiltered.length}개 · <span style="color:var(--cat-sentai)">체크 ${checkedInFilter}개 제외</span> · 뽑기 대상 ${availableCount}개`;
+
+  let html = '<div class="list-controls">';
+  html += `<button class="list-ctrl-btn" onclick="checkAllVisible()">현재 필터 전체 체크</button>`;
+  html += `<button class="list-ctrl-btn danger" onclick="uncheckAllVisible()">현재 필터 전체 해제</button>`;
+  html += `<button class="list-ctrl-btn danger" onclick="uncheckAll()">모든 체크 초기화 (${checkedShows.size})</button>`;
+  html += '</div>';
+
+  CAT_ORDER.forEach(cat => {
+    if (!activeFilters.has(cat)) return;
+    const items = searched.filter(d => d.cat === cat);
+    if (!items.length) return;
+
+    const checkedInCat = items.filter(d => checkedShows.has(d.jp)).length;
+    html += `<div class="list-group">`;
+    html += `<div class="list-group-title ${cat}">${CAT_NAMES[cat]} (${items.length - checkedInCat}/${items.length})</div>`;
+    html += `<div class="list-items">`;
+
+    const allInCat = DATA.filter(d => d.cat === cat);
+    items.forEach((item, itemIdx) => {
+      const idx = allInCat.indexOf(item) + 1;
+      const isChecked = checkedShows.has(item.jp);
+      const dataIdx = DATA.indexOf(item);
+      html += `<div class="list-entry${isChecked ? ' checked' : ''}" onclick="toggleCheckIdx(${dataIdx})">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <span class="num">${String(idx).padStart(2, '0')}</span>
+        <span>${item.name}</span>
+        <span class="year">${item.year}</span>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById('listContent').innerHTML = html ||
+    '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">검색 결과가 없습니다</div>';
+}
+
+function toggleCheckIdx(dataIdx) {
+  const jp = DATA[dataIdx].jp;
+  if (checkedShows.has(jp)) checkedShows.delete(jp);
+  else checkedShows.add(jp);
+  saveChecked(); updateFilterCounts();
+  updateStats();
+  initReel();
+  renderList();
+}
+
+function checkAllVisible() {
+  getAllFilteredIncludeChecked().forEach(d => checkedShows.add(d.jp));
+  saveChecked(); updateFilterCounts(); updateStats(); initReel(); renderList();
+}
+
+function uncheckAllVisible() {
+  getAllFilteredIncludeChecked().forEach(d => checkedShows.delete(d.jp));
+  saveChecked(); updateFilterCounts(); updateStats(); initReel(); renderList();
+}
+
+function uncheckAll() {
+  checkedShows.clear();
+  saveChecked(); updateFilterCounts(); updateStats(); initReel(); renderList();
+}
+
+// === REEL ===
+function initReel() {
+  const reel = document.getElementById('reel');
+  const filtered = getFiltered();
+  reel.innerHTML = '';
+  if (!filtered.length) return;
+
+  const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+  const display = shuffled.slice(0, Math.min(5, shuffled.length));
+  while (display.length < 5) display.push(filtered[Math.floor(Math.random() * filtered.length)]);
+
+  display.forEach((item, i) => {
+    if (!item) return;
+    const div = document.createElement('div');
+    div.className = `slot-item${i === 2 ? ' center' : ''}`;
+    div.textContent = item.name;
+    reel.appendChild(div);
+  });
+
+  const itemH = window.innerWidth <= 480 ? 54 : 64;
+  const windowH = window.innerWidth <= 480 ? 180 : 220;
+  reel.style.top = `${(windowH / 2) - (itemH * 2.5)}px`;
+}
+
+// === SPIN ===
+function spin() {
+  if (spinning) return;
+  const filtered = getFiltered();
+  if (!filtered.length) return;
+
+  spinning = true;
+  const btn = document.getElementById('spinBtn');
+  const reel = document.getElementById('reel');
+  const resultCard = document.getElementById('resultCard');
+
+  btn.classList.add('spinning');
+  btn.textContent = '...';
+  resultCard.classList.remove('show');
+
+  const itemH = window.innerWidth <= 480 ? 54 : 64;
+  const windowH = window.innerWidth <= 480 ? 180 : 220;
+  const totalItems = 40 + Math.floor(Math.random() * 20);
+  const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+
+  reel.innerHTML = '';
+  const items = [];
+  for (let i = 0; i < totalItems; i++) {
+    const r = filtered[Math.floor(Math.random() * filtered.length)];
+    if (r) items.push(r);
+  }
+  if (!items.length) { spinning = false; btn.textContent = 'HENSHIN'; return; }
+  const chosenIdx = Math.min(totalItems - 5, items.length - 1);
+  items[chosenIdx] = chosen;
+
+  items.forEach(item => {
+    if (!item) return;
+    const div = document.createElement('div');
+    div.className = 'slot-item';
+    div.textContent = item.name;
+    reel.appendChild(div);
+  });
+
+  const targetTop = (windowH / 2) - (itemH * chosenIdx) - (itemH / 2);
+  reel.style.transition = 'none';
+  reel.style.top = `${(windowH / 2) - (itemH * 0.5)}px`;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      reel.style.transition = `top 3s cubic-bezier(0.15, 0.85, 0.35, 1)`;
+      reel.style.top = `${targetTop}px`;
+    });
+  });
+
+  setTimeout(() => {
+    const flash = document.getElementById('flash');
+    flash.classList.add('active');
+    setTimeout(() => flash.classList.remove('active'), 150);
+
+    reel.querySelectorAll('.slot-item').forEach((el, i) => el.classList.toggle('center', i === chosenIdx));
+
+    showResult(chosen);
+    addHistory(chosen);
+
+    spinning = false;
+    btn.classList.remove('spinning');
+    btn.textContent = 'HENSHIN';
+  }, 3200);
+}
+
+function showResult(item) {
+  const card = document.getElementById('resultCard');
+  document.getElementById('cardCategory').className = `card-category ${item.cat}`;
+  document.getElementById('cardCategory').textContent = CAT_NAMES[item.cat];
+  document.getElementById('cardTitle').textContent = item.name;
+  document.getElementById('cardTitleJp').textContent = item.jp;
+
+  let metaHtml = `<span><span class="label">방영</span> ${item.year}</span>`;
+  if (item.ep) metaHtml += `<span><span class="label">에피소드</span> ${item.ep}화</span>`;
+  document.getElementById('cardMeta').innerHTML = metaHtml;
+
+  // TTFC link — use Japanese title for PC site search
+  const ttfcLink = document.getElementById('ttfcLink');
+  if (item.ttfcId) {
+    ttfcLink.href = `https://pc.tokusatsu-fc.jp/contents?contentId=${item.ttfcId}&contentType=0`;
+    ttfcLink.style.display = '';
+  } else {
+    ttfcLink.href = `https://pc.tokusatsu-fc.jp/search?keyword=${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`;
+    ttfcLink.style.display = '';
+  }
+
+  generatePoster(item);
+  showTimeline(item);
+  setTimeout(() => card.classList.add('show'), 50);
+}
+
+// === TIMELINE DATA ===
+const TIMELINE = {"秘密戦隊ゴレンジャー": [{"t": "ep", "d": "1화 ~ 36화"}, {"t": "movie", "d": "극장판 비밀전대 고레인저 (1975 토에이 만화축제)"}, {"t": "ep", "d": "37화 ~ 54화"}, {"t": "movie", "d": "비밀전대 고레인저 푸른 대요새 (1975)"}, {"t": "ep", "d": "55화 ~ 67화"}, {"t": "movie", "d": "비밀전대 고레인저 새빨간 맹진격 (1976)"}, {"t": "ep", "d": "68화 ~ 84화"}, {"t": "movie", "d": "비밀전대 고레인저 불의 산 최후의 대분화 (1976)"}, {"t": "vs", "d": "잭커 전격대 VS 고레인저"}], "ジャッカー電撃隊": [{"t": "ep", "d": "1화 ~ 35화"}, {"t": "vs", "d": "잭커 전격대 VS 고레인저 (1978)"}], "バトルフィーバーJ": [{"t": "ep", "d": "1화 ~ 5화"}, {"t": "movie", "d": "극장판 배틀피버 J (1979 토에이 만화축제)"}, {"t": "ep", "d": "6화 ~ 52화"}], "電子戦隊デンジマン": [{"t": "ep", "d": "1화 ~ 17화"}, {"t": "movie", "d": "극장판 전자전대 덴지맨 (1980)"}, {"t": "ep", "d": "18화 ~ 51화"}], "太陽戦隊サンバルカン": [{"t": "ep", "d": "1화 ~ 23화"}, {"t": "movie", "d": "극장판 태양전대 선발칸 (1981)"}, {"t": "ep", "d": "24화 ~ 50화"}], "大戦隊ゴーグルファイブ": [{"t": "ep", "d": "1화 ~ 50화"}], "科学戦隊ダイナマン": [{"t": "ep", "d": "1화 ~ 25화"}, {"t": "movie", "d": "극장판 과학전대 다이나맨 (1983)"}, {"t": "ep", "d": "26화 ~ 51화"}], "超電子バイオマン": [{"t": "ep", "d": "1화 ~ 16화"}, {"t": "movie", "d": "극장판 초전자 바이오맨 (1984)"}, {"t": "ep", "d": "17화 ~ 51화"}], "電撃戦隊チェンジマン": [{"t": "ep", "d": "1화 ~ 16화"}, {"t": "movie", "d": "극장판 전격전대 체인지맨 (1985)"}, {"t": "movie", "d": "전격전대 체인지맨 셔틀베이스! 위기일발!"}, {"t": "ep", "d": "17화 ~ 55화"}], "超新星フラッシュマン": [{"t": "ep", "d": "1화 ~ 15화"}, {"t": "movie", "d": "극장판 초신성 플래시맨 (1986)"}, {"t": "ep", "d": "16화 ~ 50화"}], "光戦隊マスクマン": [{"t": "ep", "d": "1화 ~ 15화"}, {"t": "movie", "d": "극장판 광전대 마스크맨 (1987)"}, {"t": "ep", "d": "16화 ~ 51화"}], "超獣戦隊ライブマン": [{"t": "ep", "d": "1화 ~ 49화"}], "高速戦隊ターボレンジャー": [{"t": "ep", "d": "1화 (10대 전대 대집합 특집)"}, {"t": "ep", "d": "2화 ~ 15화"}, {"t": "movie", "d": "극장판 고속전대 터보레인저 (1989)"}, {"t": "ep", "d": "16화 ~ 51화"}], "地球戦隊ファイブマン": [{"t": "ep", "d": "1화 ~ 48화"}], "鳥人戦隊ジェットマン": [{"t": "ep", "d": "1화 ~ 51화"}], "恐竜戦隊ジュウレンジャー": [{"t": "ep", "d": "1화 ~ 23화"}, {"t": "movie", "d": "극장판 공룡전대 쥬레인저 (1992)"}, {"t": "ep", "d": "24화 ~ 50화"}], "五星戦隊ダイレンジャー": [{"t": "ep", "d": "1화 ~ 25화"}, {"t": "movie", "d": "극장판 오성전대 다이레인저 (1993)"}, {"t": "ep", "d": "26화 ~ 50화"}], "忍者戦隊カクレンジャー": [{"t": "ep", "d": "1화 ~ 17화"}, {"t": "movie", "d": "극장판 닌자전대 카쿠레인저 (1994)"}, {"t": "ep", "d": "18화 ~ 53화"}, {"t": "vs", "d": "초력전대 오레인저 오레 VS 카쿠레인저 (1996)"}, {"t": "special", "d": "닌자전대 카쿠레인저 제3부 중년분투편 (2024 TTFC)"}], "超力戦隊オーレンジャー": [{"t": "ep", "d": "1화 ~ 17화"}, {"t": "movie", "d": "극장판 초력전대 오레인저 (1995)"}, {"t": "ep", "d": "18화 ~ 48화"}, {"t": "vs", "d": "초력전대 오레인저 오레 VS 카쿠레인저 (1996)"}, {"t": "vs", "d": "격주전대 카레인저 VS 오레인저 (1997)"}], "激走戦隊カーレンジャー": [{"t": "ep", "d": "1화 ~ 48화"}, {"t": "vs", "d": "격주전대 카레인저 VS 오레인저 (1997)"}, {"t": "vs", "d": "전자전대 메가레인저 VS 카레인저 (1998)"}, {"t": "special", "d": "「격주전대 카레인저」 20주년 특번 (2016)"}], "電磁戦隊メガレンジャー": [{"t": "ep", "d": "1화 ~ 51화"}, {"t": "vs", "d": "전자전대 메가레인저 VS 카레인저 (1998)"}, {"t": "vs", "d": "성수전대 긴가맨 VS 메가레인저 (1999)"}], "星獣戦隊ギンガマン": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "vs", "d": "성수전대 긴가맨 VS 메가레인저 (1999)"}, {"t": "vs", "d": "구급전대 고고파이브 VS 긴가맨 (2000)"}], "救急戦隊ゴーゴーファイブ": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "vs", "d": "구급전대 고고파이브 VS 긴가맨 (2000)"}, {"t": "special", "d": "구급전대 고고파이브 격돌! 새로운 초전사 (V시네마)"}, {"t": "vs", "d": "미래전대 타임레인저 VS 고고파이브 (2001)"}], "未来戦隊タイムレンジャー": [{"t": "ep", "d": "1화 ~ 35화"}, {"t": "vs", "d": "미래전대 타임레인저 VS 고고파이브 (~35·36화 사이)"}, {"t": "ep", "d": "36화 ~ 51화"}], "百獣戦隊ガオレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 백수전대 가오레인저 불의 산, 울부짖다 (2001)"}, {"t": "ep", "d": "23화 ~ 51화"}, {"t": "vs", "d": "백수전대 가오레인저 VS 슈퍼전대 (25주년)"}, {"t": "vs", "d": "인풍전대 허리켄저 VS 가오레인저 (2003)"}], "忍風戦隊ハリケンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 인풍전대 허리켄저 슈슈슈 THE MOVIE (2002)"}, {"t": "ep", "d": "23화 ~ 30화"}, {"t": "vs", "d": "인풍전대 허리켄저 VS 가오레인저 (~30·31화 사이)"}, {"t": "ep", "d": "31화 ~ 51화"}, {"t": "vs", "d": "폭룡전대 아바레인저 VS 허리켄저 (2004)"}, {"t": "special", "d": "인풍전대 허리켄저 10 YEARS AFTER (2013)"}, {"t": "special", "d": "인풍전대 허리켄저 with 돈브라더스 (2022)"}], "爆竜戦隊アバレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 폭룡전대 아바레인저 DELUXE 아바레 섬머 (2003)"}, {"t": "ep", "d": "23화 ~ 40화"}, {"t": "vs", "d": "폭룡전대 아바레인저 VS 허리켄저 (~40·41화 사이)"}, {"t": "ep", "d": "41화 ~ 50화"}, {"t": "vs", "d": "특수전대 데카레인저 VS 아바레인저 (2005)"}, {"t": "special", "d": "폭룡전대 아바레인저 with 돈브라더스 (2022)"}, {"t": "special", "d": "폭룡전대 아바레인저 20th 용서받지 못할 아바레 (2023)"}], "特捜戦隊デカレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 특수전대 데카레인저 THE MOVIE 풀 블라스트 액션 (2004)"}, {"t": "ep", "d": "23화 ~ 31화"}, {"t": "vs", "d": "특수전대 데카레인저 VS 아바레인저 (~31·32화 사이)"}, {"t": "ep", "d": "32화 ~ 50화"}, {"t": "vs", "d": "마법전대 마지레인저 VS 데카레인저 (2006)"}, {"t": "special", "d": "특수전대 데카레인저 10 YEARS AFTER (2015)"}, {"t": "special", "d": "특수전대 데카레인저 with 톤보오우저 (2024 TTFC)"}], "魔法戦隊マジレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 마법전대 마지레인저 THE MOVIE 인페르시아의 신부 (2005)"}, {"t": "ep", "d": "23화 ~ 31화"}, {"t": "vs", "d": "마법전대 마지레인저 VS 데카레인저 (~Stage 31·32화 사이)"}, {"t": "ep", "d": "32화 ~ 49화"}], "轟轟戦隊ボウケンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 굉굉전대 보우켄저 THE MOVIE 최강의 프레셔스 (2006)"}, {"t": "ep", "d": "23화 ~ 42화"}, {"t": "vs", "d": "굉굉전대 보우켄저 VS 슈퍼전대 (30주년, ~Task 42·43화 사이)"}, {"t": "ep", "d": "43화 ~ 49화"}, {"t": "vs", "d": "수권전대 게키레인저 VS 보우켄저 (2008)"}], "獣拳戦隊ゲキレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 수권전대 게키레인저 네이네이! 호우호우! 홍콩 대결전 (2007)"}, {"t": "ep", "d": "23화 ~ 35화"}, {"t": "vs", "d": "수권전대 게키레인저 VS 보우켄저 (~Lesson 35·36화 사이)"}, {"t": "ep", "d": "36화 ~ 49화"}, {"t": "vs", "d": "극장판 염신전대 고온저 VS 게키레인저 (2009)"}], "炎神戦隊ゴーオンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 염신전대 고온저 BUNBUN! BANBAN! 극장 BANG!! (2008)"}, {"t": "ep", "d": "23화 ~ 50화"}, {"t": "special", "d": "BONBON! BONBON! 넷에서 BONG!! (웹 스페셜)"}, {"t": "vs", "d": "극장판 염신전대 고온저 VS 게키레인저 (2009, VS 시리즈 최초 극장 개봉)"}, {"t": "vs", "d": "사무라이전대 신켄저 VS 고온저 은막 BANG!! (2010)"}, {"t": "special", "d": "염신전대 고온저 10 YEARS GRANDPRIX (2018)"}], "侍戦隊シンケンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 사무라이전대 신켄저 은막판 천하분할의 전투 (2009)"}, {"t": "ep", "d": "23화 ~ 49화"}, {"t": "vs", "d": "사무라이전대 신켄저 VS 고온저 은막 BANG!! (2010)"}, {"t": "special", "d": "돌아온 사무라이전대 신켄저 특별막 (V시네마)"}, {"t": "vs", "d": "천장전대 고세이저 VS 신켄저 에픽 ON 은막 (2011)"}], "天装戦隊ゴセイジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 천장전대 고세이저 에픽 ON THE MOVIE (2010)"}, {"t": "ep", "d": "23화 ~ 50화"}, {"t": "vs", "d": "천장전대 고세이저 VS 신켄저 에픽 ON 은막 (2011)"}, {"t": "special", "d": "돌아온 천장전대 고세이저 last epic (V시네마)"}, {"t": "vs", "d": "고카이저 고세이저 슈퍼전대 199히어로 대결전 (2011)"}], "海賊戦隊ゴーカイジャー": [{"t": "ep", "d": "1화 ~ 16화"}, {"t": "vs", "d": "고카이저 고세이저 슈퍼전대 199히어로 대결전 (~16·17화 사이)"}, {"t": "ep", "d": "17화 ~ 22화"}, {"t": "movie", "d": "극장판 해적전대 고카이저 THE MOVIE 하늘 나는 유령선 (~22·23화 사이)"}, {"t": "ep", "d": "23화 ~ 51화"}, {"t": "vs", "d": "해적전대 고카이저 VS 우주형사 갸반 THE MOVIE (2012)"}, {"t": "vs", "d": "특명전대 고버스터즈 VS 해적전대 고카이저 THE MOVIE (2013)"}, {"t": "special", "d": "텐 고카이저 (2021, 10주년)"}], "特命戦隊ゴーバスターズ": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 특명전대 고버스터즈 THE MOVIE 도쿄 에네타워를 지켜라! (2012)"}, {"t": "ep", "d": "23화 ~ 50화"}, {"t": "vs", "d": "특명전대 고버스터즈 VS 해적전대 고카이저 THE MOVIE (2013)"}, {"t": "special", "d": "돌아온 특명전대 고버스터즈 VS 동물전대 고버스터즈 (V시네마)"}, {"t": "vs", "d": "수전전대 쿄류저 VS 고버스터즈 공룡대결전! (2014)"}], "獣電戦隊キョウリュウジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 수전전대 쿄류저 가브린초 오브 뮤직 (2013)"}, {"t": "ep", "d": "23화 ~ 48화"}, {"t": "vs", "d": "수전전대 쿄류저 VS 고버스터즈 공룡대결전! (2014)"}, {"t": "special", "d": "돌아온 수전전대 쿄류저 100 YEARS AFTER (2014)"}, {"t": "vs", "d": "열차전대 토큐저 VS 쿄류저 THE MOVIE (2015)"}, {"t": "special", "d": "수전전대 쿄류저 BRAVE (2017, 한국판)"}], "烈車戦隊トッキュウジャー": [{"t": "ep", "d": "1화 ~ 20화"}, {"t": "special", "d": "열차전대 토큐저 VS 가면라이더 가이무 봄방학 합체 스페셜"}, {"t": "ep", "d": "21화 ~ 22화"}, {"t": "movie", "d": "극장판 열차전대 토큐저 THE MOVIE 갤럭시라인 SOS (2014)"}, {"t": "ep", "d": "23화 ~ 47화"}, {"t": "vs", "d": "열차전대 토큐저 VS 쿄류저 THE MOVIE (2015)"}, {"t": "special", "d": "가고 돌아온 열차전대 토큐저 꿈의 초토큐 7호 (V시네마)"}, {"t": "vs", "d": "수리검전대 닌닌저 VS 토큐저 THE MOVIE (2016)"}], "手裏剣戦隊ニンニンジャー": [{"t": "ep", "d": "1화 ~ 7화"}, {"t": "special", "d": "수리검전대 닌닌저 VS 가면라이더 드라이브 봄방학 합체 스페셜"}, {"t": "ep", "d": "8화 ~ 22화"}, {"t": "movie", "d": "극장판 수리검전대 닌닌저 THE MOVIE 공룡전하 앗파레 인법장 (2015)"}, {"t": "ep", "d": "23화 ~ 47화"}, {"t": "vs", "d": "수리검전대 닌닌저 VS 토큐저 THE MOVIE (2016)"}, {"t": "special", "d": "돌아온 수리검전대 닌닌저 닌닌걸즈 VS 보이즈 FINAL WARS (V시네마)"}, {"t": "vs", "d": "극장판 동물전대 쥬오우저 VS 닌닌저 미래로부터의 메시지 (2017)"}], "動物戦隊ジュウオウジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 동물전대 쥬오우저 두근두근 서커스 패닉! (~22·23화 사이)"}, {"t": "ep", "d": "23화 ~ 48화"}, {"t": "vs", "d": "극장판 동물전대 쥬오우저 VS 닌닌저 미래로부터의 메시지 (2017)"}, {"t": "special", "d": "돌아온 동물전대 쥬오우저 목숨 받겠다! 지구왕자 결정전 (마지막 돌아온 시리즈)"}], "宇宙戦隊キュウレンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 우주전대 큐레인저 THE MOVIE 겟스 인다베의 역습 (2017)"}, {"t": "ep", "d": "23화 ~ 48화"}, {"t": "special", "d": "Episode of 스팅거 (웹)"}, {"t": "special", "d": "우주전대 큐레인저 VS 스페이스 스쿼드 (2018 V시네마)"}, {"t": "vs", "d": "루팡레인저 VS 패트레인저 VS 큐레인저 (2019)"}], "快盗戦隊ルパンレンジャーVS警察戦隊パトレンジャー": [{"t": "ep", "d": "1화 ~ 25화"}, {"t": "movie", "d": "극장판 쾌도전대 루팡레인저 VS 경찰전대 패트레인저 en film (2018)"}, {"t": "ep", "d": "26화 ~ 51화"}, {"t": "special", "d": "경찰전대 패트레인저 feat. 쾌도전대 루팡레인저 또 한 명의 패트렌2호 (V시네마)"}, {"t": "vs", "d": "루팡레인저 VS 패트레인저 VS 큐레인저 (2019)"}, {"t": "vs", "d": "극장판 기사룡전대 류소우저 VS 루팡레인저 VS 패트레인저 (2020)"}, {"t": "special", "d": "GIRLFRIENDS ARMY (TTFC)"}], "4週連続スペシャル スーパー戦隊最強バトル!!": [{"t": "ep", "d": "1화 ~ 4화 (2019, 류소우저 직전 방영)"}], "騎士竜戦隊リュウソウジャー": [{"t": "ep", "d": "1화 ~ 17화"}, {"t": "movie", "d": "극장판 기사룡전대 류소우저 THE MOVIE 타임슬립! 공룡 패닉!! (2019)"}, {"t": "ep", "d": "18화 ~ 48화"}, {"t": "vs", "d": "극장판 기사룡전대 류소우저 VS 루팡레인저 VS 패트레인저 (2020)"}, {"t": "special", "d": "기사룡전대 류소우저 특별편 메모리 오브 소울메이츠 (TTFC)"}, {"t": "vs", "d": "마진전대 키라메이저 VS 류소우저 (2021)"}], "魔進戦隊キラメイジャー": [{"t": "special", "d": "마진전대 키라메이저 에피소드 ZERO (2020)"}, {"t": "ep", "d": "1화 ~ 24화 (COVID로 5주 휴방 포함)"}, {"t": "movie", "d": "극장판 마진전대 키라메이저 THE MOVIE 비밥 드림 (2021.2 MOVIE 레인저)"}, {"t": "ep", "d": "25화 ~ 45화"}, {"t": "vs", "d": "마진전대 키라메이저 VS 류소우저 (2021)"}, {"t": "special", "d": "요돈나 (2021 V시넥스트)"}, {"t": "special", "d": "요돈나 2 (2021)"}, {"t": "special", "d": "요돈나 3 요돈나의 발렌타인 (2022)"}, {"t": "vs", "d": "기계전대 젠카이저 VS 키라메이저 VS 센파이저 (2022)"}], "機界戦隊ゼンカイジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 기계전대 젠카이저 THE MOVIE 빨간 싸움! 올 전대 대집회!! (2021)"}, {"t": "ep", "d": "23화 ~ 37화"}, {"t": "movie", "d": "세이버 + 젠카이저 슈퍼히어로 전기 (2021.7, KR 50주년+전대 45주년)"}, {"t": "ep", "d": "38화 ~ 49화"}, {"t": "vs", "d": "기계전대 젠카이저 VS 키라메이저 VS 센파이저 (2022)"}, {"t": "vs", "d": "폭상전대 돈브라더스 VS 젠카이저 (2023)"}], "暴太郎戦隊ドンブラザーズ": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 폭상전대 돈브라더스 THE MOVIE 신·초연 히어로 (2022)"}, {"t": "ep", "d": "23화 ~ 50화 (최종화 디렉터즈컷 포함)"}, {"t": "vs", "d": "폭상전대 돈브라더스 VS 젠카이저 (2023)"}, {"t": "vs", "d": "폭상전대 돈브라더스 VS 돈브리즈 (2023 V시네마)"}, {"t": "vs", "d": "킹오우저 VS 돈브라더스 (2024)"}, {"t": "special", "d": "인풍전대 허리켄저 with 돈브라더스 (2022)"}, {"t": "special", "d": "폭룡전대 아바레인저 with 돈브라더스 (2022)"}], "王様戦隊キングオージャー": [{"t": "ep", "d": "1화 ~ 23화"}, {"t": "movie", "d": "극장판 왕님전대 킹오우저 어드벤처 헤븐 (~23·24화 사이)"}, {"t": "ep", "d": "24화 ~ 50화 (최종 3화 TTFC 특별판 포함)"}, {"t": "special", "d": "측근전대 솟킨저 (웹)"}, {"t": "vs", "d": "킹오우저 VS 돈브라더스 (2024)"}, {"t": "vs", "d": "킹오우저 VS 쿄류저 (2024, 10주년)"}, {"t": "special", "d": "왕님전대 킹오우저 IN SPACE (2024 TTFC)"}, {"t": "special", "d": "특수전대 데카레인저 with 톤보오우저 (2024)"}, {"t": "vs", "d": "폭상전대 붕붕저 VS 킹오우저 (2025)"}], "爆上戦隊ブンブンジャー": [{"t": "ep", "d": "1화 ~ 22화"}, {"t": "movie", "d": "극장판 폭상전대 붕붕저 극장 BOON! 프로미스 더 서킷 (2024)"}, {"t": "ep", "d": "23화 ~ 50화"}, {"t": "vs", "d": "폭상전대 붕붕저 VS 킹오우저 (2025.5.1)"}, {"t": "special", "d": "폭상전대 붕붕저 formation lap 시말옥 오브 갤럭시 (2025)"}], "No.1戦隊ゴジュージャー": [{"t": "special", "d": "넘버원전대 고쥬저 에피소드 0 (YouTube)"}, {"t": "special", "d": "넘버원전대 고쥬저 폴라 비기닝 (특별편)"}, {"t": "ep", "d": "본편 방영중 (2025~)"}, {"t": "movie", "d": "극장판 넘버원전대 고쥬저 부활의 테가소드 (~26·27화 사이 예정)"}], "非公認戦隊アキバレンジャー": [{"t": "ep", "d": "시즌1: 1화 ~ 13화 (2012)"}, {"t": "ep", "d": "시즌 통(痛): 1화 ~ 13화 (2013)"}, {"t": "special", "d": "10주년 특번 (2022)"}], "非公認戦隊アキバレンジャー シーズン痛": [{"t": "ep", "d": "시즌 통(痛): 1화 ~ 13화 (2013)"}, {"t": "special", "d": "10주년 특번 (2022)"}], "獣電戦隊キョウリュウジャーブレイブ": [{"t": "ep", "d": "본편 1화 ~ 12화 (2017, 한국 제작)"}], "仮面ライダー": [{"t": "ep", "d": "1화 ~ 98화"}, {"t": "movie", "d": "극장판 가면라이더 VS 쇼커 (1972 토에이 만화축제)"}, {"t": "movie", "d": "극장판 가면라이더 VS 지옥대사 (1972)"}], "仮面ライダーV3": [{"t": "ep", "d": "1화 ~ 52화 (1·2화에 1호·2호 게스트)"}, {"t": "movie", "d": "극장판 가면라이더 V3 VS 데스트론 괴인 (1973)"}], "仮面ライダーX": [{"t": "ep", "d": "1화 ~ 35화"}], "仮面ライダーアマゾン": [{"t": "ep", "d": "1화 ~ 24화 (TV 라이더 최소 화수)"}], "仮面ライダーストロンガー": [{"t": "ep", "d": "1화 ~ 39화 (33화~ 7인 라이더 등장)"}], "新・仮面ライダー(スカイライダー)": [{"t": "ep", "d": "1화 ~ 54화 (스카이라이더, 선배 라이더 다수 게스트)"}], "仮面ライダースーパー1": [{"t": "ep", "d": "1화 ~ 48화"}, {"t": "movie", "d": "극장판 가면라이더 슈퍼-1 (1981, 8인 선배 라이더 등장)"}], "仮面ライダーZX": [{"t": "special", "d": "10호 탄생! 가면라이더 전원집합!! (1984 TV스페셜, ZX 유일한 영상 데뷔)"}], "仮面ライダーBLACK": [{"t": "ep", "d": "1화 ~ 51화 + 특별편 2화 = 총 53화"}, {"t": "movie", "d": "극장판 가면라이더 BLACK (1988)"}, {"t": "movie", "d": "극장판 가면라이더 BLACK 오니가섬으로 급행 (1988)"}], "仮面ライダーBLACK RX": [{"t": "ep", "d": "1화 ~ 47화 (41화~ 10인 라이더 등장)"}], "真・仮面ライダー 序章": [{"t": "movie", "d": "진 가면라이더: 서장 (1992, OVA 1편)"}], "仮面ライダーZO": [{"t": "movie", "d": "가면라이더 ZO (1993, 극장판)"}], "仮面ライダーJ": [{"t": "movie", "d": "가면라이더 J (1994, 극장판)"}], "仮面ライダー THE FIRST": [{"t": "movie", "d": "가면라이더 THE FIRST (2005, 리부트 극장판)"}, {"t": "movie", "d": "가면라이더 THE NEXT (2007, 속편)"}], "仮面ライダー THE NEXT": [{"t": "movie", "d": "가면라이더 THE NEXT (2007, 극장판)"}], "仮面ライダークウガ": [{"t": "ep", "d": "1화 ~ 49화"}, {"t": "special", "d": "가면라이더 쿠우가 초 비밀 비디오"}, {"t": "special", "d": "가면라이더 쿠우가 신춘 스페셜"}], "仮面ライダーアギト": [{"t": "ep", "d": "1화 ~ 51화 (헤이세이 1기 최다 화수)"}, {"t": "movie", "d": "극장판 가면라이더 아기토 PROJECT G4 (2001, 패러렐)"}, {"t": "special", "d": "가면라이더 아기토 스페셜 새로운 변신"}], "仮面ライダー龍騎": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "movie", "d": "극장판 가면라이더 류키 EPISODE FINAL (2002, 패러렐)"}, {"t": "special", "d": "가면라이더 류키 13RIDERS (TV 스페셜, 2종 엔딩)"}], "仮面ライダー555": [{"t": "ep", "d": "1화 ~ 50화 (가면라이더 파이즈)"}, {"t": "movie", "d": "극장판 가면라이더 555 PARADISE LOST (2003, 패러렐)"}], "仮面ライダー剣": [{"t": "ep", "d": "1화 ~ 49화 (가면라이더 블레이드)"}, {"t": "movie", "d": "극장판 가면라이더 블레이드 MISSING ACE (2004, 패러렐)"}], "仮面ライダー響鬼": [{"t": "ep", "d": "1화 ~ 48화 (가면라이더 히비키)"}, {"t": "movie", "d": "극장판 가면라이더 히비키 7인의 전귀 (2005, 패러렐)"}], "仮面ライダーカブト": [{"t": "ep", "d": "1화 ~ 49화"}, {"t": "movie", "d": "극장판 가면라이더 카부토 GOD SPEED LOVE (2006, 패러렐)"}], "仮面ライダー電王": [{"t": "ep", "d": "1화 ~ 27화"}, {"t": "movie", "d": "극장판 가면라이더 덴오 이 몸, 탄생! (2007, 27~28화 사이 ★정사 유일)"}, {"t": "ep", "d": "28화 ~ 49화"}, {"t": "movie", "d": "극장판 가면라이더 덴오 & 키바 클라이맥스 형사 (2008)"}, {"t": "movie", "d": "안녕히, 가면라이더 덴오 파이널 카운트다운 (2008)"}, {"t": "movie", "d": "초 덴오 & 디케이드 NEO 제네레이션즈 (2009)"}, {"t": "movie", "d": "초 덴오 트릴로지 (2010)"}], "仮面ライダーキバ": [{"t": "ep", "d": "1화 ~ 48화"}, {"t": "movie", "d": "극장판 가면라이더 키바 마계성의 왕 (2008, 패러렐)"}], "仮面ライダーディケイド": [{"t": "ep", "d": "1화 ~ 31화 (헤이세이 1기 최소 화수, TV판 미완결)"}, {"t": "movie", "d": "극장판 가면라이더 디케이드 올 라이더 VS 대쇼커 (2009)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 W & 디케이드 MOVIE 대전 2010 (완결편)"}], "仮面ライダーW": [{"t": "movie", "d": "가면라이더 × 가면라이더 W & 디케이드 MOVIE 대전 2010 (비긴즈나이트=W 에피소드0)"}, {"t": "ep", "d": "1화 ~ 44화 (가면라이더 더블)"}, {"t": "movie", "d": "극장판 가면라이더 W FOREVER A to Z (~44화 부근, 최종전 직전)"}, {"t": "ep", "d": "45화 ~ 49화"}, {"t": "movie", "d": "가면라이더 × 가면라이더 OOO & W feat. 스컬 MOVIE 대전 CORE (W 후일담 파트)"}, {"t": "special", "d": "가면라이더 액셀 (V시네마)"}, {"t": "special", "d": "가면라이더 이터널 (V시네마)"}], "仮面ライダーOOO": [{"t": "ep", "d": "1화 ~ 48화 (가면라이더 오즈)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 OOO & W MOVIE 대전 CORE (오즈 본편 진행 중)"}, {"t": "movie", "d": "극장판 가면라이더 오즈 WONDERFUL 장군과 21개의 코어메달 (2011)"}, {"t": "special", "d": "가면라이더 오즈 최종화 디렉터즈컷판"}, {"t": "movie", "d": "가면라이더 × 가면라이더 포제 & OOO MEGA MAX (오즈 후일담+포제 ~14·15화 사이)"}, {"t": "special", "d": "가면라이더 오즈 10th 부활의 코어메달 (2022)"}], "仮面ライダーフォーゼ": [{"t": "ep", "d": "1화 ~ 14화"}, {"t": "movie", "d": "가면라이더 × 가면라이더 포제 & OOO MEGA MAX (~14·15화 사이)"}, {"t": "ep", "d": "15화 ~ 48화"}, {"t": "movie", "d": "극장판 가면라이더 포제 EVERYONE, SPACE IS HERE! (2012)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 위자드 & 포제 ULTIMATUM (포제 5년 후 = 후일담)"}], "仮面ライダーウィザード": [{"t": "ep", "d": "1화 ~ 52화 (52~53화에 가이무 선행등장)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 위자드 & 포제 ULTIMATUM (위자드 초반)"}, {"t": "movie", "d": "극장판 가면라이더 위자드 IN MAGIC LAND (2013, 별도 세계)"}, {"t": "ep", "d": "53화 (특별편)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 가이무 & 위자드 MOVIE 대합전 (위자드 후일담)"}], "仮面ライダー鎧武": [{"t": "movie", "d": "가면라이더 × 가면라이더 가이무 & 위자드 MOVIE 대합전 (가이무 초반)"}, {"t": "ep", "d": "1화 ~ 47화 (가면라이더 가이무)"}, {"t": "special", "d": "열차전대 토큐저 VS 가면라이더 가이무 봄방학 합체 스페셜"}, {"t": "movie", "d": "극장판 가면라이더 가이무 사커 대결전! (2014)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 드라이브 & 가이무 MOVIE 대전 풀 스로틀 (가이무 완결 후)"}, {"t": "special", "d": "가면라이더 가이무 외전 (너클 등 V시네마)"}], "仮面ライダードライブ": [{"t": "ep", "d": "1화 ~ 9화"}, {"t": "movie", "d": "가면라이더 × 가면라이더 드라이브 & 가이무 MOVIE 대전 풀 스로틀 (~9·10화 사이)"}, {"t": "ep", "d": "10화 ~ 48화"}, {"t": "special", "d": "수리검전대 닌닌저 VS 가면라이더 드라이브 봄방학 합체 스페셜"}, {"t": "movie", "d": "극장판 가면라이더 드라이브 서프라이즈 퓨처 (2015)"}, {"t": "movie", "d": "가면라이더 × 가면라이더 고스트 & 드라이브 초 MOVIE 대전 제네시스 (드라이브 후일담)"}, {"t": "special", "d": "드라이브 사가 체이서/마하+하트 (V시네마)"}], "仮面ライダーゴースト": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "movie", "d": "가면라이더 × 가면라이더 고스트 & 드라이브 초 MOVIE 대전 제네시스 (고스트 초반)"}, {"t": "movie", "d": "극장판 가면라이더 고스트 100개의 아이콘 (2016)"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 Dr. 팩맨 (고스트 후일담+에그제이드 초반)"}, {"t": "special", "d": "가면라이더 스펙터 RE:BIRTH (V시네마)"}], "仮面ライダーエグゼイド": [{"t": "ep", "d": "1화 ~ 44화"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 Dr. 팩맨 (에그제이드 초반)"}, {"t": "ep", "d": "45화"}, {"t": "movie", "d": "극장판 가면라이더 에그제이드 트루 엔딩 (45화 직후, 진정한 결말)"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 FINAL (트루엔딩 1주 후+빌드 ~14·15화 사이)"}, {"t": "special", "d": "에그제이드 트릴로지 어나더 엔딩 3편 (V시네마)"}], "仮面ライダービルド": [{"t": "ep", "d": "1화 ~ 14화"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 FINAL (~14·15화 사이)"}, {"t": "ep", "d": "15화 ~ 45화"}, {"t": "movie", "d": "극장판 가면라이더 빌드 Be The One (~45·46화 사이)"}, {"t": "ep", "d": "46화 ~ 49화"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 FOREVER (빌드 이후/크로즈 전일담+지오 ~16·17화)"}, {"t": "special", "d": "빌드 NEW WORLD 크로즈/그리스 (V시네마)"}], "仮面ライダージオウ": [{"t": "ep", "d": "1화 ~ 16화"}, {"t": "movie", "d": "가면라이더 헤이세이 제너레이션즈 FOREVER (~16·17화 부근)"}, {"t": "ep", "d": "17화 ~ 39화"}, {"t": "movie", "d": "극장판 가면라이더 지오우 Over Quartzer (~39·40화 사이)"}, {"t": "ep", "d": "40화 ~ 49화"}, {"t": "movie", "d": "가면라이더 레이와 더 퍼스트 제너레이션 (지오 후일담+제로원 초반)"}, {"t": "special", "d": "RIDER TIME 류키/시노비/디케이드 (스핀오프)"}], "仮面ライダーゼロワン": [{"t": "ep", "d": "1화 ~ 45화"}, {"t": "movie", "d": "가면라이더 레이와 더 퍼스트 제너레이션 (제로원 초반)"}, {"t": "movie", "d": "극장판 가면라이더 제로원 REAL×TIME (2020.12, 본편 이후 진정한 최종화)"}, {"t": "special", "d": "제로원 Others 멸망미라이키/발칸&발키리 (V시넥스트)"}], "仮面ライダーセイバー": [{"t": "ep", "d": "1화 ~ 9화"}, {"t": "movie", "d": "극장 단편 불사조의 검사 & 가면라이더 1호 (~9·11화 사이, 제로원 극장판 동시상영)"}, {"t": "ep", "d": "10화 ~ 47화 (+증간호)"}, {"t": "movie", "d": "세이버 + 젠카이저 슈퍼히어로 전기 (2021.7, KR 50주년)"}, {"t": "movie", "d": "가면라이더 비욘드 제네레이션즈 (세이버 후일담+리바이스 본편 중)"}, {"t": "special", "d": "세이버 심죄의 트리오 (V시넥스트)"}], "仮面ライダーリバイス": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "movie", "d": "가면라이더 비욘드 제네레이션즈 (리바이스 본편 중)"}, {"t": "movie", "d": "극장판 가면라이더 리바이스 배틀 패밀리아 (2022)"}, {"t": "movie", "d": "가면라이더 기츠 × 리바이스 MOVIE 배틀 로얄 (리바이스 이후+기츠 ~15·16화 사이)"}, {"t": "special", "d": "리바이스 레거시 베일 (프리퀄 V시넥스트)"}, {"t": "special", "d": "리바이스 Forward 라이브&에빌/데몬즈 (V시넥스트)"}], "仮面ライダーギーツ": [{"t": "ep", "d": "1화 ~ 15화"}, {"t": "movie", "d": "가면라이더 기츠 × 리바이스 MOVIE 배틀 로얄 (~15·16화 사이)"}, {"t": "ep", "d": "16화 ~ 49화"}, {"t": "movie", "d": "극장판 가면라이더 기츠 4에이스와 검은 여우 (2023)"}, {"t": "movie", "d": "가면라이더 WINTER MOVIE (기츠 최종화 이후+갓챠드 ~15·16화 사이)"}, {"t": "special", "d": "기츠 쟈마토 어웨이킹 (완결편 V시넥스트)"}], "仮面ライダーガッチャード": [{"t": "ep", "d": "1화 ~ 15화"}, {"t": "movie", "d": "가면라이더 WINTER MOVIE (~15·16화 사이, 16화에 후속 반영)"}, {"t": "ep", "d": "16화 ~ 49화"}, {"t": "movie", "d": "극장판 가면라이더 갓챠드 THE FUTURE DAYBREAK (2024)"}, {"t": "special", "d": "가면라이더 갓챠드 최종화 디렉터즈컷판"}, {"t": "special", "d": "GRADUATIONS (V시넥스트)"}], "仮面ライダーガヴ": [{"t": "ep", "d": "본편 방영중 (2024~2025)"}, {"t": "movie", "d": "극장판 가면라이더 가브 과자집의 침략자/길티 파르페 (2025 여름 예정)"}], "仮面ライダーゼッツ": [{"t": "ep", "d": "본편 (2025.9~ 예정, 전 세계 동시 방영)"}], "仮面ライダーアマゾンズ Season1": [{"t": "ep", "d": "시즌1: 1화 ~ 13화 (2016, Amazon Prime)"}, {"t": "ep", "d": "시즌2: 1화 ~ 13화 (2017)"}, {"t": "movie", "d": "극장판 아마존즈 Season1 각성 (2018 총집편)"}, {"t": "movie", "d": "극장판 아마존즈 Season2 윤회 (2018 총집편)"}, {"t": "movie", "d": "아마존즈 THE MOVIE 최후의 심판 (2018)"}], "仮面ライダーアマゾンズ Season2": [{"t": "ep", "d": "시즌2: 1화 ~ 13화 (2017)"}, {"t": "movie", "d": "극장판 아마존즈 Season2 윤회 (2018 총집편)"}, {"t": "movie", "d": "아마존즈 THE MOVIE 최후의 심판 (2018)"}], "仮面ライダーBLACK SUN": [{"t": "ep", "d": "1화 ~ 10화 (2022, Amazon Prime)"}], "シン・仮面ライダー": [{"t": "movie", "d": "신 가면라이더 (2023, 안노 히데아키 감독 극장판)"}], "仮面ライダー1号": [{"t": "movie", "d": "가면라이더 1호 (2016, 극장판)"}], "宇宙刑事ギャバン": [{"t": "ep", "d": "1화 ~ 44화"}, {"t": "movie", "d": "극장판 우주형사 갸반 (1983 토에이 만화축제)"}, {"t": "movie", "d": "우주형사 갸반 THE MOVIE (2012, 2대 갸반)"}], "宇宙刑事シャリバン": [{"t": "ep", "d": "1화 ~ 51화 (최종화에 갸반 게스트)"}, {"t": "special", "d": "우주형사 샤리반 NEXT GENERATION (2014 V시네마, 2대 샤리반)"}], "宇宙刑事シャイダー": [{"t": "ep", "d": "1화 ~ 49화"}, {"t": "movie", "d": "극장판 우주형사 샤이더 (1984)"}, {"t": "movie", "d": "극장판 우주형사 샤이더 추적! 시기시기 유괴단 (1984)"}, {"t": "special", "d": "우주형사 샤이더 NEXT GENERATION (2014 V시네마, 2대 샤이더)"}], "巨獣特捜ジャスピオン": [{"t": "ep", "d": "1화 ~ 46화"}], "時空戦士スピルバン": [{"t": "ep", "d": "1화 ~ 44화"}], "超人機メタルダー": [{"t": "ep", "d": "1화 ~ 39화 (예산이 BLACK에 투입되어 단축)"}, {"t": "movie", "d": "극장판 초인기 메탈더 (1987 토에이 만화축제)"}], "世界忍者戦ジライヤ": [{"t": "ep", "d": "1화 ~ 50화"}], "機動刑事ジバン": [{"t": "ep", "d": "1화 ~ 52화"}, {"t": "movie", "d": "극장판 기동형사 지반 (1989)"}], "特警ウインスペクター": [{"t": "ep", "d": "1화 ~ 49화 (레스큐 폴리스 시리즈 1탄)"}], "特救指令ソルブレイン": [{"t": "ep", "d": "1화 ~ 53화 (레스큐 폴리스 시리즈 2탄)"}], "特捜エクシードラフト": [{"t": "ep", "d": "1화 ~ 49화 (레스큐 폴리스 시리즈 3탄)"}], "特捜ロボジャンパーソン": [{"t": "ep", "d": "1화 ~ 50화"}, {"t": "movie", "d": "극장판 특수로보 잔퍼슨 (1993)"}], "ブルースワット": [{"t": "ep", "d": "1화 ~ 51화"}, {"t": "movie", "d": "극장판 블루 스왓 (1994)"}], "重甲ビーファイター": [{"t": "ep", "d": "1화 ~ 53화 (비 파이터 시리즈 1탄)"}, {"t": "movie", "d": "극장판 중갑 비파이터 (1995)"}], "ビーファイターカブト": [{"t": "ep", "d": "1화 ~ 50화 (비 파이터 시리즈 2탄)"}], "ビーロボカブタック": [{"t": "ep", "d": "1화 ~ 52화"}, {"t": "movie", "d": "비로보 카부탁 크리스마스 대결전!! (1997)"}], "テツワン探偵ロボタック": [{"t": "ep", "d": "1화 ~ 45화 (메탈 히어로 시리즈 최종작)"}, {"t": "movie", "d": "철완탐정 로보탁 & 카부탁 이상한 나라의 대모험 (1998)"}], "超宇宙刑事ギャバン∞(インフィニティ)": [{"t": "special", "d": "초우주형사 갸반 인피니티 초제작발표 (사전특번)"}, {"t": "ep", "d": "본편 방영중 (2026~, PROJECT R.E.D. 1탄)"}]};
+
+const TAG_LABELS = { ep: '본편', movie: '극장판', special: '스페셜', vs: 'VS' };
+
+function toggleTimeline() {
+  const toggle = document.getElementById('timelineToggle');
+  const list = document.getElementById('timelineList');
+  const isOpen = toggle.classList.toggle('open');
+  list.classList.toggle('open', isOpen);
+  document.getElementById('timelineLabel').textContent = isOpen ? '시청순서 닫기' : '시청순서 보기';
+}
+
+function showTimeline(item) {
+  const section = document.getElementById('timelineSection');
+  const list = document.getElementById('timelineList');
+  const toggle = document.getElementById('timelineToggle');
+  const events = TIMELINE[item.jp];
+
+  if (!events || !events.length) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  toggle.classList.remove('open');
+  list.classList.remove('open');
+  document.getElementById('timelineLabel').textContent = `시청순서 보기 (${events.length})`;
+
+  list.innerHTML = events.map((e, i) =>
+    `<div class="tl-item">
+      <span class="tl-num">${i + 1}</span>
+      <span class="tl-tag ${e.t}">${TAG_LABELS[e.t]}</span>
+      <span class="tl-desc">${e.d}</span>
+    </div>`
+  ).join('');
+}
+
+// === FANDOM LOGO MAP ===
+const LOGO_IMG = {
+  "秘密戦隊ゴレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/4/47/Gorenger_Logo.png/revision/latest?cb=20241119120344",
+  "ジャッカー電撃隊": "https://static.wikia.nocookie.net/powerrangers/images/1/1d/JAKQ_Logo.png/revision/latest?cb=20241120202656",
+  "バトルフィーバーJ": "https://static.wikia.nocookie.net/powerrangers/images/a/a9/Battle_Fever_J_Logo.png/revision/latest?cb=20241120043026",
+  "電子戦隊デンジマン": "https://static.wikia.nocookie.net/powerrangers/images/0/0d/Denziman_Logo.png/revision/latest?cb=20241120043029",
+  "太陽戦隊サンバルカン": "https://static.wikia.nocookie.net/powerrangers/images/b/b2/Sun_Vulcan_Logo.png/revision/latest?cb=20241114203955",
+  "科学戦隊ダイナマン": "https://static.wikia.nocookie.net/powerrangers/images/2/27/Dynaman_Logo.png/revision/latest?cb=20241119120349",
+  "超電子バイオマン": "https://static.wikia.nocookie.net/powerrangers/images/e/e2/Bioman_Logo.png/revision/latest?cb=20241120043031",
+  "電撃戦隊チェンジマン": "https://static.wikia.nocookie.net/powerrangers/images/9/91/Changeman_Logo.png/revision/latest?cb=20241114203953",
+  "超新星フラッシュマン": "https://static.wikia.nocookie.net/powerrangers/images/a/a2/Flashman_Logo.png/revision/latest?cb=20241114204001",
+  "光戦隊マスクマン": "https://static.wikia.nocookie.net/powerrangers/images/7/7a/Maskman_Logo.png/revision/latest?cb=20241120043034",
+  "超獣戦隊ライブマン": "https://static.wikia.nocookie.net/powerrangers/images/9/95/Liveman_Logo.png/revision/latest?cb=20241113000929",
+  "高速戦隊ターボレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/5/56/Turboranger_Logo.png/revision/latest?cb=20241126082924",
+  "地球戦隊ファイブマン": "https://static.wikia.nocookie.net/powerrangers/images/2/28/Fiveman_Logo.png/revision/latest?cb=20241120043239",
+  "鳥人戦隊ジェットマン": "https://static.wikia.nocookie.net/powerrangers/images/2/2b/Jetman_Logo.png/revision/latest?cb=20240912042302",
+  "恐竜戦隊ジュウレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/6/6b/Zyuranger_Logo.png/revision/latest?cb=20220221154640",
+  "五星戦隊ダイレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/f/f3/Dairanger_Logo.png/revision/latest?cb=20241120043243",
+  "忍者戦隊カクレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/4/43/Kakuranger_Logo.png/revision/latest?cb=20241120043246",
+  "超力戦隊オーレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/8/88/Ohranger_Logo.png/revision/latest?cb=20250304010734",
+  "激走戦隊カーレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/b/b3/Carranger_Logo.png/revision/latest?cb=20241120211646",
+  "電磁戦隊メガレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/5/5f/Megaranger_Logo.png/revision/latest?cb=20241120043250",
+  "星獣戦隊ギンガマン": "https://static.wikia.nocookie.net/powerrangers/images/4/4e/Gingaman_Logo.png/revision/latest?cb=20241114203927",
+  "救急戦隊ゴーゴーファイブ": "https://static.wikia.nocookie.net/powerrangers/images/d/d8/GoGoFive_Logo.png/revision/latest?cb=20241113133829",
+  "未来戦隊タイムレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/2/20/Timeranger_Logo.png/revision/latest?cb=20241120043252",
+  "百獣戦隊ガオレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/6/60/Gaoranger_Logo.png/revision/latest?cb=20241119123924",
+  "忍風戦隊ハリケンジャー": "https://static.wikia.nocookie.net/powerrangers/images/d/d4/Hurricaneger_Logo.png/revision/latest?cb=20241120093405",
+  "爆竜戦隊アバレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/1/1c/Abaranger_Logo.png/revision/latest?cb=20241113001048",
+  "特捜戦隊デカレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/6/63/Dekaranger_Logo.png/revision/latest?cb=20241113004148",
+  "魔法戦隊マジレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/9/90/Magiranger_Logo.png/revision/latest?cb=20241113133827",
+  "轟轟戦隊ボウケンジャー": "https://static.wikia.nocookie.net/powerrangers/images/2/20/Boukenger_Logo.png/revision/latest?cb=20241112014519",
+  "獣拳戦隊ゲキレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/d/d6/Gekiranger_Logo.png/revision/latest?cb=20241113001046",
+  "炎神戦隊ゴーオンジャー": "https://static.wikia.nocookie.net/powerrangers/images/8/85/Go-Onger_Logo.png/revision/latest?cb=20241120043301",
+  "侍戦隊シンケンジャー": "https://static.wikia.nocookie.net/powerrangers/images/0/05/Shinkenger_Logo.png/revision/latest?cb=20241113001044",
+  "天装戦隊ゴセイジャー": "https://static.wikia.nocookie.net/powerrangers/images/f/f1/Goseiger_Logo.png/revision/latest?cb=20241120213819",
+  "海賊戦隊ゴーカイジャー": "https://static.wikia.nocookie.net/powerrangers/images/3/34/Gokaiger_Logo.png/revision/latest?cb=20141206194912",
+  "特命戦隊ゴーバスターズ": "https://static.wikia.nocookie.net/powerrangers/images/d/db/Go-Busters_Logo.png/revision/latest?cb=20191108022146",
+  "獣電戦隊キョウリュウジャー": "https://static.wikia.nocookie.net/powerrangers/images/2/21/Kyoryuger_Logo.png/revision/latest?cb=20241110091938",
+  "烈車戦隊トッキュウジャー": "https://static.wikia.nocookie.net/powerrangers/images/3/33/ToQger_Logo.png/revision/latest?cb=20241110090910",
+  "手裏剣戦隊ニンニンジャー": "https://static.wikia.nocookie.net/powerrangers/images/c/cf/Ninninger_Logo.png/revision/latest?cb=20250115025605",
+  "動物戦隊ジュウオウジャー": "https://static.wikia.nocookie.net/powerrangers/images/c/ce/Zyuohger_Logo.png/revision/latest?cb=20250115024522",
+  "宇宙戦隊キュウレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/1/16/Kyuranger_Logo.png/revision/latest?cb=20250115024519",
+  "快盗戦隊ルパンレンジャーVS警察戦隊パトレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/d/df/Lupinranger_VS_Patranger_Logo.png/revision/latest?cb=20241110083914",
+  "4週連続スペシャル スーパー戦隊最強バトル!!": "https://static.wikia.nocookie.net/powerrangers/images/3/30/Super_Sentai_Strongest_Battle_Logo.png/revision/latest?cb=20190224005613",
+  "騎士竜戦隊リュウソウジャー": "https://static.wikia.nocookie.net/powerrangers/images/5/59/Ryusoulger_Logo.png/revision/latest?cb=20230328161231",
+  "魔進戦隊キラメイジャー": "https://static.wikia.nocookie.net/powerrangers/images/b/b0/Kiramager_Logo.png/revision/latest?cb=20250115111159",
+  "機界戦隊ゼンカイジャー": "https://static.wikia.nocookie.net/powerrangers/images/3/31/Zenkaiger_Logo.png/revision/latest?cb=20240914075814",
+  "暴太郎戦隊ドンブラザーズ": "https://static.wikia.nocookie.net/powerrangers/images/8/8c/Donbrothers_Logo.png/revision/latest?cb=20250115105226",
+  "王様戦隊キングオージャー": "https://static.wikia.nocookie.net/powerrangers/images/e/eb/King-Ohger_Logo.png/revision/latest?cb=20240307012345",
+  "爆上戦隊ブンブンジャー": "https://static.wikia.nocookie.net/powerrangers/images/c/c0/Boonboomger_Logo.png/revision/latest?cb=20240218014339",
+  "非公認戦隊アキバレンジャー": "https://static.wikia.nocookie.net/powerrangers/images/2/24/Akibaranger_Logo.png/revision/latest?cb=20230602093215",
+  "非公認戦隊アキバレンジャー シーズン痛": "https://static.wikia.nocookie.net/powerrangers/images/1/10/Akibaranger_Season_Tsuu_Logo.png/revision/latest?cb=20230602093217",
+  "獣電戦隊キョウリュウジャーブレイブ": "https://static.wikia.nocookie.net/powerrangers/images/f/f1/Dino_Force_Brave_Logo.png/revision/latest?cb=20170511205920",
+  "仮面ライダー": "https://static.wikia.nocookie.net/kamenrider/images/2/25/Kamen_Rider_Logo.png/revision/latest?cb=20200613192227",
+  "仮面ライダーV3": "https://static.wikia.nocookie.net/kamenrider/images/7/79/Kamen_Rider_V3_Logo.png/revision/latest?cb=20200613192643",
+  "仮面ライダーX": "https://static.wikia.nocookie.net/kamenrider/images/a/a9/Kamen_Rider_X_Logo.png/revision/latest?cb=20200613192340",
+  "仮面ライダーアマゾン": "https://static.wikia.nocookie.net/kamenrider/images/d/d3/Kamen_Rider_Amazon_Logo.png/revision/latest?cb=20200613192357",
+  "仮面ライダーストロンガー": "https://static.wikia.nocookie.net/kamenrider/images/1/15/Kamen_Rider_Stronger_Logo.png/revision/latest?cb=20200613192406",
+  "仮面ライダースーパー1": "https://static.wikia.nocookie.net/kamenrider/images/6/6f/Kamen_Rider_Super-1_Logo.png/revision/latest?cb=20200613192431",
+  "仮面ライダーZX": "https://static.wikia.nocookie.net/kamenrider/images/1/1c/Kamen_Rider_ZX_Logo.png/revision/latest?cb=20200613193038",
+  "仮面ライダーBLACK": "https://static.wikia.nocookie.net/kamenrider/images/3/37/Kamen_Rider_Black_Logo.png/revision/latest?cb=20200613192441",
+  "仮面ライダーBLACK RX": "https://static.wikia.nocookie.net/kamenrider/images/1/1f/Kamen_Rider_Black_RX_Logo.png/revision/latest?cb=20200613192451",
+  "真・仮面ライダー 序章": "https://static.wikia.nocookie.net/kamenrider/images/e/ec/Shin_Kamen_Rider_Prologue_Logo.png/revision/latest?cb=20200613193022",
+  "仮面ライダーZO": "https://static.wikia.nocookie.net/kamenrider/images/3/3d/Kamen_Rider_ZO_Logo.png/revision/latest?cb=20200613193028",
+  "仮面ライダーJ": "https://static.wikia.nocookie.net/kamenrider/images/1/19/Kamen_Rider_J_Logo.png/revision/latest?cb=20200613193033",
+  "仮面ライダー THE FIRST": "https://static.wikia.nocookie.net/kamenrider/images/c/c5/Kamen_Rider_The_First_Logo.png/revision/latest?cb=20240817002421",
+  "仮面ライダー THE NEXT": "https://static.wikia.nocookie.net/kamenrider/images/6/6d/Kamen_Rider_The_Next_Logo.png/revision/latest?cb=20200613194104",
+  "仮面ライダークウガ": "https://static.wikia.nocookie.net/kamenrider/images/b/b1/Kamen_Rider_Kuuga_Logo.png/revision/latest?cb=20180807133234",
+  "仮面ライダーアギト": "https://static.wikia.nocookie.net/kamenrider/images/7/7d/Kamen_Rider_Agito_Logo.png/revision/latest?cb=20180807133350",
+  "仮面ライダー龍騎": "https://static.wikia.nocookie.net/kamenrider/images/5/54/Kamen_Rider_Ryuki_Logo.png/revision/latest?cb=20180807133526",
+  "仮面ライダー555": "https://static.wikia.nocookie.net/kamenrider/images/3/37/Kamen_Rider_555_Logo.png/revision/latest?cb=20180807133612",
+  "仮面ライダー剣": "https://static.wikia.nocookie.net/kamenrider/images/2/29/Kamen_Rider_Blade_Logo.png/revision/latest?cb=20180807133814",
+  "仮面ライダー響鬼": "https://static.wikia.nocookie.net/kamenrider/images/1/1a/Kamen_Rider_Hibiki_Logo.png/revision/latest?cb=20240821110108",
+  "仮面ライダーカブト": "https://static.wikia.nocookie.net/kamenrider/images/a/ae/Kamen_Rider_Kabuto_Logo.png/revision/latest?cb=20180807133912",
+  "仮面ライダー電王": "https://static.wikia.nocookie.net/kamenrider/images/c/c8/Kamen_Rider_Den-O_Logo.png/revision/latest?cb=20180807134113",
+  "仮面ライダーキバ": "https://static.wikia.nocookie.net/kamenrider/images/8/81/Kamen_Rider_Kiva_Logo.png/revision/latest?cb=20180807134128",
+  "仮面ライダーディケイド": "https://static.wikia.nocookie.net/kamenrider/images/0/09/Kamen_Rider_Decade_Logo.png/revision/latest?cb=20180807134206",
+  "仮面ライダーW": "https://static.wikia.nocookie.net/kamenrider/images/2/2b/Kamen_Rider_W_Logo.png/revision/latest?cb=20180807134536",
+  "仮面ライダーOOO": "https://static.wikia.nocookie.net/kamenrider/images/0/03/Kamen_Rider_OOO_Logo.png/revision/latest?cb=20240829170919",
+  "仮面ライダーフォーゼ": "https://static.wikia.nocookie.net/kamenrider/images/e/e7/Kamen_Rider_Fourze_Logo.png/revision/latest?cb=20250405092304",
+  "仮面ライダーウィザード": "https://static.wikia.nocookie.net/kamenrider/images/b/b6/Kamen_Rider_Wizard_Logo.png/revision/latest?cb=20240901171528",
+  "仮面ライダー鎧武": "https://static.wikia.nocookie.net/kamenrider/images/9/9f/Kamen_Rider_Gaim_Logo.png/revision/latest?cb=20240828150051",
+  "仮面ライダードライブ": "https://static.wikia.nocookie.net/kamenrider/images/b/ba/Kamen_Rider_Drive_Logo.png/revision/latest?cb=20240831164852",
+  "仮面ライダーゴースト": "https://static.wikia.nocookie.net/kamenrider/images/1/1e/Kamen_Rider_Ghost_Logo.png/revision/latest?cb=20251231172339",
+  "仮面ライダーエグゼイド": "https://static.wikia.nocookie.net/kamenrider/images/b/be/Kamen_Rider_Ex-Aid_Logo.png/revision/latest?cb=20180807134817",
+  "仮面ライダービルド": "https://static.wikia.nocookie.net/kamenrider/images/3/31/Kamen_Rider_Build_Logo.png/revision/latest?cb=20180807134842",
+  "仮面ライダージオウ": "https://static.wikia.nocookie.net/kamenrider/images/e/ee/Kamen_Rider_Zi-O_Logo.png/revision/latest?cb=20180807134901",
+  "仮面ライダーゼロワン": "https://static.wikia.nocookie.net/kamenrider/images/5/5f/Kamen_Rider_Zero-One_Logo.png/revision/latest?cb=20190717163041",
+  "仮面ライダーセイバー": "https://static.wikia.nocookie.net/kamenrider/images/b/b7/Kamen_Rider_Saber_Logo.png/revision/latest?cb=20210623194024",
+  "仮面ライダーリバイス": "https://static.wikia.nocookie.net/kamenrider/images/8/8d/Kamen_Rider_Revice_Logo.png/revision/latest?cb=20211202032346",
+  "仮面ライダーギーツ": "https://static.wikia.nocookie.net/kamenrider/images/a/a8/Kamen_Rider_Geats_Logo.png/revision/latest?cb=20220731065820",
+  "仮面ライダーガッチャード": "https://static.wikia.nocookie.net/kamenrider/images/5/5e/Kamen_Rider_Gotchard_Logo.png/revision/latest?cb=20230720220609",
+  "仮面ライダーガヴ": "https://static.wikia.nocookie.net/kamenrider/images/f/f8/Kamen_Rider_Gavv_Logo.png/revision/latest?cb=20240630225129",
+  "仮面ライダーゼッツ": "https://static.wikia.nocookie.net/kamenrider/images/e/e6/Kamen_Rider_Zeztz_Logo.png/revision/latest?cb=20251124233426",
+  "仮面ライダーアマゾンズ Season1": "https://static.wikia.nocookie.net/kamenrider/images/1/1f/Kamen_Rider_Amazons_Logo.png/revision/latest?cb=20221021061928",
+  "仮面ライダーアマゾンズ Season2": "https://static.wikia.nocookie.net/kamenrider/images/0/05/Kamen_Rider_Amazons_Season_2_Logo.png/revision/latest?cb=20240830174434",
+  "仮面ライダーBLACK SUN": "https://static.wikia.nocookie.net/kamenrider/images/3/3b/Kamen_Rider_Black_Sun_Logo.png/revision/latest?cb=20210403030340",
+  "宇宙刑事ギャバン": "https://static.wikia.nocookie.net/metalheroes/images/6/6b/Space_Sheriff_Gavan_Logo.png/revision/latest?cb=20250528112250",
+  "宇宙刑事シャリバン": "https://static.wikia.nocookie.net/metalheroes/images/e/e7/Space_Sheriff_Sharivan_Logo.png/revision/latest?cb=20250528112457",
+  "宇宙刑事シャイダー": "https://static.wikia.nocookie.net/metalheroes/images/1/15/Space_Sheriff_Shaider_Logo.png/revision/latest?cb=20250528114300",
+  "時空戦士スピルバン": "https://static.wikia.nocookie.net/metalheroes/images/7/7b/Zikusensi_Spielban_Logo.png/revision/latest?cb=20250528115500",
+  "超人機メタルダー": "https://static.wikia.nocookie.net/metalheroes/images/2/2d/Choujinki_Metalder_Logo.png/revision/latest?cb=20250528115744",
+  "特警ウインスペクター": "https://static.wikia.nocookie.net/metalheroes/images/2/24/Winspector_Logo.png/revision/latest?cb=20240608123225",
+  "特救指令ソルブレイン": "https://static.wikia.nocookie.net/metalheroes/images/7/74/Super_Rescue_Solbrain_Logo.png/revision/latest?cb=20241201161245",
+  "特捜エクシードラフト": "https://static.wikia.nocookie.net/metalheroes/images/e/e7/Exceedraft_Logo.png/revision/latest?cb=20230813223119",
+  "特捜ロボジャンパーソン": "https://static.wikia.nocookie.net/metalheroes/images/6/66/Tokusou_Robo_Janperson_Logo.png/revision/latest?cb=20241201160824",
+  "テツワン探偵ロボタック": "https://static.wikia.nocookie.net/metalheroes/images/8/8d/Tetsuwan_Tantei_Robotack_Logo.png/revision/latest?cb=20230827092432",
+  "超宇宙刑事ギャバン∞(インフィニティ)": "https://static.wikia.nocookie.net/project-red/images/0/01/Super_Space_Sheriff_Gavan_Infinity_Logo.png/revision/latest?cb=20251225160501",
+  "大戦隊ゴーグルファイブ": "https://static.wikia.nocookie.net/powerrangers/images/0/0a/Goggle-V_Logo.png",
+  "No.1戦隊ゴジュージャー": "https://static.wikia.nocookie.net/powerrangers/images/3/3a/Gozyuger_Logo.png",
+  "新・仮面ライダー(スカイライダー)": "https://static.wikia.nocookie.net/kamenrider/images/4/44/Kamen_Rider_%28Skyrider%29_Logo.png",
+  "巨獣特捜ジャスピオン": "https://static.wikia.nocookie.net/metalheroes/images/0/06/MegaBeast_Investigator_Juspion_Logo.png",
+  "世界忍者戦ジライヤ": "https://static.wikia.nocookie.net/metalheroes/images/4/4b/Sekaininjasen_Jiraiya_Logo.png",
+  "機動刑事ジバン": "https://static.wikia.nocookie.net/metalheroes/images/1/1a/The_Mobile_Cop_Jiban_Logo.png",
+  "ブルースワット": "https://static.wikia.nocookie.net/metalheroes/images/c/c6/Blueswat_Logo.png",
+  "重甲ビーファイター": "https://static.wikia.nocookie.net/metalheroes/images/f/f4/Jyuko_Beetle_Fighter_Logo.png",
+  "ビーファイターカブト": "https://static.wikia.nocookie.net/metalheroes/images/3/30/Beetle_Fighter_Kabuto_Logo.png",
+  "ビーロボカブタック": "https://static.wikia.nocookie.net/metalheroes/images/b/b7/Beetle_Robot_Kabutack_Logo.png",
+};
+
+// === LOGO DISPLAY ===
+function getCatColor(cat) {
+  const s = getComputedStyle(document.documentElement);
+  const map = {
+    sentai: s.getPropertyValue('--cat-sentai').trim(),
+    rider: s.getPropertyValue('--cat-rider').trim(),
+    metal: s.getPropertyValue('--cat-metal').trim(),
+    project: s.getPropertyValue('--cat-project').trim()
+  };
+  return map[cat] || '#888';
+}
+
+function generatePoster(item) {
+  const wrap = document.getElementById('posterWrap');
+  wrap.style.display = 'flex';
+  wrap.innerHTML = '';
+
+  const url = LOGO_IMG[item.jp];
+  if (url) {
+    const img = document.createElement('img');
+    img.className = 'poster-img';
+    img.alt = item.name;
+    img.referrerPolicy = 'no-referrer';
+    img.src = url;
+    img.onload = () => img.classList.add('loaded');
+    img.onerror = () => { wrap.innerHTML = makeFallback(item); };
+    wrap.appendChild(img);
+  } else {
+    wrap.innerHTML = makeFallback(item);
+  }
+}
+
+function makeFallback(item) {
+  const col = getCatColor(item.cat);
+  return `<div style="width:240px;height:160px;border-radius:10px;
+    background:linear-gradient(135deg,${col}22,#0a0a14);
+    border:1px solid ${col}44;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:8px;padding:16px;text-align:center">
+    <div style="color:${col};font-size:1.2rem;font-weight:900">${item.jp}</div>
+    <div style="color:rgba(255,255,255,0.3);font-size:0.7rem">${item.year}</div>
+  </div>`;
+}
+
+function addHistory(item) {
+  if (historyArr.length >= 10) historyArr.pop();
+  historyArr.unshift(item);
+
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+  historyArr.forEach(h => {
+    const chip = document.createElement('span');
+    chip.className = 'history-chip';
+    chip.textContent = h.name;
+    list.appendChild(chip);
+  });
+}
+
+
+
+
+initFilters();
+initReel();
+</script>
+</body>
+</html>
