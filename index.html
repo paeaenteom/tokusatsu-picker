@@ -374,6 +374,49 @@
   .spin-btn:active { transform: translateY(0); }
   .spin-btn.spinning { pointer-events: none; animation: pulse-btn 0.5s ease infinite; }
 
+  .norepeat-row {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: -4px; margin-bottom: 8px;
+  }
+  .norepeat-toggle {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; color: rgba(255,255,255,0.4);
+    cursor: pointer; user-select: none;
+  }
+  .norepeat-toggle input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 32px; height: 18px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px; position: relative;
+    cursor: pointer; transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .norepeat-toggle input[type="checkbox"]::after {
+    content: ''; position: absolute;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%; transition: all 0.3s;
+  }
+  .norepeat-toggle input[type="checkbox"]:checked {
+    background: var(--primary);
+  }
+  .norepeat-toggle input[type="checkbox"]:checked::after {
+    left: 16px; background: #fff;
+  }
+  .norepeat-count {
+    font-size: 0.65rem; color: rgba(255,255,255,0.3);
+    font-family: 'Zen Dots', sans-serif;
+  }
+  .norepeat-reset {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5); border-radius: 50%;
+    width: 24px; height: 24px; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .norepeat-reset:hover { background: rgba(var(--primary-rgb),0.2); color: var(--primary); }
+
   @keyframes pulse-btn {
     0%, 100% { box-shadow: 0 0 20px rgba(var(--primary-rgb),0.3); }
     50% { box-shadow: 0 0 40px rgba(var(--primary-rgb),0.6); }
@@ -745,6 +788,15 @@
   </button>
 </div>
 
+<div class="norepeat-row">
+  <label class="norepeat-toggle">
+    <input type="checkbox" id="noRepeatMode" onchange="toggleNoRepeat()">
+    <span id="noRepeatLabel">중복 방지</span>
+  </label>
+  <span class="norepeat-count" id="noRepeatCount"></span>
+  <button class="norepeat-reset" id="noRepeatReset" onclick="resetPicked()" style="display:none" title="Reset">↺</button>
+</div>
+
 <div class="list-panel" id="listPanel">
   <div class="list-inner">
     <input type="text" class="list-search" id="listSearch" placeholder="작품명 검색 (한글 / 일본어 / 영어)" oninput="renderList()">
@@ -826,6 +878,9 @@ const I18N = {
     epUnit: '화',
     ttfc: 'TTFCで見る',
     ttfcApp: 'PC앱으로 열기',
+    noRepeat: '중복 방지',
+    noRepeatCount: '{p}/{t}',
+    noRepeatDone: '전부 뽑았습니다! 리셋하세요',
     timelineOpen: '시청순서 보기',
     timelineClose: '시청순서 닫기',
     historyTitle: '뽑기 기록',
@@ -851,6 +906,9 @@ const I18N = {
     epUnit: 'ep',
     ttfc: 'Watch on TTFC',
     ttfcApp: 'Open in PC App',
+    noRepeat: 'No Repeat',
+    noRepeatCount: '{p}/{t}',
+    noRepeatDone: 'All picked! Please reset',
     timelineOpen: 'Viewing Order',
     timelineClose: 'Close Order',
     historyTitle: 'PICK HISTORY',
@@ -876,6 +934,9 @@ const I18N = {
     epUnit: '話',
     ttfc: 'TTFCで見る',
     ttfcApp: 'PCアプリで開く',
+    noRepeat: '重複防止',
+    noRepeatCount: '{p}/{t}',
+    noRepeatDone: '全て選びました！リセットしてください',
     timelineOpen: '視聴順序を見る',
     timelineClose: '視聴順序を閉じる',
     historyTitle: 'ピック履歴',
@@ -926,6 +987,8 @@ function applyLang() {
   const ttfcEl = document.querySelector('.ttfc-link');
   if (ttfcEl && ttfcEl.lastChild) ttfcEl.lastChild.textContent = ' ' + t('ttfc');
   document.getElementById('ttfcModeLabel').textContent = t('ttfcApp');
+  document.getElementById('noRepeatLabel').textContent = t('noRepeat');
+  updateNoRepeatUI();
   // History title
   document.querySelector('.history-title').textContent = t('historyTitle');
   // Rebuild filters, stats, list, reel
@@ -1253,6 +1316,52 @@ function uncheckAll() {
   saveChecked(); updateFilterCounts(); updateStats(); initReel(); renderList();
 }
 
+// === NO REPEAT ===
+let noRepeatMode = false;
+let pickedShows = new Set();
+
+(function() {
+  try {
+    noRepeatMode = localStorage.getItem('toku_norepeat') === 'true';
+    const saved = localStorage.getItem('toku_picked');
+    if (saved) pickedShows = new Set(JSON.parse(saved));
+  } catch(e) {}
+  const cb = document.getElementById('noRepeatMode');
+  if (cb) cb.checked = noRepeatMode;
+})();
+
+function toggleNoRepeat() {
+  noRepeatMode = document.getElementById('noRepeatMode').checked;
+  try { localStorage.setItem('toku_norepeat', noRepeatMode); } catch(e) {}
+  updateNoRepeatUI();
+  initReel();
+}
+
+function updateNoRepeatUI() {
+  const countEl = document.getElementById('noRepeatCount');
+  const resetBtn = document.getElementById('noRepeatReset');
+  if (!noRepeatMode) {
+    countEl.textContent = '';
+    resetBtn.style.display = 'none';
+    return;
+  }
+  const filtered = getFiltered();
+  const remaining = filtered.filter(d => !pickedShows.has(d.jp));
+  countEl.textContent = t('noRepeatCount').replace('{p}', pickedShows.size).replace('{t}', filtered.length);
+  resetBtn.style.display = pickedShows.size > 0 ? '' : 'none';
+}
+
+function resetPicked() {
+  pickedShows.clear();
+  try { localStorage.setItem('toku_picked', '[]'); } catch(e) {}
+  updateNoRepeatUI();
+  initReel();
+}
+
+function savePicked() {
+  try { localStorage.setItem('toku_picked', JSON.stringify([...pickedShows])); } catch(e) {}
+}
+
 // === REEL ===
 function initReel() {
   const reel = document.getElementById('reel');
@@ -1283,6 +1392,19 @@ function spin() {
   const filtered = getFiltered();
   if (!filtered.length) return;
 
+  // No-repeat: filter out already picked
+  let pool = filtered;
+  if (noRepeatMode) {
+    pool = filtered.filter(d => !pickedShows.has(d.jp));
+    if (!pool.length) {
+      // All picked — show message
+      const btn = document.getElementById('spinBtn');
+      btn.textContent = t('noRepeatDone');
+      setTimeout(() => { btn.textContent = t('henshin'); }, 2000);
+      return;
+    }
+  }
+
   spinning = true;
   const btn = document.getElementById('spinBtn');
   const reel = document.getElementById('reel');
@@ -1295,7 +1417,7 @@ function spin() {
   const itemH = window.innerWidth <= 480 ? 54 : 64;
   const windowH = window.innerWidth <= 480 ? 180 : 220;
   const totalItems = 40 + Math.floor(Math.random() * 20);
-  const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+  const chosen = pool[Math.floor(Math.random() * pool.length)];
 
   reel.innerHTML = '';
   const items = [];
@@ -1335,6 +1457,13 @@ function spin() {
 
     showResult(chosen);
     addHistory(chosen);
+
+    // No-repeat tracking
+    if (noRepeatMode) {
+      pickedShows.add(chosen.jp);
+      savePicked();
+      updateNoRepeatUI();
+    }
 
     spinning = false;
     btn.classList.remove('spinning');
