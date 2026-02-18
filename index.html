@@ -539,6 +539,40 @@
   }
   .ttfc-link svg { width: 16px; height: 16px; fill: currentColor; }
 
+  .ttfc-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 10px;
+  }
+  .ttfc-mode-toggle {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.65rem; color: rgba(255,255,255,0.35);
+    cursor: pointer; user-select: none;
+    white-space: nowrap;
+  }
+  .ttfc-mode-toggle input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 32px; height: 18px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px; position: relative;
+    cursor: pointer; transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .ttfc-mode-toggle input[type="checkbox"]::after {
+    content: ''; position: absolute;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+  .ttfc-mode-toggle input[type="checkbox"]:checked {
+    background: var(--primary);
+  }
+  .ttfc-mode-toggle input[type="checkbox"]:checked::after {
+    left: 16px;
+    background: #fff;
+  }
+
   /* === LOGO === */
   .poster-wrap {
     width: 100%; display: flex; justify-content: center; margin-bottom: 20px;
@@ -726,10 +760,16 @@
     <div class="card-title" id="cardTitle"></div>
     <div class="card-title-jp" id="cardTitleJp"></div>
     <div class="card-meta" id="cardMeta"></div>
-    <a class="ttfc-link" id="ttfcLink" href="https://tokusatsu-fc.jp/" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24"><path d="M21 3H3a2 2 0 00-2 2v14a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3 3.5-4.5L19 15H5z"/></svg>
-      TTFCで見る
-    </a>
+    <div class="ttfc-row">
+      <a class="ttfc-link" id="ttfcLink" href="https://tokusatsu-fc.jp/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M21 3H3a2 2 0 00-2 2v14a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3 3.5-4.5L19 15H5z"/></svg>
+        TTFCで見る
+      </a>
+      <label class="ttfc-mode-toggle">
+        <input type="checkbox" id="ttfcAppMode" onchange="toggleTtfcMode()">
+        <span id="ttfcModeLabel">PC App</span>
+      </label>
+    </div>
     <div class="timeline-section" id="timelineSection" style="display:none">
       <button class="timeline-toggle" id="timelineToggle" onclick="toggleTimeline()">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -785,6 +825,7 @@ const I18N = {
     episodes: '에피소드',
     epUnit: '화',
     ttfc: 'TTFCで見る',
+    ttfcApp: 'PC앱으로 열기',
     timelineOpen: '시청순서 보기',
     timelineClose: '시청순서 닫기',
     historyTitle: '뽑기 기록',
@@ -809,6 +850,7 @@ const I18N = {
     episodes: 'Episodes',
     epUnit: 'ep',
     ttfc: 'Watch on TTFC',
+    ttfcApp: 'Open in PC App',
     timelineOpen: 'Viewing Order',
     timelineClose: 'Close Order',
     historyTitle: 'PICK HISTORY',
@@ -833,6 +875,7 @@ const I18N = {
     episodes: 'エピソード',
     epUnit: '話',
     ttfc: 'TTFCで見る',
+    ttfcApp: 'PCアプリで開く',
     timelineOpen: '視聴順序を見る',
     timelineClose: '視聴順序を閉じる',
     historyTitle: 'ピック履歴',
@@ -882,6 +925,7 @@ function applyLang() {
   // TTFC link
   const ttfcEl = document.querySelector('.ttfc-link');
   if (ttfcEl && ttfcEl.lastChild) ttfcEl.lastChild.textContent = ' ' + t('ttfc');
+  document.getElementById('ttfcModeLabel').textContent = t('ttfcApp');
   // History title
   document.querySelector('.history-title').textContent = t('historyTitle');
   // Rebuild filters, stats, list, reel
@@ -1311,13 +1355,19 @@ function showResult(item) {
   if (item.ep) metaHtml += `<span><span class="label">${t('episodes')}</span> ${item.ep}${t('epUnit')}</span>`;
   document.getElementById('cardMeta').innerHTML = metaHtml;
 
-  // TTFC link — use Japanese title for PC site search
+  // TTFC link — use app protocol or web URL
   const ttfcLink = document.getElementById('ttfcLink');
+  const useApp = document.getElementById('ttfcAppMode').checked;
+  ttfcLink.target = useApp ? '_self' : '_blank';
   if (item.ttfcId) {
-    ttfcLink.href = `https://pc.tokusatsu-fc.jp/contents?contentId=${item.ttfcId}&contentType=0`;
+    ttfcLink.href = useApp
+      ? `ttfc://show/${item.ttfcId}`
+      : `https://pc.tokusatsu-fc.jp/contents?contentId=${item.ttfcId}&contentType=0`;
     ttfcLink.style.display = '';
   } else {
-    ttfcLink.href = `https://pc.tokusatsu-fc.jp/search?keyword=${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`;
+    ttfcLink.href = useApp
+      ? `ttfc://search/${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`
+      : `https://pc.tokusatsu-fc.jp/search?keyword=${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`;
     ttfcLink.style.display = '';
   }
 
@@ -1331,6 +1381,34 @@ const TIMELINE = {"秘密戦隊ゴレンジャー": [{"t": "ep", "d": "1화 ~ 36
 
 function getTagLabels() {
   return { ep: t('tagEp'), movie: t('tagMovie'), special: t('tagSpecial'), vs: t('tagVs') };
+}
+
+// === TTFC APP MODE ===
+let ttfcAppMode = false;
+(function() {
+  try { ttfcAppMode = localStorage.getItem('toku_ttfc_app') === 'true'; } catch(e) {}
+  const cb = document.getElementById('ttfcAppMode');
+  if (cb) cb.checked = ttfcAppMode;
+})();
+
+function toggleTtfcMode() {
+  const cb = document.getElementById('ttfcAppMode');
+  ttfcAppMode = cb.checked;
+  try { localStorage.setItem('toku_ttfc_app', ttfcAppMode); } catch(e) {}
+  // Re-apply link if result card is showing
+  if (window._lastResult) {
+    const item = window._lastResult;
+    const ttfcLink = document.getElementById('ttfcLink');
+    if (item.ttfcId) {
+      ttfcLink.href = ttfcAppMode
+        ? `ttfc://show/${item.ttfcId}`
+        : `https://pc.tokusatsu-fc.jp/contents?contentId=${item.ttfcId}&contentType=0`;
+    } else {
+      ttfcLink.href = ttfcAppMode
+        ? `ttfc://search/${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`
+        : `https://pc.tokusatsu-fc.jp/search?keyword=${encodeURIComponent(item.jp.replace(/[()（）]/g, ' ').trim())}`;
+    }
+  }
 }
 
 function toggleTimeline() {
