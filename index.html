@@ -744,6 +744,69 @@
     .lang-toggle { top: 10px; left: 10px; }
     .lang-opt { padding: 6px 8px; font-size: 0.65rem; }
   }
+
+  /* === ADMIN PANEL === */
+  .admin-btn{position:fixed;bottom:16px;right:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15);font-size:16px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
+  .admin-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
+  .admin-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);overflow-y:auto;padding:20px}
+  .admin-overlay.show{display:block}
+  .admin-panel{max-width:920px;margin:0 auto;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px}
+  .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+  .admin-header h2{font-size:1.15rem;color:var(--primary);margin:0;font-family:'Zen Dots',sans-serif}
+  .admin-close{background:none;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.78rem}
+  .admin-close:hover{background:rgba(255,255,255,0.08)}
+  .admin-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .admin-tab{padding:6px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:.73rem;transition:all .2s}
+  .admin-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .admin-search{width:100%;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.82rem;margin-bottom:10px;outline:none;box-sizing:border-box}
+  .admin-search:focus{border-color:var(--primary)}
+  .admin-list{display:flex;flex-direction:column;gap:5px;max-height:50vh;overflow-y:auto;padding-right:4px}
+  .admin-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid rgba(255,255,255,0.05);font-size:.76rem;transition:all .2s}
+  .admin-item:hover{border-color:rgba(var(--primary-rgb),0.25);background:rgba(255,255,255,0.035)}
+  .ai-cat{font-size:.6rem;padding:2px 8px;border-radius:10px;background:rgba(var(--primary-rgb),0.12);color:var(--primary);white-space:nowrap;flex-shrink:0}
+  .ai-name{flex:1;color:#fff;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ai-jp{color:rgba(255,255,255,0.3);font-size:.68rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ai-year{color:rgba(255,255,255,0.25);font-size:.68rem;width:75px;text-align:center;flex-shrink:0}
+  .ai-btns{display:flex;gap:4px;flex-shrink:0}
+  .ai-btns button{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:none;color:rgba(255,255,255,0.45);cursor:pointer;font-size:.68rem;transition:all .2s}
+  .ai-edit:hover{color:#4fc3f7;border-color:#4fc3f7}
+  .ai-del:hover{color:#ef5350;border-color:#ef5350}
+  .admin-form{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-bottom:14px}
+  .admin-form h3{font-size:.88rem;color:var(--primary);margin:0 0 12px}
+  .af-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .af-field{display:flex;flex-direction:column;gap:4px}
+  .af-field.full{grid-column:1/-1}
+  .af-field label{font-size:.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px}
+  .af-field input,.af-field select{padding:8px 10px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.78rem;outline:none;box-sizing:border-box}
+  .af-field input:focus,.af-field select:focus{border-color:var(--primary)}
+  .af-field select option{background:#12121f}
+  .af-btns{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+  .af-btns button{padding:8px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.78rem;font-weight:600}
+  .af-save{background:var(--primary);color:#fff}
+  .af-save:hover{opacity:.85}
+  .af-cancel{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
+  .af-cancel:hover{background:rgba(255,255,255,0.12)}
+  .admin-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.05);flex-wrap:wrap}
+  .admin-actions button{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .2s}
+  .aa-push{background:#238636;color:#fff}
+  .aa-push:hover{background:#2ea043}
+  .aa-add{background:var(--primary);color:#fff}
+  .aa-add:hover{opacity:.85}
+  .aa-export{background:rgba(255,255,255,0.08);color:#fff}
+  .aa-export:hover{background:rgba(255,255,255,0.12)}
+  .admin-gh{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;margin-top:12px}
+  .admin-gh h4{font-size:.72rem;color:rgba(255,255,255,0.35);margin:0 0 10px}
+  .gh-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .gh-row input{flex:1;min-width:100px;padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.72rem;outline:none;box-sizing:border-box}
+  .gh-row input:focus{border-color:var(--primary)}
+  .admin-status{font-size:.73rem;color:rgba(255,255,255,0.35);margin-top:10px;text-align:center;min-height:1.2em}
+  .admin-status.ok{color:#4caf50}
+  .admin-status.err{color:#ef5350}
+  @media(max-width:600px){
+    .af-grid{grid-template-columns:1fr}
+    .ai-jp,.ai-year{display:none}
+    .admin-panel{padding:14px}
+  }
 </style>
 </head>
 <body>
@@ -839,6 +902,52 @@
 </div>
 
 <div class="stats-bar" id="statsBar"></div>
+
+<!-- ADMIN -->
+<button class="admin-btn" id="adminBtn" onclick="openAdmin()" title="Admin">⚙</button>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <div class="admin-header">
+      <h2>⚙ ADMIN</h2>
+      <button class="admin-close" onclick="closeAdmin()">✕ 닫기</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="adminTab('list')">📋 작품 목록</button>
+      <button class="admin-tab" onclick="adminTab('add')">➕ 새 작품</button>
+      <button class="admin-tab" onclick="adminTab('settings')">🔧 GitHub 설정</button>
+    </div>
+    <div id="adminTabList">
+      <input class="admin-search" id="adminSearch" placeholder="작품 검색..." oninput="renderAdminList()">
+      <div class="admin-list" id="adminList"></div>
+    </div>
+    <div id="adminTabAdd" style="display:none"></div>
+    <div id="adminTabSettings" style="display:none">
+      <div class="admin-gh">
+        <h4>🔗 GitHub 연동 (커밋 → Vercel 자동 배포)</h4>
+        <div class="gh-row">
+          <input id="ghOwner" placeholder="GitHub Username (예: goyubin)">
+          <input id="ghRepo" placeholder="Repository (예: tokusatsu-picker)">
+        </div>
+        <div class="gh-row">
+          <input id="ghPath" placeholder="파일 경로 (예: index.html)" value="index.html">
+        </div>
+        <div class="gh-row">
+          <input id="ghToken" type="password" placeholder="Personal Access Token (ghp_...)">
+        </div>
+        <div class="af-btns">
+          <button class="af-save" onclick="saveGHSettings()">💾 저장</button>
+        </div>
+      </div>
+    </div>
+    <div id="adminEditForm" style="display:none"></div>
+    <div class="admin-actions">
+      <button class="aa-add" onclick="adminTab('add')">➕ 새 작품 추가</button>
+      <button class="aa-push" onclick="pushToGitHub()">🚀 GitHub에 Push</button>
+      <button class="aa-export" onclick="exportJSON()">📥 JSON 내보내기</button>
+    </div>
+    <div class="admin-status" id="adminStatus"></div>
+  </div>
+</div>
 
 <script>
 // === THEME ===
@@ -1752,6 +1861,318 @@ function renderHistory() {
     list.appendChild(chip);
   });
 }
+
+
+
+
+// ==========================================
+//  ADMIN PANEL
+// ==========================================
+let adminEditIdx = -1; // -1 = new, 0+ = editing index
+
+function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('show');
+  loadGHSettings();
+  renderAdminList();
+  document.body.style.overflow = 'hidden';
+}
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function adminTab(tab) {
+  document.getElementById('adminTabList').style.display = tab === 'list' ? '' : 'none';
+  document.getElementById('adminTabAdd').style.display = tab === 'add' ? '' : 'none';
+  document.getElementById('adminTabSettings').style.display = tab === 'settings' ? '' : 'none';
+  document.getElementById('adminEditForm').style.display = 'none';
+  document.querySelectorAll('.admin-tab').forEach((b,i) => b.classList.toggle('active', ['list','add','settings'][i] === tab));
+  if (tab === 'add') showEditForm(-1);
+  if (tab === 'list') renderAdminList();
+  setAdminStatus('');
+}
+
+function renderAdminList() {
+  const q = (document.getElementById('adminSearch').value || '').toLowerCase();
+  const catNames = {sentai:'전대',rider:'라이더',metal:'메탈',project:'R.E.D.'};
+  let html = '';
+  DATA.forEach((d,i) => {
+    if (q && !d.name.toLowerCase().includes(q) && !d.jp.toLowerCase().includes(q) && !(d.en||'').toLowerCase().includes(q)) return;
+    html += `<div class="admin-item">
+      <span class="ai-cat">${catNames[d.cat]||d.cat}</span>
+      <span class="ai-name">${d.name}</span>
+      <span class="ai-jp">${d.jp}</span>
+      <span class="ai-year">${d.year}</span>
+      <span class="ai-btns">
+        <button class="ai-edit" onclick="editEntry(${i})">편집</button>
+        <button class="ai-del" onclick="deleteEntry(${i})">삭제</button>
+      </span>
+    </div>`;
+  });
+  document.getElementById('adminList').innerHTML = html || '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">검색 결과 없음</div>';
+}
+
+function showEditForm(idx) {
+  adminEditIdx = idx;
+  const d = idx >= 0 ? DATA[idx] : {name:'',en:'',jp:'',year:'',cat:'sentai',ep:null,ttfcId:null};
+  const logoUrl = idx >= 0 ? (LOGO_IMG[d.jp] || '') : '';
+  const title = idx >= 0 ? `✏️ 편집: ${d.name}` : '➕ 새 작품 추가';
+  const formTarget = idx >= 0 ? 'adminEditForm' : 'adminTabAdd';
+  
+  document.getElementById(formTarget).style.display = '';
+  document.getElementById(formTarget).innerHTML = `
+    <div class="admin-form">
+      <h3>${title}</h3>
+      <div class="af-grid">
+        <div class="af-field"><label>한국어 이름 *</label><input id="afName" value="${esc(d.name)}" placeholder="가면라이더 히비키"></div>
+        <div class="af-field"><label>영어 이름</label><input id="afEn" value="${esc(d.en||'')}" placeholder="Kamen Rider Hibiki"></div>
+        <div class="af-field"><label>일본어 이름 *</label><input id="afJp" value="${esc(d.jp)}" placeholder="仮面ライダー響鬼"></div>
+        <div class="af-field"><label>방영 연도 *</label><input id="afYear" value="${esc(d.year)}" placeholder="2005-2006"></div>
+        <div class="af-field"><label>카테고리 *</label>
+          <select id="afCat">
+            <option value="sentai" ${d.cat==='sentai'?'selected':''}>슈퍼 전대</option>
+            <option value="rider" ${d.cat==='rider'?'selected':''}>가면라이더</option>
+            <option value="metal" ${d.cat==='metal'?'selected':''}>메탈 히어로</option>
+            <option value="project" ${d.cat==='project'?'selected':''}>PROJECT R.E.D.</option>
+          </select>
+        </div>
+        <div class="af-field"><label>에피소드 수</label><input id="afEp" type="number" value="${d.ep||''}" placeholder="48"></div>
+        <div class="af-field"><label>TTFC ID</label><input id="afTtfc" type="number" value="${d.ttfcId||''}" placeholder="5534"></div>
+        <div class="af-field"><label>로고 이미지 URL</label><input id="afLogo" value="${esc(logoUrl)}" placeholder="https://...png"></div>
+      </div>
+      <div class="af-btns">
+        <button class="af-cancel" onclick="cancelEdit()">취소</button>
+        <button class="af-save" onclick="saveEntry()">💾 ${idx >= 0 ? '수정 저장' : '추가'}</button>
+      </div>
+    </div>`;
+}
+function esc(s) { return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function editEntry(i) {
+  adminTab('list');
+  document.getElementById('adminEditForm').style.display = '';
+  showEditForm(i);
+  document.getElementById('adminEditForm').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelEdit() {
+  document.getElementById('adminEditForm').style.display = 'none';
+  document.getElementById('adminTabAdd').style.display = 'none';
+  adminEditIdx = -1;
+}
+
+function saveEntry() {
+  const name = document.getElementById('afName').value.trim();
+  const en = document.getElementById('afEn').value.trim();
+  const jp = document.getElementById('afJp').value.trim();
+  const year = document.getElementById('afYear').value.trim();
+  const cat = document.getElementById('afCat').value;
+  const ep = document.getElementById('afEp').value ? parseInt(document.getElementById('afEp').value) : null;
+  const ttfcId = document.getElementById('afTtfc').value ? parseInt(document.getElementById('afTtfc').value) : null;
+  const logo = document.getElementById('afLogo').value.trim();
+  
+  if (!name || !jp || !year) { setAdminStatus('이름, 일본어명, 연도는 필수!', true); return; }
+  
+  const entry = { name, en: en || undefined, jp, year, cat, ep, ttfcId };
+  
+  if (adminEditIdx >= 0) {
+    // 기존 로고 키가 바뀌면 삭제
+    const oldJp = DATA[adminEditIdx].jp;
+    if (oldJp !== jp && LOGO_IMG[oldJp]) {
+      LOGO_IMG[jp] = LOGO_IMG[oldJp];
+      delete LOGO_IMG[oldJp];
+    }
+    DATA[adminEditIdx] = entry;
+    setAdminStatus(`✅ "${name}" 수정 완료 (Push해야 반영됨)`);
+  } else {
+    // 새 작품 → 같은 카테고리 마지막에 삽입
+    let insertIdx = DATA.length;
+    for (let i = DATA.length - 1; i >= 0; i--) {
+      if (DATA[i].cat === cat) { insertIdx = i + 1; break; }
+    }
+    DATA.splice(insertIdx, 0, entry);
+    setAdminStatus(`✅ "${name}" 추가 완료 (Push해야 반영됨)`);
+  }
+  
+  if (logo) LOGO_IMG[jp] = logo;
+  else if (!logo && LOGO_IMG[jp]) delete LOGO_IMG[jp];
+  
+  cancelEdit();
+  renderAdminList();
+  // 라이브 반영
+  initFilters();
+  initReel();
+}
+
+function deleteEntry(i) {
+  const d = DATA[i];
+  if (!confirm(`정말 "${d.name}" (${d.jp})을(를) 삭제하시겠습니까?`)) return;
+  if (LOGO_IMG[d.jp]) delete LOGO_IMG[d.jp];
+  DATA.splice(i, 1);
+  renderAdminList();
+  initFilters();
+  initReel();
+  setAdminStatus(`🗑️ "${d.name}" 삭제됨 (Push해야 반영됨)`);
+}
+
+// === GitHub 설정 ===
+function loadGHSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('toku_gh') || '{}');
+    document.getElementById('ghOwner').value = s.owner || '';
+    document.getElementById('ghRepo').value = s.repo || '';
+    document.getElementById('ghPath').value = s.path || 'index.html';
+    document.getElementById('ghToken').value = s.token || '';
+  } catch(e) {}
+}
+function saveGHSettings() {
+  const s = {
+    owner: document.getElementById('ghOwner').value.trim(),
+    repo: document.getElementById('ghRepo').value.trim(),
+    path: document.getElementById('ghPath').value.trim() || 'index.html',
+    token: document.getElementById('ghToken').value.trim()
+  };
+  localStorage.setItem('toku_gh', JSON.stringify(s));
+  setAdminStatus('✅ GitHub 설정 저장됨');
+}
+function getGH() {
+  try { return JSON.parse(localStorage.getItem('toku_gh') || '{}'); } catch(e) { return {}; }
+}
+
+// === GitHub Push ===
+async function pushToGitHub() {
+  const gh = getGH();
+  if (!gh.owner || !gh.repo || !gh.token) {
+    setAdminStatus('❌ GitHub 설정을 먼저 입력하세요!', true);
+    adminTab('settings');
+    return;
+  }
+  
+  setAdminStatus('⏳ GitHub에서 현재 파일 가져오는 중...');
+  
+  try {
+    const apiBase = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${gh.path}`;
+    const headers = { 'Authorization': `token ${gh.token}`, 'Accept': 'application/vnd.github.v3+json' };
+    
+    // 1. 현재 파일 가져오기 (sha 필요)
+    const getRes = await fetch(apiBase, { headers });
+    if (!getRes.ok) throw new Error(`GET 실패: ${getRes.status} ${getRes.statusText}`);
+    const fileData = await getRes.json();
+    const sha = fileData.sha;
+    const currentContent = atob(fileData.content.replace(/\n/g, ''));
+    
+    setAdminStatus('⏳ 파일 수정 중...');
+    
+    // 2. DATA 배열 교체
+    let newContent = replaceDataInFile(currentContent);
+    
+    // 3. LOGO_IMG 교체
+    newContent = replaceLogoInFile(newContent);
+    
+    setAdminStatus('⏳ GitHub에 Push 중...');
+    
+    // 4. 커밋
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `[Admin] 작품 데이터 업데이트 (${new Date().toLocaleString('ko-KR')})`,
+        content: btoa(unescape(encodeURIComponent(newContent))),
+        sha: sha
+      })
+    });
+    
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message || `PUT 실패: ${putRes.status}`);
+    }
+    
+    setAdminStatus('✅ Push 완료! Vercel이 자동으로 배포합니다 (1~2분 소요)');
+  } catch(e) {
+    setAdminStatus(`❌ 오류: ${e.message}`, true);
+    console.error('[Admin] Push failed:', e);
+  }
+}
+
+function replaceDataInFile(content) {
+  // DATA 배열 생성
+  const catOrder = ['sentai','rider','metal','project'];
+  const catComments = {
+    sentai: '  // ===== 슈퍼 전대 시리즈 =====',
+    rider: '  // ===== 가면라이더 시리즈 =====',
+    metal: '  // ===== 메탈 히어로 시리즈 =====',
+    project: '  // ===== PROJECT R.E.D. ====='
+  };
+  
+  let lines = ['const DATA = ['];
+  catOrder.forEach(cat => {
+    const items = DATA.filter(d => d.cat === cat);
+    if (items.length === 0) return;
+    lines.push(catComments[cat]);
+    items.forEach(d => {
+      let parts = [`name: ${JSON.stringify(d.name)}`];
+      if (d.en) parts.push(`en: ${JSON.stringify(d.en)}`);
+      parts.push(`jp: ${JSON.stringify(d.jp)}`);
+      parts.push(`year: ${JSON.stringify(d.year)}`);
+      parts.push(`cat: ${JSON.stringify(d.cat)}`);
+      parts.push(`ep: ${d.ep === null || d.ep === undefined ? 'null' : d.ep}`);
+      parts.push(`ttfcId: ${d.ttfcId === null || d.ttfcId === undefined ? 'null' : d.ttfcId}`);
+      lines.push(`  { ${parts.join(', ')} },`);
+    });
+  });
+  lines.push('];');
+  
+  const newData = lines.join('\n');
+  
+  // 기존 DATA 배열 치환 (const DATA = [ ... ];)
+  const dataRegex = /const DATA = \[[\s\S]*?\n\];/;
+  if (!dataRegex.test(content)) {
+    console.error('[Admin] DATA array not found in file');
+    return content;
+  }
+  return content.replace(dataRegex, newData);
+}
+
+function replaceLogoInFile(content) {
+  // LOGO_IMG 객체 생성
+  let lines = ['const LOGO_IMG = {'];
+  const entries = Object.entries(LOGO_IMG);
+  entries.forEach(([k, v], i) => {
+    const comma = i < entries.length - 1 ? ',' : ',';
+    lines.push(`  ${JSON.stringify(k)}: ${JSON.stringify(v)}${comma}`);
+  });
+  lines.push('};');
+  
+  const newLogo = lines.join('\n');
+  
+  const logoRegex = /const LOGO_IMG = \{[\s\S]*?\n\};/;
+  if (!logoRegex.test(content)) {
+    console.error('[Admin] LOGO_IMG not found in file');
+    return content;
+  }
+  return content.replace(logoRegex, newLogo);
+}
+
+// === Export ===
+function exportJSON() {
+  const data = { DATA: DATA, LOGO_IMG: LOGO_IMG };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tokusatsu-data.json';
+  a.click();
+  setAdminStatus('✅ JSON 다운로드 완료');
+}
+
+function setAdminStatus(msg, isErr) {
+  const el = document.getElementById('adminStatus');
+  el.textContent = msg;
+  el.className = 'admin-status' + (isErr ? ' err' : msg.includes('✅') ? ' ok' : '');
+}
+
+// ESC로 닫기
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('adminOverlay').classList.contains('show')) closeAdmin();
+});
 
 
 
