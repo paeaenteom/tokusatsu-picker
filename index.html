@@ -890,9 +890,9 @@
   .sync-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
   .sync-btn.connected{background:rgba(76,175,80,0.15);border-color:rgba(76,175,80,0.4);color:#4caf50;animation:syncPulse 2s infinite}
   @keyframes syncPulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0)}50%{box-shadow:0 0 0 4px rgba(76,175,80,0.15)}}
-  .sync-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);padding:20px;overflow-y:auto}
-  .sync-overlay.show{display:flex;align-items:flex-start;justify-content:center;padding-top:min(10vh,60px)}
-  .sync-popup{width:100%;max-width:440px;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px;animation:fadeIn .3s ease}
+  .sync-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .sync-overlay.show{display:block}
+  .sync-popup{width:100%;max-width:440px;margin:min(8vh,50px) auto;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px;animation:fadeIn .3s ease;position:relative}
   .sync-popup h2{font-size:1.05rem;color:var(--primary);margin:0 0 6px;font-family:'Zen Dots',sans-serif;display:flex;align-items:center;gap:8px}
   .sync-popup .sync-sub{font-size:.7rem;color:rgba(255,255,255,0.3);margin-bottom:18px}
   .sync-tabs{display:flex;gap:0;margin-bottom:16px;background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
@@ -901,7 +901,7 @@
   .sync-section{display:none}
   .sync-section.active{display:block}
   .sync-btns{display:flex;gap:8px;margin-top:14px}
-  .sync-btns button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+  .sync-btns button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .sync-gen{background:var(--primary);color:#fff}
   .sync-gen:hover{opacity:.85}
   .sync-import{background:#238636;color:#fff}
@@ -1094,7 +1094,7 @@
 <!-- SYNC -->
 <button class="sync-btn" id="syncFloatBtn" onclick="openSync()" title="Sync">🔗</button>
 <div class="sync-overlay" id="syncOverlay" onclick="if(event.target===this)closeSync()">
-  <div class="sync-popup" style="position:relative">
+  <div class="sync-popup">
     <button class="sync-close" onclick="closeSync()">✕</button>
     <h2>🔗 <span id="syncTitle">실시간 동기화</span></h2>
     <div class="sync-sub" id="syncSub">다른 기기와 실시간으로 데이터를 공유합니다</div>
