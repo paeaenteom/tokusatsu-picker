@@ -7,6 +7,8 @@
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZENzAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0UwMzAzMCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwQTBBMEYiLz4KICA8cGF0aCBkPSJNMzIgMTAgTDU0IDIyIEw1NCA0MiBMMzIgNTQgTDEwIDQyIEwxMCAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZykiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxwYXRoIGQ9Ik0yMiAyOCBMMzIgMTggTDQyIDI4IEw0MiAzOCBMMzggNDIgTDI2IDQyIEwyMiAzOCBaIiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyNiIgeT0iMjgiIHdpZHRoPSIxMiIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iIzBBMEEwRiIgb3BhY2l0eT0iMC44Ii8+Cjwvc3ZnPgo=">
 <title>東映特撮 ランダムピッカー</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Zen+Dots&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
   :root, [data-theme="sentai"] {
     --primary: #E03030;
@@ -840,12 +842,10 @@
     .sync-popup h2 { font-size: 0.95rem; }
     .sync-tabs { border-radius: 8px; }
     .sync-tab { font-size: 0.7rem; padding: 8px; }
-    .sync-code-area { font-size: 0.6rem; min-height: 80px; }
-    .sync-checklist { gap: 4px; }
-    .sync-check { font-size: 0.62rem; padding: 3px 8px; }
-    .sync-info-item { font-size: 0.65rem; padding: 5px 8px; }
-    .sync-info-item .si-val { font-size: 0.58rem; }
+    .sync-room-code { font-size: 1.4rem; letter-spacing: 4px; padding: 12px; }
+    .sync-room-input { font-size: 1.1rem; letter-spacing: 4px; padding: 12px; }
     .sync-btns button { font-size: 0.72rem; padding: 9px; }
+    .sync-fb-row input { font-size: 0.65rem; padding: 6px 8px; }
     .admin-overlay { padding: 10px; }
     .admin-panel { padding: 14px; border-radius: 12px; }
     .admin-header h2 { font-size: 0.95rem; }
@@ -888,6 +888,8 @@
   .admin-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
   .sync-btn{position:fixed;bottom:16px;right:58px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15);font-size:15px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
   .sync-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
+  .sync-btn.connected{background:rgba(76,175,80,0.15);border-color:rgba(76,175,80,0.4);color:#4caf50;animation:syncPulse 2s infinite}
+  @keyframes syncPulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0)}50%{box-shadow:0 0 0 4px rgba(76,175,80,0.15)}}
   .sync-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);padding:20px;overflow-y:auto}
   .sync-overlay.show{display:flex;align-items:flex-start;justify-content:center;padding-top:min(10vh,60px)}
   .sync-popup{width:100%;max-width:440px;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px;animation:fadeIn .3s ease}
@@ -898,29 +900,35 @@
   .sync-tab.active{background:var(--primary);color:#fff}
   .sync-section{display:none}
   .sync-section.active{display:block}
-  .sync-code-area{width:100%;min-height:100px;max-height:180px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.68rem;font-family:'Courier New',monospace;resize:vertical;outline:none;word-break:break-all;line-height:1.5;box-sizing:border-box}
-  .sync-code-area:focus{border-color:var(--primary)}
-  .sync-code-area::placeholder{color:rgba(255,255,255,0.15)}
-  .sync-info{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-  .sync-info-item{display:flex;justify-content:space-between;padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.02);font-size:.72rem}
-  .sync-info-item .si-label{color:rgba(255,255,255,0.35)}
-  .sync-info-item .si-val{color:var(--primary);font-weight:600;font-family:'Zen Dots',sans-serif;font-size:.65rem}
   .sync-btns{display:flex;gap:8px;margin-top:14px}
   .sync-btns button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
   .sync-gen{background:var(--primary);color:#fff}
   .sync-gen:hover{opacity:.85}
-  .sync-copy{background:rgba(255,255,255,0.08);color:#fff}
-  .sync-copy:hover{background:rgba(255,255,255,0.12)}
   .sync-import{background:#238636;color:#fff}
   .sync-import:hover{background:#2ea043}
+  .sync-disconnect{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3) !important}
+  .sync-disconnect:hover{background:rgba(239,83,80,0.25)}
   .sync-close{position:absolute;top:12px;right:12px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:4px 8px}
   .sync-close:hover{color:#fff}
   .sync-status{font-size:.73rem;margin-top:10px;text-align:center;min-height:1.2em;color:rgba(255,255,255,0.35)}
   .sync-status.ok{color:#4caf50}
   .sync-status.err{color:#ef5350}
-  .sync-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-  .sync-check{display:flex;align-items:center;gap:5px;font-size:.7rem;color:rgba(255,255,255,0.4);padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.02)}
-  .sync-check input{accent-color:var(--primary)}
+  .sync-room-code{font-family:'Zen Dots',monospace;font-size:1.8rem;letter-spacing:6px;text-align:center;color:var(--primary);padding:16px;background:rgba(var(--primary-rgb),0.06);border-radius:12px;border:1px dashed rgba(var(--primary-rgb),0.2);margin:12px 0;user-select:all;cursor:pointer}
+  .sync-room-input{width:100%;padding:14px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:1.3rem;font-family:'Zen Dots',monospace;letter-spacing:6px;text-align:center;outline:none;box-sizing:border-box;text-transform:uppercase}
+  .sync-room-input:focus{border-color:var(--primary)}
+  .sync-room-input::placeholder{font-size:.8rem;letter-spacing:2px;opacity:.3}
+  .sync-connected-box{background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.15);border-radius:12px;padding:16px;text-align:center}
+  .sync-connected-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:6px;animation:syncPulse 2s infinite}
+  .sync-connected-label{color:#4caf50;font-size:.82rem;font-weight:600}
+  .sync-connected-room{font-family:'Zen Dots',monospace;font-size:1.5rem;color:#fff;letter-spacing:4px;margin:8px 0}
+  .sync-connected-info{font-size:.68rem;color:rgba(255,255,255,0.3)}
+  .sync-fb-config{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;margin-top:4px}
+  .sync-fb-config h4{font-size:.72rem;color:rgba(255,255,255,0.35);margin:0 0 10px}
+  .sync-fb-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .sync-fb-row input{flex:1;min-width:100px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.72rem;outline:none;box-sizing:border-box}
+  .sync-fb-row input:focus{border-color:var(--primary)}
+  .sync-fb-save{background:var(--primary);color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:.75rem;font-weight:600}
+  .sync-fb-save:hover{opacity:.85}
   .admin-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);overflow-y:auto;padding:20px}
   .admin-overlay.show{display:block}
   .admin-panel{max-width:920px;margin:0 auto;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px}
@@ -1084,36 +1092,55 @@
 <div class="stats-bar" id="statsBar"></div>
 
 <!-- SYNC -->
-<button class="sync-btn" onclick="openSync()" title="Sync">🔗</button>
+<button class="sync-btn" id="syncFloatBtn" onclick="openSync()" title="Sync">🔗</button>
 <div class="sync-overlay" id="syncOverlay" onclick="if(event.target===this)closeSync()">
   <div class="sync-popup" style="position:relative">
     <button class="sync-close" onclick="closeSync()">✕</button>
-    <h2>🔗 <span id="syncTitle">기기 동기화</span></h2>
-    <div class="sync-sub" id="syncSub">설정과 기록을 다른 기기로 옮기세요</div>
+    <h2>🔗 <span id="syncTitle">실시간 동기화</span></h2>
+    <div class="sync-sub" id="syncSub">다른 기기와 실시간으로 데이터를 공유합니다</div>
     <div class="sync-tabs">
-      <button class="sync-tab active" onclick="syncTab('export')" id="syncTabExport">📤 코드 생성</button>
-      <button class="sync-tab" onclick="syncTab('import')" id="syncTabImport">📥 코드 입력</button>
+      <button class="sync-tab active" onclick="syncTab('connect')" id="syncTabConnect">🔗 연결</button>
+      <button class="sync-tab" onclick="syncTab('firebase')" id="syncTabFirebase">⚙ Firebase</button>
     </div>
-    <div class="sync-section active" id="syncExport">
-      <div class="sync-checklist" id="syncChecklist">
-        <label class="sync-check"><input type="checkbox" id="syncOptHistory" checked> <span id="syncLblHistory">뽑기 기록</span></label>
-        <label class="sync-check"><input type="checkbox" id="syncOptPicked" checked> <span id="syncLblPicked">중복방지 목록</span></label>
-        <label class="sync-check"><input type="checkbox" id="syncOptChecked" checked> <span id="syncLblChecked">체크한 작품</span></label>
-        <label class="sync-check"><input type="checkbox" id="syncOptSettings" checked> <span id="syncLblSettings">테마/언어 설정</span></label>
+    <!-- 연결 탭 -->
+    <div class="sync-section active" id="syncConnect">
+      <div id="syncNotConnected">
+        <div style="text-align:center;color:rgba(255,255,255,0.25);font-size:.75rem;margin-bottom:14px" id="syncConnectHint">방을 만들거나 코드를 입력해서 연결하세요</div>
+        <div class="sync-btns">
+          <button class="sync-gen" onclick="syncCreateRoom()">🏠 방 만들기</button>
+        </div>
+        <div style="text-align:center;color:rgba(255,255,255,0.15);font-size:.7rem;margin:14px 0 10px">— 또는 코드 입력 —</div>
+        <input class="sync-room-input" id="syncJoinInput" maxlength="6" placeholder="코드 입력" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+        <div class="sync-btns">
+          <button class="sync-import" onclick="syncJoinRoom()">🔗 참가하기</button>
+        </div>
       </div>
-      <div class="sync-info" id="syncInfo"></div>
-      <div class="sync-btns">
-        <button class="sync-gen" onclick="generateSyncCode()">🔑 코드 생성</button>
-      </div>
-      <textarea class="sync-code-area" id="syncExportCode" readonly placeholder="생성된 코드가 여기에 표시됩니다..." style="display:none"></textarea>
-      <div class="sync-btns" id="syncCopyRow" style="display:none">
-        <button class="sync-copy" onclick="copySyncCode()">📋 복사</button>
+      <div id="syncConnected" style="display:none">
+        <div class="sync-connected-box">
+          <div><span class="sync-connected-dot"></span><span class="sync-connected-label" id="syncConnLabel">실시간 연결됨</span></div>
+          <div class="sync-connected-room" id="syncConnRoom"></div>
+          <div class="sync-connected-info" id="syncConnInfo"></div>
+        </div>
+        <div class="sync-btns" style="margin-top:12px">
+          <button class="sync-gen" onclick="syncPushNow()">📤 지금 동기화</button>
+          <button class="sync-disconnect" onclick="syncDisconnect()">🔌 연결 해제</button>
+        </div>
       </div>
     </div>
-    <div class="sync-section" id="syncImport">
-      <textarea class="sync-code-area" id="syncImportCode" placeholder="다른 기기에서 생성한 코드를 여기에 붙여넣기..."></textarea>
-      <div class="sync-btns">
-        <button class="sync-import" onclick="importSyncCode()">📥 불러오기</button>
+    <!-- Firebase 설정 탭 -->
+    <div class="sync-section" id="syncFirebase">
+      <div class="sync-fb-config">
+        <h4>🔥 Firebase Realtime Database 설정</h4>
+        <div style="font-size:.62rem;color:rgba(255,255,255,0.25);margin-bottom:10px">Firebase Console → 프로젝트 → Realtime Database 생성 후 설정값 입력</div>
+        <div class="sync-fb-row">
+          <input id="fbApiKey" placeholder="API Key">
+        </div>
+        <div class="sync-fb-row">
+          <input id="fbDbUrl" placeholder="Database URL (https://xxx.firebaseio.com)">
+        </div>
+        <div style="text-align:right;margin-top:10px">
+          <button class="sync-fb-save" onclick="saveFBConfig()">💾 저장 및 연결</button>
+        </div>
       </div>
     </div>
     <div class="sync-status" id="syncStatus"></div>
@@ -1174,6 +1201,7 @@ function setTheme(t) {
   document.querySelectorAll('.theme-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.t === t);
   });
+  syncAutoPush();
 }
 (function() {
   let saved = 'sentai';
@@ -1207,20 +1235,26 @@ const I18N = {
     noRepeat: '중복 방지',
     noRepeatCount: '{p}/{t}',
     noRepeatDone: '전부 뽑았습니다! 리셋하세요',
+    emptyAll: '뽑을 수 있는 작품이 없습니다',
+    emptyChecked: '모든 작품을 시청 완료했습니다! 🎉',
+    emptyFilter: '선택한 필터에 작품이 없습니다',
     timelineOpen: '시청순서 보기',
     timelineClose: '시청순서 닫기',
     historyTitle: '뽑기 기록',
     historyBtn: '기록',
     historyClear: '🗑 전체 삭제',
     historyEmpty: '아직 뽑기 기록이 없습니다',
-    syncTitle: '기기 동기화', syncSub: '설정과 기록을 다른 기기로 옮기세요',
-    syncExport: '📤 코드 생성', syncImport: '📥 코드 입력',
-    syncHistory: '뽑기 기록', syncPicked: '중복방지 목록', syncChecked: '체크한 작품', syncSettings: '테마/언어 설정',
-    syncGenBtn: '🔑 코드 생성', syncCopyBtn: '📋 복사', syncImportBtn: '📥 불러오기',
-    syncCopied: '✅ 클립보드에 복사됨!', syncImported: '✅ 불러오기 완료! 페이지를 새로고침합니다...',
-    syncEmpty: '❌ 코드를 입력해주세요', syncInvalid: '❌ 유효하지 않은 코드입니다',
-    syncPlaceholderExport: '생성된 코드가 여기에 표시됩니다...',
-    syncPlaceholderImport: '다른 기기에서 생성한 코드를 여기에 붙여넣기...',
+    syncTitle: '실시간 동기화', syncSub: '다른 기기와 실시간으로 데이터를 공유합니다',
+    syncConnect: '🔗 연결', syncFirebase: '⚙ Firebase',
+    syncCreate: '🏠 방 만들기', syncJoin: '🔗 참가하기', syncPushNow: '📤 지금 동기화',
+    syncDisconnect: '🔌 연결 해제', syncHint: '방을 만들거나 코드를 입력해서 연결하세요',
+    syncOr: '— 또는 코드 입력 —', syncCodePlaceholder: '코드 입력',
+    syncConnected: '실시간 연결됨', syncDisconnected: '연결 해제됨',
+    syncRoomCreated: '방이 생성되었습니다! 코드를 다른 기기에 입력하세요',
+    syncJoined: '방에 참가했습니다! 데이터를 동기화하는 중...',
+    syncPushed: '✅ 동기화 완료!', syncNoRoom: '❌ 코드를 입력해주세요',
+    syncNoFB: '❌ Firebase 설정을 먼저 해주세요', syncRoomNotFound: '❌ 방을 찾을 수 없습니다',
+    syncFBSaved: '✅ Firebase 설정 저장됨',
     noResult: '검색 결과가 없습니다',
     tagEp: '본편', tagMovie: '극장판', tagSpecial: '스페셜', tagVs: 'VS'
   },
@@ -1246,20 +1280,26 @@ const I18N = {
     noRepeat: 'No Repeat',
     noRepeatCount: '{p}/{t}',
     noRepeatDone: 'All picked! Please reset',
+    emptyAll: 'No shows available to pick',
+    emptyChecked: 'All shows completed! 🎉',
+    emptyFilter: 'No shows in selected filters',
     timelineOpen: 'Viewing Order',
     timelineClose: 'Close Order',
     historyTitle: 'PICK HISTORY',
     historyBtn: 'History',
     historyClear: '🗑 Clear All',
     historyEmpty: 'No picks yet',
-    syncTitle: 'Device Sync', syncSub: 'Transfer settings and history to another device',
-    syncExport: '📤 Generate Code', syncImport: '📥 Enter Code',
-    syncHistory: 'Pick History', syncPicked: 'No-repeat List', syncChecked: 'Checked Shows', syncSettings: 'Theme/Language',
-    syncGenBtn: '🔑 Generate', syncCopyBtn: '📋 Copy', syncImportBtn: '📥 Import',
-    syncCopied: '✅ Copied to clipboard!', syncImported: '✅ Import complete! Reloading...',
-    syncEmpty: '❌ Please enter a code', syncInvalid: '❌ Invalid code',
-    syncPlaceholderExport: 'Generated code will appear here...',
-    syncPlaceholderImport: 'Paste code from another device here...',
+    syncTitle: 'Real-time Sync', syncSub: 'Share data with other devices in real-time',
+    syncConnect: '🔗 Connect', syncFirebase: '⚙ Firebase',
+    syncCreate: '🏠 Create Room', syncJoin: '🔗 Join', syncPushNow: '📤 Sync Now',
+    syncDisconnect: '🔌 Disconnect', syncHint: 'Create a room or enter a code to connect',
+    syncOr: '— or enter code —', syncCodePlaceholder: 'Enter code',
+    syncConnected: 'Connected', syncDisconnected: 'Disconnected',
+    syncRoomCreated: 'Room created! Share the code with your other device',
+    syncJoined: 'Joined room! Syncing data...',
+    syncPushed: '✅ Synced!', syncNoRoom: '❌ Please enter a code',
+    syncNoFB: '❌ Set up Firebase first', syncRoomNotFound: '❌ Room not found',
+    syncFBSaved: '✅ Firebase config saved',
     noResult: 'No results found',
     tagEp: 'EP', tagMovie: 'Movie', tagSpecial: 'Special', tagVs: 'VS'
   },
@@ -1285,20 +1325,26 @@ const I18N = {
     noRepeat: '重複防止',
     noRepeatCount: '{p}/{t}',
     noRepeatDone: '全て選びました！リセットしてください',
+    emptyAll: '選べる作品がありません',
+    emptyChecked: '全作品視聴完了！🎉',
+    emptyFilter: '選択したフィルターに作品がありません',
     timelineOpen: '視聴順序を見る',
     timelineClose: '視聴順序を閉じる',
     historyTitle: 'ピック履歴',
     historyBtn: '履歴',
     historyClear: '🗑 全削除',
     historyEmpty: 'まだ履歴がありません',
-    syncTitle: 'デバイス同期', syncSub: '設定と履歴を他のデバイスに移行',
-    syncExport: '📤 コード生成', syncImport: '📥 コード入力',
-    syncHistory: 'ピック履歴', syncPicked: '重複防止リスト', syncChecked: 'チェック済み', syncSettings: 'テーマ/言語',
-    syncGenBtn: '🔑 生成', syncCopyBtn: '📋 コピー', syncImportBtn: '📥 インポート',
-    syncCopied: '✅ コピーしました！', syncImported: '✅ インポート完了！リロードします...',
-    syncEmpty: '❌ コードを入力してください', syncInvalid: '❌ 無効なコードです',
-    syncPlaceholderExport: '生成されたコードがここに表示されます...',
-    syncPlaceholderImport: '他のデバイスで生成したコードをここに貼り付け...',
+    syncTitle: 'リアルタイム同期', syncSub: '他のデバイスとリアルタイムでデータを共有',
+    syncConnect: '🔗 接続', syncFirebase: '⚙ Firebase',
+    syncCreate: '🏠 ルーム作成', syncJoin: '🔗 参加', syncPushNow: '📤 今すぐ同期',
+    syncDisconnect: '🔌 切断', syncHint: 'ルームを作成するかコードを入力して接続',
+    syncOr: '— またはコード入力 —', syncCodePlaceholder: 'コード入力',
+    syncConnected: '接続中', syncDisconnected: '切断されました',
+    syncRoomCreated: 'ルーム作成完了！コードを他のデバイスに入力してください',
+    syncJoined: '参加しました！データを同期中...',
+    syncPushed: '✅ 同期完了！', syncNoRoom: '❌ コードを入力してください',
+    syncNoFB: '❌ Firebaseの設定が必要です', syncRoomNotFound: '❌ ルームが見つかりません',
+    syncFBSaved: '✅ Firebase設定保存完了',
     noResult: '検索結果がありません',
     tagEp: '本編', tagMovie: '劇場版', tagSpecial: 'スペシャル', tagVs: 'VS'
   }
@@ -1330,6 +1376,7 @@ function setLang(lang) {
     b.classList.toggle('active', b.dataset.l === lang);
   });
   applyLang();
+  syncAutoPush();
 }
 
 function applyLang() {
@@ -1543,6 +1590,7 @@ catch(e) { checkedShows = new Set(); }
 
 function saveChecked() {
   localStorage.setItem('toku_checked', JSON.stringify([...checkedShows]));
+  syncAutoPush();
 }
 
 function getFiltered() {
@@ -1718,10 +1766,12 @@ function resetPicked() {
   try { localStorage.setItem('toku_picked', '[]'); } catch(e) {}
   updateNoRepeatUI();
   initReel();
+  syncAutoPush();
 }
 
 function savePicked() {
   try { localStorage.setItem('toku_picked', JSON.stringify([...pickedShows])); } catch(e) {}
+  syncAutoPush();
 }
 
 // === REEL ===
@@ -1729,7 +1779,31 @@ function initReel() {
   const reel = document.getElementById('reel');
   const filtered = getFiltered();
   reel.innerHTML = '';
-  if (!filtered.length) return;
+
+  // 빈 상태 처리
+  if (!filtered.length) {
+    const allData = DATA.filter(d => activeFilters.has(d.cat));
+    let msg = t('emptyAll');
+    if (!allData.length) msg = t('emptyFilter');
+    else if (allData.length > 0 && allData.every(d => checkedShows.has(d.jp))) msg = t('emptyChecked');
+
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'slot-item center';
+    emptyDiv.style.cssText = 'color:rgba(255,255,255,0.25);font-size:0.8rem;font-family:"Noto Sans KR",sans-serif';
+    emptyDiv.textContent = msg;
+    reel.appendChild(emptyDiv);
+
+    const itemH = window.innerWidth <= 480 ? 54 : 64;
+    const windowH = window.innerWidth <= 480 ? 180 : 220;
+    reel.style.top = `${(windowH / 2) - (itemH * 0.5)}px`;
+
+    document.getElementById('spinBtn').disabled = true;
+    document.getElementById('spinBtn').style.opacity = '0.35';
+    return;
+  }
+
+  document.getElementById('spinBtn').disabled = false;
+  document.getElementById('spinBtn').style.opacity = '';
 
   const shuffled = [...filtered].sort(() => Math.random() - 0.5);
   const display = shuffled.slice(0, Math.min(5, shuffled.length));
@@ -1752,7 +1826,13 @@ function initReel() {
 function spin() {
   if (spinning) return;
   const filtered = getFiltered();
-  if (!filtered.length) return;
+  if (!filtered.length) {
+    const btn = document.getElementById('spinBtn');
+    btn.textContent = t('emptyAll');
+    btn.style.fontSize = '0.7rem';
+    setTimeout(() => { btn.textContent = t('henshin'); btn.style.fontSize = ''; }, 2000);
+    return;
+  }
 
   // No-repeat: filter out already picked
   let pool = filtered;
@@ -2104,6 +2184,7 @@ function addHistory(item) {
   if (historyArr.length > 50) historyArr = historyArr.slice(0, 50);
   try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
   renderHistory();
+  syncAutoPush();
 }
 
 function renderHistory() {
@@ -2163,6 +2244,7 @@ function clearHistory() {
   historyArr = [];
   try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
   renderHistory();
+  syncAutoPush();
 }
 
 // ESC로 히스토리 팝업 닫기
@@ -2178,16 +2260,43 @@ document.getElementById('historyOverlay').addEventListener('click', e => {
 
 
 // ==========================================
-//  DEVICE SYNC
+//  REAL-TIME SYNC (Firebase)
 // ==========================================
+var syncDB = null;
+var syncRoomRef = null;
+var syncRoomCode = null;
+var syncListener = null;
+var syncIgnoreNext = false;
+var syncApplying = false;
+
+function initFirebase() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+    if (!cfg.apiKey || !cfg.databaseURL) return false;
+    if (!firebase.apps.length) {
+      firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
+    }
+    syncDB = firebase.database();
+    // 자동 재연결
+    const savedRoom = localStorage.getItem('toku_sync_room');
+    if (savedRoom) {
+      syncRoomCode = savedRoom;
+      attachListener();
+      updateSyncUI(true);
+    }
+    return true;
+  } catch(e) {
+    console.error('[Sync] Firebase init error:', e);
+    return false;
+  }
+}
+
 function openSync() {
   document.getElementById('syncOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
   applySyncLang();
-  updateSyncInfo();
-  document.getElementById('syncExportCode').style.display = 'none';
-  document.getElementById('syncCopyRow').style.display = 'none';
-  document.getElementById('syncImportCode').value = '';
+  loadFBConfig();
+  updateSyncUI(!!syncRoomCode);
   setSyncStatus('');
 }
 function closeSync() {
@@ -2198,140 +2307,230 @@ function closeSync() {
   }
 }
 function syncTab(tab) {
-  document.getElementById('syncExport').classList.toggle('active', tab === 'export');
-  document.getElementById('syncImport').classList.toggle('active', tab === 'import');
-  document.getElementById('syncTabExport').classList.toggle('active', tab === 'export');
-  document.getElementById('syncTabImport').classList.toggle('active', tab === 'import');
+  document.getElementById('syncConnect').classList.toggle('active', tab === 'connect');
+  document.getElementById('syncFirebase').classList.toggle('active', tab === 'firebase');
+  document.getElementById('syncTabConnect').classList.toggle('active', tab === 'connect');
+  document.getElementById('syncTabFirebase').classList.toggle('active', tab === 'firebase');
   setSyncStatus('');
 }
 
 function applySyncLang() {
   document.getElementById('syncTitle').textContent = t('syncTitle');
   document.getElementById('syncSub').textContent = t('syncSub');
-  document.getElementById('syncTabExport').textContent = t('syncExport');
-  document.getElementById('syncTabImport').textContent = t('syncImport');
-  document.getElementById('syncExportCode').placeholder = t('syncPlaceholderExport');
-  document.getElementById('syncImportCode').placeholder = t('syncPlaceholderImport');
-  // Checklist labels
-  document.getElementById('syncLblHistory').textContent = t('syncHistory');
-  document.getElementById('syncLblPicked').textContent = t('syncPicked');
-  document.getElementById('syncLblChecked').textContent = t('syncChecked');
-  document.getElementById('syncLblSettings').textContent = t('syncSettings');
+  document.getElementById('syncTabConnect').textContent = t('syncConnect');
+  document.getElementById('syncTabFirebase').textContent = t('syncFirebase');
+  document.getElementById('syncConnectHint').textContent = t('syncHint');
+  document.getElementById('syncJoinInput').placeholder = t('syncCodePlaceholder');
+  document.getElementById('syncConnLabel').textContent = t('syncConnected');
 }
 
-function updateSyncInfo() {
-  const info = document.getElementById('syncInfo');
-  const hLen = historyArr.length;
-  const pLen = pickedShows.size;
-  const cLen = checkedShows.size;
-  info.innerHTML = `
-    <div class="sync-info-item"><span class="si-label">📋 ${t('syncHistory')}</span><span class="si-val">${hLen}건</span></div>
-    <div class="sync-info-item"><span class="si-label">🚫 ${t('syncPicked')}</span><span class="si-val">${pLen}건</span></div>
-    <div class="sync-info-item"><span class="si-label">✅ ${t('syncChecked')}</span><span class="si-val">${cLen}건</span></div>
-    <div class="sync-info-item"><span class="si-label">🎨 ${t('syncSettings')}</span><span class="si-val">${document.documentElement.dataset.theme || 'sentai'} / ${currentLang}</span></div>
-  `;
+function updateSyncUI(connected) {
+  document.getElementById('syncNotConnected').style.display = connected ? 'none' : '';
+  document.getElementById('syncConnected').style.display = connected ? '' : 'none';
+  document.getElementById('syncFloatBtn').classList.toggle('connected', connected);
+  if (connected && syncRoomCode) {
+    document.getElementById('syncConnRoom').textContent = syncRoomCode;
+    document.getElementById('syncConnInfo').textContent =
+      `마지막 동기화: ${new Date().toLocaleTimeString()}`;
+  }
 }
 
-function generateSyncCode() {
-  const data = { _v: 1 };
+function generateRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
 
-  if (document.getElementById('syncOptHistory').checked && historyArr.length > 0) {
-    data.h = historyArr;
-  }
-  if (document.getElementById('syncOptPicked').checked && pickedShows.size > 0) {
-    data.p = [...pickedShows];
-  }
-  if (document.getElementById('syncOptChecked').checked && checkedShows.size > 0) {
-    data.c = [...checkedShows];
-  }
-  if (document.getElementById('syncOptSettings').checked) {
-    data.s = {
+function gatherSyncData() {
+  return {
+    history: historyArr,
+    picked: [...pickedShows],
+    checked: [...checkedShows],
+    settings: {
       theme: document.documentElement.dataset.theme || 'sentai',
       lang: currentLang,
       ttfc: localStorage.getItem('toku_ttfc_app') === 'true',
       norepeat: localStorage.getItem('toku_norepeat') === 'true'
-    };
-  }
+    },
+    ts: Date.now()
+  };
+}
 
+function applySyncData(data) {
+  if (!data || syncIgnoreNext) { syncIgnoreNext = false; return; }
+  syncApplying = true;
+  // 히스토리
+  if (data.history && Array.isArray(data.history)) {
+    historyArr = data.history.slice(0, 50);
+    try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
+    renderHistory();
+  }
+  // 중복방지
+  if (data.picked && Array.isArray(data.picked)) {
+    pickedShows = new Set(data.picked);
+    localStorage.setItem('toku_picked', JSON.stringify(data.picked));
+    updateNoRepeatUI();
+  }
+  // 체크
+  if (data.checked && Array.isArray(data.checked)) {
+    checkedShows = new Set(data.checked);
+    saveChecked();
+    if (listOpen) renderList();
+  }
+  // 설정
+  if (data.settings) {
+    const s = data.settings;
+    if (s.theme && s.theme !== (document.documentElement.dataset.theme || 'sentai')) {
+      setTheme(s.theme);
+    }
+    if (s.lang && s.lang !== currentLang) {
+      setLang(s.lang);
+    }
+  }
+  // UI 갱신
+  updateSyncUI(true);
+  updateStats();
+  initReel();
+  syncApplying = false;
+}
+
+// Firebase 설정
+function loadFBConfig() {
   try {
-    const json = JSON.stringify(data);
-    const code = 'TOKU1_' + btoa(unescape(encodeURIComponent(json)));
-    const el = document.getElementById('syncExportCode');
-    el.value = code;
-    el.style.display = '';
-    document.getElementById('syncCopyRow').style.display = '';
-    const kb = (code.length / 1024).toFixed(1);
-    setSyncStatus(`✅ 코드 생성 완료 (${code.length}자, ${kb}KB)`);
+    const cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+    document.getElementById('fbApiKey').value = cfg.apiKey || '';
+    document.getElementById('fbDbUrl').value = cfg.databaseURL || '';
+  } catch(e) {}
+}
+function saveFBConfig() {
+  const cfg = {
+    apiKey: document.getElementById('fbApiKey').value.trim(),
+    databaseURL: document.getElementById('fbDbUrl').value.trim()
+  };
+  if (!cfg.apiKey || !cfg.databaseURL) {
+    setSyncStatus('❌ API Key와 Database URL을 모두 입력해주세요', true);
+    return;
+  }
+  localStorage.setItem('toku_fb', JSON.stringify(cfg));
+  // 재초기화
+  try {
+    if (firebase.apps.length) firebase.app().delete().then(() => {
+      firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
+      syncDB = firebase.database();
+      setSyncStatus(t('syncFBSaved'));
+      syncTab('connect');
+    });
+    else {
+      firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
+      syncDB = firebase.database();
+      setSyncStatus(t('syncFBSaved'));
+      syncTab('connect');
+    }
   } catch(e) {
-    setSyncStatus('❌ 생성 실패: ' + e.message, true);
+    setSyncStatus('❌ ' + e.message, true);
   }
 }
 
-function copySyncCode() {
-  const code = document.getElementById('syncExportCode').value;
-  if (!code) return;
-  navigator.clipboard.writeText(code).then(() => {
-    setSyncStatus(t('syncCopied'));
-  }).catch(() => {
-    // 폴백: 선택 후 복사
-    const el = document.getElementById('syncExportCode');
-    el.select();
-    document.execCommand('copy');
-    setSyncStatus(t('syncCopied'));
+// 방 만들기
+async function syncCreateRoom() {
+  if (!syncDB) {
+    if (!initFirebase()) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
+  }
+  const code = generateRoomCode();
+  try {
+    setSyncStatus('⏳ 방 생성 중...');
+    const ref = syncDB.ref('rooms/' + code);
+    syncIgnoreNext = true;
+    await ref.set(gatherSyncData());
+    syncRoomCode = code;
+    localStorage.setItem('toku_sync_room', code);
+    attachListener();
+    updateSyncUI(true);
+    setSyncStatus(t('syncRoomCreated'));
+  } catch(e) {
+    setSyncStatus('❌ ' + e.message, true);
+    console.error('[Sync] Create room error:', e);
+  }
+}
+
+// 방 참가
+async function syncJoinRoom() {
+  const code = document.getElementById('syncJoinInput').value.trim().toUpperCase();
+  if (!code || code.length < 4) { setSyncStatus(t('syncNoRoom'), true); return; }
+  if (!syncDB) {
+    if (!initFirebase()) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
+  }
+  try {
+    setSyncStatus('⏳ 연결 중...');
+    const snap = await syncDB.ref('rooms/' + code).once('value');
+    if (!snap.exists()) { setSyncStatus(t('syncRoomNotFound'), true); return; }
+    syncRoomCode = code;
+    localStorage.setItem('toku_sync_room', code);
+    // 서버 데이터 적용
+    applySyncData(snap.val());
+    attachListener();
+    updateSyncUI(true);
+    setSyncStatus(t('syncJoined'));
+  } catch(e) {
+    setSyncStatus('❌ ' + e.message, true);
+    console.error('[Sync] Join error:', e);
+  }
+}
+
+// 리스너
+function attachListener() {
+  if (syncListener) syncListener();
+  if (!syncDB || !syncRoomCode) return;
+  syncRoomRef = syncDB.ref('rooms/' + syncRoomCode);
+  syncListener = syncRoomRef.on('value', snap => {
+    if (!snap.exists()) return;
+    const data = snap.val();
+    // 자기 자신이 보낸 데이터면 스킵 (타임스탬프 비교)
+    if (data.ts && Math.abs(data.ts - Date.now()) < 1500) return;
+    applySyncData(data);
+    document.getElementById('syncConnInfo').textContent =
+      `마지막 수신: ${new Date().toLocaleTimeString()}`;
   });
 }
 
-function importSyncCode() {
-  const raw = document.getElementById('syncImportCode').value.trim();
-  if (!raw) { setSyncStatus(t('syncEmpty'), true); return; }
-
+// 푸시
+async function syncPushNow() {
+  if (!syncDB || !syncRoomCode) return;
   try {
-    let code = raw;
-    if (code.startsWith('TOKU1_')) code = code.slice(6);
-    else { setSyncStatus(t('syncInvalid'), true); return; }
-
-    const json = decodeURIComponent(escape(atob(code)));
-    const data = JSON.parse(json);
-    if (!data._v) { setSyncStatus(t('syncInvalid'), true); return; }
-
-    // 히스토리
-    if (data.h && Array.isArray(data.h)) {
-      // 기존 + 새 기록 합치기 (중복 제거, 최대 50개)
-      const existing = historyArr.map(h => h.jp + h.time);
-      const merged = [...historyArr];
-      data.h.forEach(h => {
-        if (!existing.includes(h.jp + h.time)) merged.push(h);
-      });
-      merged.sort((a, b) => (b.time || 0) - (a.time || 0));
-      localStorage.setItem('toku_history', JSON.stringify(merged.slice(0, 50)));
-    }
-    // 중복방지
-    if (data.p && Array.isArray(data.p)) {
-      const existing = JSON.parse(localStorage.getItem('toku_picked') || '[]');
-      const merged = [...new Set([...existing, ...data.p])];
-      localStorage.setItem('toku_picked', JSON.stringify(merged));
-      localStorage.setItem('toku_norepeat', 'true');
-    }
-    // 체크한 작품
-    if (data.c && Array.isArray(data.c)) {
-      const existing = JSON.parse(localStorage.getItem('toku_checked') || '[]');
-      const merged = [...new Set([...existing, ...data.c])];
-      localStorage.setItem('toku_checked', JSON.stringify(merged));
-    }
-    // 설정
-    if (data.s) {
-      if (data.s.theme) localStorage.setItem('toku_theme', data.s.theme);
-      if (data.s.lang) localStorage.setItem('toku_lang', data.s.lang);
-      if (data.s.ttfc !== undefined) localStorage.setItem('toku_ttfc_app', String(data.s.ttfc));
-      if (data.s.norepeat !== undefined) localStorage.setItem('toku_norepeat', String(data.s.norepeat));
-    }
-
-    setSyncStatus(t('syncImported'));
-    setTimeout(() => location.reload(), 1200);
+    syncIgnoreNext = true;
+    await syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData());
+    document.getElementById('syncConnInfo').textContent =
+      `마지막 전송: ${new Date().toLocaleTimeString()}`;
+    setSyncStatus(t('syncPushed'));
   } catch(e) {
-    setSyncStatus(t('syncInvalid'), true);
-    console.error('[Sync] Import error:', e);
+    setSyncStatus('❌ ' + e.message, true);
   }
+}
+
+// 자동 푸시 (데이터 변경 시)
+function syncAutoPush() {
+  if (!syncDB || !syncRoomCode || syncApplying) return;
+  clearTimeout(window._syncDebounce);
+  window._syncDebounce = setTimeout(() => {
+    syncIgnoreNext = true;
+    syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData()).catch(e =>
+      console.warn('[Sync] Auto-push failed:', e)
+    );
+  }, 800);
+}
+
+// 연결 해제
+function syncDisconnect() {
+  if (syncListener && syncRoomRef) {
+    syncRoomRef.off('value', syncListener);
+    syncListener = null;
+  }
+  syncRoomCode = null;
+  syncRoomRef = null;
+  localStorage.removeItem('toku_sync_room');
+  updateSyncUI(false);
+  setSyncStatus(t('syncDisconnected'));
 }
 
 function setSyncStatus(msg, isErr) {
@@ -2343,6 +2542,9 @@ function setSyncStatus(msg, isErr) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('syncOverlay').classList.contains('show')) closeSync();
 });
+
+// Firebase 초기화 시도
+try { initFirebase(); } catch(e) {}
 
 
 // ==========================================
