@@ -631,20 +631,78 @@
 
 
   /* === HISTORY === */
-  .history-section {
-    position: relative; z-index: 1;
-    max-width: 600px; margin: 0 auto; padding: 0 20px 60px;
+  /* === HISTORY POPUP === */
+  .history-float-btn {
+    position: fixed; bottom: 16px; right: 60px; z-index: 9999;
+    height: 36px; padding: 0 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.25); font-size: 0.7rem;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Zen Dots', sans-serif;
   }
-  .history-title { font-size: 0.8rem; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
-  .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
-  .history-chip {
-    padding: 6px 14px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 20px; font-size: 0.8rem;
-    color: rgba(255,255,255,0.4);
-    animation: fadeIn 0.3s ease;
+  .history-float-btn:hover { background: rgba(var(--primary-rgb),0.12); color: var(--primary); border-color: var(--primary); }
+  .history-float-btn .hf-count {
+    background: rgba(var(--primary-rgb),0.2); color: var(--primary);
+    padding: 1px 7px; border-radius: 10px; font-size: 0.62rem; font-weight: 700;
   }
+  .history-overlay {
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    padding: 20px; overflow-y: auto;
+  }
+  .history-overlay.show { display: block; }
+  .history-popup {
+    max-width: 560px; margin: 40px auto;
+    background: #12121f; border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08); padding: 20px;
+    max-height: 80vh; display: flex; flex-direction: column;
+  }
+  .history-popup-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-shrink: 0;
+  }
+  .history-popup-header h2 {
+    font-size: 1rem; color: var(--primary); margin: 0;
+    font-family: 'Zen Dots', sans-serif; display: flex; align-items: center; gap: 8px;
+  }
+  .history-popup-header .hp-count {
+    font-size: 0.7rem; color: rgba(255,255,255,0.3);
+    font-family: 'Zen Dots', sans-serif;
+  }
+  .hp-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .hp-clear {
+    background: none; border: 1px solid rgba(239,83,80,0.3); color: #ef5350;
+    padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem;
+    transition: all 0.2s;
+  }
+  .hp-clear:hover { background: rgba(239,83,80,0.1); }
+  .hp-close {
+    background: none; border: 1px solid rgba(255,255,255,0.1); color: #fff;
+    padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem;
+  }
+  .hp-close:hover { background: rgba(255,255,255,0.06); }
+  .history-popup-list {
+    overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+  .hp-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+    animation: fadeIn 0.3s ease; transition: all 0.2s;
+  }
+  .hp-item:hover { border-color: rgba(var(--primary-rgb),0.2); background: rgba(255,255,255,0.035); }
+  .hp-num { font-size: 0.6rem; color: rgba(255,255,255,0.15); width: 22px; text-align: center; font-family: 'Zen Dots'; flex-shrink: 0; }
+  .hp-cat {
+    font-size: 0.58rem; padding: 2px 7px; border-radius: 8px;
+    background: rgba(var(--primary-rgb),0.1); color: var(--primary);
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .hp-name { flex: 1; color: #fff; font-size: 0.8rem; font-weight: 600; }
+  .hp-time { color: rgba(255,255,255,0.15); font-size: 0.62rem; flex-shrink: 0; }
+  .hp-empty { text-align: center; color: rgba(255,255,255,0.2); padding: 40px 0; font-size: 0.85rem; }
 
   @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
@@ -896,9 +954,21 @@
   </div>
 </div>
 
-<div class="history-section">
-  <div class="history-title">뽑기 기록</div>
-  <div class="history-list" id="historyList"></div>
+<button class="history-float-btn" onclick="openHistory()" id="historyFloatBtn">
+  📋 <span id="historyBtnLabel">기록</span> <span class="hf-count" id="historyBtnCount">0</span>
+</button>
+
+<div class="history-overlay" id="historyOverlay">
+  <div class="history-popup">
+    <div class="history-popup-header">
+      <h2><span id="historyPopupTitle">뽑기 기록</span> <span class="hp-count" id="historyPopupCount"></span></h2>
+      <div class="hp-btns">
+        <button class="hp-clear" onclick="clearHistory()" id="historyClearBtn">🗑 전체 삭제</button>
+        <button class="hp-close" onclick="closeHistory()">✕</button>
+      </div>
+    </div>
+    <div class="history-popup-list" id="historyPopupList"></div>
+  </div>
 </div>
 
 <div class="stats-bar" id="statsBar"></div>
@@ -993,6 +1063,9 @@ const I18N = {
     timelineOpen: '시청순서 보기',
     timelineClose: '시청순서 닫기',
     historyTitle: '뽑기 기록',
+    historyBtn: '기록',
+    historyClear: '🗑 전체 삭제',
+    historyEmpty: '아직 뽑기 기록이 없습니다',
     noResult: '검색 결과가 없습니다',
     tagEp: '본편', tagMovie: '극장판', tagSpecial: '스페셜', tagVs: 'VS'
   },
@@ -1021,6 +1094,9 @@ const I18N = {
     timelineOpen: 'Viewing Order',
     timelineClose: 'Close Order',
     historyTitle: 'PICK HISTORY',
+    historyBtn: 'History',
+    historyClear: '🗑 Clear All',
+    historyEmpty: 'No picks yet',
     noResult: 'No results found',
     tagEp: 'EP', tagMovie: 'Movie', tagSpecial: 'Special', tagVs: 'VS'
   },
@@ -1049,6 +1125,9 @@ const I18N = {
     timelineOpen: '視聴順序を見る',
     timelineClose: '視聴順序を閉じる',
     historyTitle: 'ピック履歴',
+    historyBtn: '履歴',
+    historyClear: '🗑 全削除',
+    historyEmpty: 'まだ履歴がありません',
     noResult: '検索結果がありません',
     tagEp: '本編', tagMovie: '劇場版', tagSpecial: 'スペシャル', tagVs: 'VS'
   }
@@ -1098,14 +1177,16 @@ function applyLang() {
   document.getElementById('ttfcModeLabel').textContent = t('ttfcApp');
   document.getElementById('noRepeatLabel').textContent = t('noRepeat');
   updateNoRepeatUI();
-  // History title
-  document.querySelector('.history-title').textContent = t('historyTitle');
+  // History popup
+  document.getElementById('historyPopupTitle').textContent = t('historyTitle');
+  document.getElementById('historyBtnLabel').textContent = t('historyBtn');
+  document.getElementById('historyClearBtn').textContent = t('historyClear');
   // Rebuild filters, stats, list, reel
   rebuildFilters();
   updateStats();
   initReel();
   if (listOpen) renderList();
-  // Update history chips
+  // Update history
   renderHistory();
   // Update result card if visible
   const card = document.getElementById('resultCard');
@@ -1282,6 +1363,7 @@ const CAT_ORDER = ["sentai", "rider", "metal", "project"];
 
 let activeFilters = new Set(CAT_ORDER);
 let historyArr = [];
+try { historyArr = JSON.parse(localStorage.getItem('toku_history') || '[]'); } catch(e) { historyArr = []; }
 let spinning = false;
 let listOpen = false;
 let checkedShows;
@@ -1846,21 +1928,80 @@ function makeFallback(item) {
 }
 
 function addHistory(item) {
-  if (historyArr.length >= 10) historyArr.pop();
-  historyArr.unshift(item);
+  const entry = { name: item.name, en: item.en, jp: item.jp, year: item.year, cat: item.cat, time: Date.now() };
+  historyArr.unshift(entry);
+  if (historyArr.length > 50) historyArr = historyArr.slice(0, 50);
+  try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
   renderHistory();
 }
 
 function renderHistory() {
-  const list = document.getElementById('historyList');
-  list.innerHTML = '';
-  historyArr.forEach(h => {
-    const chip = document.createElement('span');
-    chip.className = 'history-chip';
-    chip.textContent = getItemName(h);
-    list.appendChild(chip);
-  });
+  // 플로팅 버튼 카운트
+  document.getElementById('historyBtnCount').textContent = historyArr.length;
+  
+  // 팝업 카운트
+  document.getElementById('historyPopupCount').textContent = `${historyArr.length}/50`;
+  
+  // 팝업 리스트
+  const list = document.getElementById('historyPopupList');
+  if (historyArr.length === 0) {
+    list.innerHTML = `<div class="hp-empty">${t('historyEmpty')}</div>`;
+    return;
+  }
+  const catNames = {sentai:'전대',rider:'ライダー',metal:'メタル',project:'R.E.D.'};
+  list.innerHTML = historyArr.map((h, i) => {
+    const name = currentLang === 'jp' ? h.jp : currentLang === 'en' ? (h.en || h.name) : h.name;
+    const timeStr = formatTime(h.time);
+    return `<div class="hp-item">
+      <span class="hp-num">${i + 1}</span>
+      <span class="hp-cat">${catNames[h.cat] || h.cat}</span>
+      <span class="hp-name">${name}</span>
+      <span class="hp-time">${timeStr}</span>
+    </div>`;
+  }).join('');
 }
+
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return '방금';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}분 전`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}시간 전`;
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  return `${mm}/${dd} ${hh}:${mi}`;
+}
+
+function openHistory() {
+  document.getElementById('historyOverlay').classList.add('show');
+  renderHistory();
+  document.body.style.overflow = 'hidden';
+}
+function closeHistory() {
+  document.getElementById('historyOverlay').classList.remove('show');
+  if (!document.getElementById('adminOverlay').classList.contains('show')) {
+    document.body.style.overflow = '';
+  }
+}
+function clearHistory() {
+  if (!confirm(currentLang === 'ko' ? '전체 기록을 삭제하시겠습니까?' : currentLang === 'jp' ? '全ての履歴を削除しますか？' : 'Clear all history?')) return;
+  historyArr = [];
+  try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
+  renderHistory();
+}
+
+// ESC로 히스토리 팝업 닫기
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('historyOverlay').classList.contains('show')) closeHistory();
+});
+// 오버레이 배경 클릭으로 닫기
+document.getElementById('historyOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('historyOverlay')) closeHistory();
+});
 
 
 
