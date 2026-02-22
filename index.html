@@ -2268,17 +2268,23 @@ var syncRoomCode = null;
 var syncListener = null;
 var syncIgnoreNext = false;
 var syncApplying = false;
+var syncDeviceId = localStorage.getItem('toku_device_id');
+if (!syncDeviceId) { syncDeviceId = Math.random().toString(36).slice(2,10); localStorage.setItem('toku_device_id', syncDeviceId); }
+
+function isFirebaseReady() {
+  return typeof firebase !== 'undefined' && firebase.apps !== undefined;
+}
 
 function initFirebase() {
   try {
-    const cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+    if (!isFirebaseReady()) { console.warn('[Sync] Firebase SDK not loaded'); return false; }
+    var cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
     if (!cfg.apiKey || !cfg.databaseURL) return false;
     if (!firebase.apps.length) {
       firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
     }
     syncDB = firebase.database();
-    // 자동 재연결
-    const savedRoom = localStorage.getItem('toku_sync_room');
+    var savedRoom = localStorage.getItem('toku_sync_room');
     if (savedRoom) {
       syncRoomCode = savedRoom;
       attachListener();
@@ -2297,7 +2303,7 @@ function openSync() {
   applySyncLang();
   loadFBConfig();
   updateSyncUI(!!syncRoomCode);
-  setSyncStatus('');
+  setSyncStatus(isFirebaseReady() ? '' : '⚠ Firebase SDK 로딩 중...');
 }
 function closeSync() {
   document.getElementById('syncOverlay').classList.remove('show');
@@ -2331,80 +2337,82 @@ function updateSyncUI(connected) {
   if (connected && syncRoomCode) {
     document.getElementById('syncConnRoom').textContent = syncRoomCode;
     document.getElementById('syncConnInfo').textContent =
-      `마지막 동기화: ${new Date().toLocaleTimeString()}`;
+      '마지막 동기화: ' + new Date().toLocaleTimeString();
   }
 }
 
 function generateRoomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
   return code;
 }
 
 function gatherSyncData() {
   return {
     history: historyArr,
-    picked: [...pickedShows],
-    checked: [...checkedShows],
+    picked: [].concat(Array.from(pickedShows)),
+    checked: [].concat(Array.from(checkedShows)),
     settings: {
       theme: document.documentElement.dataset.theme || 'sentai',
       lang: currentLang,
       ttfc: localStorage.getItem('toku_ttfc_app') === 'true',
       norepeat: localStorage.getItem('toku_norepeat') === 'true'
     },
-    ts: Date.now()
+    ts: Date.now(),
+    from: syncDeviceId
   };
 }
 
 function applySyncData(data) {
-  if (!data || syncIgnoreNext) { syncIgnoreNext = false; return; }
+  if (!data) return;
+  if (syncIgnoreNext) { syncIgnoreNext = false; return; }
+  if (data.from === syncDeviceId) return;
   syncApplying = true;
-  // 히스토리
-  if (data.history && Array.isArray(data.history)) {
-    historyArr = data.history.slice(0, 50);
-    try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
-    renderHistory();
-  }
-  // 중복방지
-  if (data.picked && Array.isArray(data.picked)) {
-    pickedShows = new Set(data.picked);
-    localStorage.setItem('toku_picked', JSON.stringify(data.picked));
-    updateNoRepeatUI();
-  }
-  // 체크
-  if (data.checked && Array.isArray(data.checked)) {
-    checkedShows = new Set(data.checked);
-    saveChecked();
-    if (listOpen) renderList();
-  }
-  // 설정
-  if (data.settings) {
-    const s = data.settings;
-    if (s.theme && s.theme !== (document.documentElement.dataset.theme || 'sentai')) {
-      setTheme(s.theme);
+  try {
+    if (data.history && Array.isArray(data.history)) {
+      historyArr = data.history.slice(0, 50);
+      try { localStorage.setItem('toku_history', JSON.stringify(historyArr)); } catch(e) {}
+      renderHistory();
     }
-    if (s.lang && s.lang !== currentLang) {
-      setLang(s.lang);
+    if (data.picked && Array.isArray(data.picked)) {
+      pickedShows = new Set(data.picked);
+      localStorage.setItem('toku_picked', JSON.stringify(data.picked));
+      updateNoRepeatUI();
     }
+    if (data.checked && Array.isArray(data.checked)) {
+      checkedShows = new Set(data.checked);
+      saveChecked();
+      if (listOpen) renderList();
+    }
+    if (data.settings) {
+      var s = data.settings;
+      if (s.theme && s.theme !== (document.documentElement.dataset.theme || 'sentai')) {
+        setTheme(s.theme);
+      }
+      if (s.lang && s.lang !== currentLang) {
+        setLang(s.lang);
+      }
+    }
+    updateSyncUI(true);
+    updateStats();
+    initReel();
+  } catch(e) {
+    console.error('[Sync] Apply error:', e);
   }
-  // UI 갱신
-  updateSyncUI(true);
-  updateStats();
-  initReel();
   syncApplying = false;
 }
 
 // Firebase 설정
 function loadFBConfig() {
   try {
-    const cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+    var cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
     document.getElementById('fbApiKey').value = cfg.apiKey || '';
     document.getElementById('fbDbUrl').value = cfg.databaseURL || '';
   } catch(e) {}
 }
 function saveFBConfig() {
-  const cfg = {
+  var cfg = {
     apiKey: document.getElementById('fbApiKey').value.trim(),
     databaseURL: document.getElementById('fbDbUrl').value.trim()
   };
@@ -2412,20 +2420,25 @@ function saveFBConfig() {
     setSyncStatus('❌ API Key와 Database URL을 모두 입력해주세요', true);
     return;
   }
+  if (!isFirebaseReady()) {
+    setSyncStatus('❌ Firebase SDK가 아직 로딩되지 않았습니다. 잠시 후 다시 시도해주세요', true);
+    return;
+  }
   localStorage.setItem('toku_fb', JSON.stringify(cfg));
-  // 재초기화
   try {
-    if (firebase.apps.length) firebase.app().delete().then(() => {
+    // 기존 앱이 있으면 삭제 후 재생성
+    var doInit = function() {
       firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
       syncDB = firebase.database();
       setSyncStatus(t('syncFBSaved'));
       syncTab('connect');
-    });
-    else {
-      firebase.initializeApp({ apiKey: cfg.apiKey, databaseURL: cfg.databaseURL });
-      syncDB = firebase.database();
-      setSyncStatus(t('syncFBSaved'));
-      syncTab('connect');
+    };
+    if (firebase.apps.length) {
+      firebase.app().delete().then(doInit).catch(function(e) {
+        setSyncStatus('❌ ' + e.message, true);
+      });
+    } else {
+      doInit();
     }
   } catch(e) {
     setSyncStatus('❌ ' + e.message, true);
@@ -2433,96 +2446,97 @@ function saveFBConfig() {
 }
 
 // 방 만들기
-async function syncCreateRoom() {
+function syncCreateRoom() {
+  if (!isFirebaseReady()) { setSyncStatus('❌ Firebase SDK 로딩 중... 잠시 후 다시 시도', true); return; }
   if (!syncDB) {
     if (!initFirebase()) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
   }
-  const code = generateRoomCode();
-  try {
-    setSyncStatus('⏳ 방 생성 중...');
-    const ref = syncDB.ref('rooms/' + code);
-    syncIgnoreNext = true;
-    await ref.set(gatherSyncData());
+  var code = generateRoomCode();
+  setSyncStatus('⏳ 방 생성 중...');
+  var ref = syncDB.ref('rooms/' + code);
+  syncIgnoreNext = true;
+  ref.set(gatherSyncData()).then(function() {
     syncRoomCode = code;
     localStorage.setItem('toku_sync_room', code);
     attachListener();
     updateSyncUI(true);
     setSyncStatus(t('syncRoomCreated'));
-  } catch(e) {
+  }).catch(function(e) {
     setSyncStatus('❌ ' + e.message, true);
     console.error('[Sync] Create room error:', e);
-  }
+  });
 }
 
 // 방 참가
-async function syncJoinRoom() {
-  const code = document.getElementById('syncJoinInput').value.trim().toUpperCase();
+function syncJoinRoom() {
+  var code = document.getElementById('syncJoinInput').value.trim().toUpperCase();
   if (!code || code.length < 4) { setSyncStatus(t('syncNoRoom'), true); return; }
+  if (!isFirebaseReady()) { setSyncStatus('❌ Firebase SDK 로딩 중... 잠시 후 다시 시도', true); return; }
   if (!syncDB) {
     if (!initFirebase()) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
   }
-  try {
-    setSyncStatus('⏳ 연결 중...');
-    const snap = await syncDB.ref('rooms/' + code).once('value');
+  setSyncStatus('⏳ 연결 중...');
+  syncDB.ref('rooms/' + code).once('value').then(function(snap) {
     if (!snap.exists()) { setSyncStatus(t('syncRoomNotFound'), true); return; }
     syncRoomCode = code;
     localStorage.setItem('toku_sync_room', code);
-    // 서버 데이터 적용
     applySyncData(snap.val());
     attachListener();
     updateSyncUI(true);
     setSyncStatus(t('syncJoined'));
-  } catch(e) {
+  }).catch(function(e) {
     setSyncStatus('❌ ' + e.message, true);
     console.error('[Sync] Join error:', e);
-  }
+  });
 }
 
 // 리스너
 function attachListener() {
-  if (syncListener) syncListener();
+  // 기존 리스너 해제
+  if (syncRoomRef && syncListener) {
+    syncRoomRef.off('value', syncListener);
+    syncListener = null;
+  }
   if (!syncDB || !syncRoomCode) return;
   syncRoomRef = syncDB.ref('rooms/' + syncRoomCode);
-  syncListener = syncRoomRef.on('value', snap => {
+  syncListener = syncRoomRef.on('value', function(snap) {
     if (!snap.exists()) return;
-    const data = snap.val();
-    // 자기 자신이 보낸 데이터면 스킵 (타임스탬프 비교)
-    if (data.ts && Math.abs(data.ts - Date.now()) < 1500) return;
+    var data = snap.val();
+    if (data.from === syncDeviceId) return;
     applySyncData(data);
-    document.getElementById('syncConnInfo').textContent =
-      `마지막 수신: ${new Date().toLocaleTimeString()}`;
+    var el = document.getElementById('syncConnInfo');
+    if (el) el.textContent = '마지막 수신: ' + new Date().toLocaleTimeString();
   });
 }
 
 // 푸시
-async function syncPushNow() {
+function syncPushNow() {
   if (!syncDB || !syncRoomCode) return;
-  try {
-    syncIgnoreNext = true;
-    await syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData());
-    document.getElementById('syncConnInfo').textContent =
-      `마지막 전송: ${new Date().toLocaleTimeString()}`;
+  syncIgnoreNext = true;
+  syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData()).then(function() {
+    var el = document.getElementById('syncConnInfo');
+    if (el) el.textContent = '마지막 전송: ' + new Date().toLocaleTimeString();
     setSyncStatus(t('syncPushed'));
-  } catch(e) {
+  }).catch(function(e) {
     setSyncStatus('❌ ' + e.message, true);
-  }
+  });
 }
 
 // 자동 푸시 (데이터 변경 시)
 function syncAutoPush() {
   if (!syncDB || !syncRoomCode || syncApplying) return;
   clearTimeout(window._syncDebounce);
-  window._syncDebounce = setTimeout(() => {
+  window._syncDebounce = setTimeout(function() {
     syncIgnoreNext = true;
-    syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData()).catch(e =>
-      console.warn('[Sync] Auto-push failed:', e)
-    );
+    syncDB.ref('rooms/' + syncRoomCode).set(gatherSyncData()).catch(function(e) {
+      console.warn('[Sync] Auto-push failed:', e);
+    });
   }, 800);
 }
 
 // 연결 해제
 function syncDisconnect() {
-  if (syncListener && syncRoomRef) {
+  if (syncRoomRef && syncListener) {
     syncRoomRef.off('value', syncListener);
     syncListener = null;
   }
@@ -2534,17 +2548,22 @@ function syncDisconnect() {
 }
 
 function setSyncStatus(msg, isErr) {
-  const el = document.getElementById('syncStatus');
+  var el = document.getElementById('syncStatus');
   el.textContent = msg;
-  el.className = 'sync-status' + (isErr ? ' err' : msg.includes('✅') ? ' ok' : '');
+  el.className = 'sync-status' + (isErr ? ' err' : msg.indexOf('✅') >= 0 ? ' ok' : '');
 }
 
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape' && document.getElementById('syncOverlay').classList.contains('show')) closeSync();
 });
 
-// Firebase 초기화 시도
-try { initFirebase(); } catch(e) {}
+// Firebase 초기화 (SDK 로드 완료 후)
+if (isFirebaseReady()) {
+  try { initFirebase(); } catch(e) {}
+} else {
+  // SDK가 아직 안 로드됐으면 잠시 후 재시도
+  setTimeout(function() { try { initFirebase(); } catch(e) {} }, 2000);
+}
 
 
 // ==========================================
