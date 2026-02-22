@@ -2432,21 +2432,40 @@ function saveFBConfig() {
   var apiKey = document.getElementById('fbApiKey').value.trim();
   var dbUrl = document.getElementById('fbDbUrl').value.trim();
   if (!apiKey || !dbUrl) { setSyncStatus('❌ API Key와 Database URL을 모두 입력해주세요', true); return; }
+  // URL 정리
+  dbUrl = dbUrl.replace(/\/$/, '');
+  if (dbUrl.indexOf('http') !== 0) dbUrl = 'https://' + dbUrl;
+  document.getElementById('fbDbUrl').value = dbUrl;
   localStorage.setItem('toku_fb', JSON.stringify({ apiKey: apiKey, databaseURL: dbUrl }));
   setSyncStatus('⏳ 연결 테스트 중...');
-  withTimeout(fetch(dbUrl.replace(/\/$/, '') + '/.json?shallow=true'), 8000, '연결 시간 초과')
-    .then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status + ' - URL이나 규칙을 확인하세요');
-      setSyncStatus(t('syncFBSaved'));
-      if (isFirebaseReady()) {
-        var doInit = function() {
-          firebase.initializeApp({ apiKey: apiKey, databaseURL: dbUrl });
-          syncDB = firebase.database(); syncMode = 'sdk';
-        };
-        if (firebase.apps.length) firebase.app().delete().then(doInit).catch(function() { syncMode = 'rest'; });
-        else doInit();
-      } else { syncMode = 'rest'; }
-      syncTab('connect');
+  // rooms/_ping 에 테스트 쓰기 (보안 규칙이 rooms/$roomId만 허용해도 OK)
+  var testUrl = dbUrl + '/rooms/_ping.json';
+  withTimeout(
+    fetch(testUrl, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({t: Date.now()}) }),
+    8000, '연결 시간 초과 - URL을 확인해주세요'
+  ).then(function(r) {
+      if (r.ok) {
+        setSyncStatus(t('syncFBSaved'));
+        // SDK 초기화
+        if (isFirebaseReady()) {
+          var doInit = function() {
+            firebase.initializeApp({ apiKey: apiKey, databaseURL: dbUrl });
+            syncDB = firebase.database(); syncMode = 'sdk';
+          };
+          if (firebase.apps.length) firebase.app().delete().then(doInit).catch(function() { syncMode = 'rest'; });
+          else doInit();
+        } else { syncMode = 'rest'; }
+        syncTab('connect');
+        return;
+      }
+      // 실패 시 상세 에러
+      return r.text().then(function(body) {
+        var msg = 'HTTP ' + r.status;
+        if (r.status === 401 || r.status === 403) msg += ' - Firebase 규칙에서 rooms 읽기/쓰기를 허용해주세요';
+        else if (r.status === 404) msg += ' - Database URL이 잘못되었습니다';
+        else msg += ' - ' + body.slice(0, 100);
+        throw new Error(msg);
+      });
     }).catch(function(e) { setSyncStatus('❌ ' + e.message, true); });
 }
 
@@ -2456,8 +2475,16 @@ function syncCreateRoom() {
   if (!cfg.apiKey || !cfg.databaseURL) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
   if (syncMode === 'none') initFirebase();
   var code = generateRoomCode();
+  var data = gatherSyncData();
+  var url = cfg.databaseURL.replace(/\/$/, '') + '/rooms/' + code + '.json';
   setSyncStatus('⏳ 방 생성 중...');
-  withTimeout(fbRestPut('rooms/' + code, gatherSyncData()), 10000, '서버 응답 없음 (시간 초과)')
+  withTimeout(
+    fetch(url, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }),
+    10000, '서버 응답 없음 (시간 초과)'
+  ).then(function(r) {
+      if (!r.ok) return r.text().then(function(b) { throw new Error('HTTP ' + r.status + ': ' + b.slice(0,80)); });
+      return r.json();
+    })
     .then(function() {
       syncRoomCode = code;
       localStorage.setItem('toku_sync_room', code);
@@ -2474,9 +2501,15 @@ function syncJoinRoom() {
   var cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
   if (!cfg.apiKey || !cfg.databaseURL) { setSyncStatus(t('syncNoFB'), true); syncTab('firebase'); return; }
   if (syncMode === 'none') initFirebase();
+  var url = cfg.databaseURL.replace(/\/$/, '') + '/rooms/' + code + '.json';
   setSyncStatus('⏳ 연결 중...');
-  withTimeout(fbRestGet('rooms/' + code), 10000, '서버 응답 없음 (시간 초과)')
-    .then(function(data) {
+  withTimeout(
+    fetch(url).then(function(r) {
+      if (!r.ok) return r.text().then(function(b) { throw new Error('HTTP ' + r.status + ': ' + b.slice(0,80)); });
+      return r.json();
+    }),
+    10000, '서버 응답 없음 (시간 초과)'
+  ).then(function(data) {
       if (!data) { setSyncStatus(t('syncRoomNotFound'), true); return; }
       syncRoomCode = code;
       localStorage.setItem('toku_sync_room', code);
@@ -2505,9 +2538,15 @@ function attachListener() {
 // 수동 푸시
 function syncPushNow() {
   if (!syncRoomCode) return;
+  var cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+  if (!cfg.databaseURL) return;
+  var url = cfg.databaseURL.replace(/\/$/, '') + '/rooms/' + syncRoomCode + '.json';
   setSyncStatus('⏳ 동기화 중...');
-  withTimeout(fbRestPut('rooms/' + syncRoomCode, gatherSyncData()), 10000, '시간 초과')
-    .then(function() {
+  withTimeout(
+    fetch(url, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(gatherSyncData()) }),
+    10000, '시간 초과'
+  ).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       var el = document.getElementById('syncConnInfo');
       if (el) el.textContent = '마지막 전송: ' + new Date().toLocaleTimeString();
       setSyncStatus(t('syncPushed'));
@@ -2520,13 +2559,16 @@ function syncAutoPush() {
   clearTimeout(window._syncDebounce);
   window._syncDebounce = setTimeout(function() {
     var data = gatherSyncData();
+    var cfg = JSON.parse(localStorage.getItem('toku_fb') || '{}');
+    if (!cfg.databaseURL) return;
+    var url = cfg.databaseURL.replace(/\/$/, '') + '/rooms/' + syncRoomCode + '.json';
     if (syncMode === 'sdk' && syncDB) {
       syncIgnoreNext = true;
       syncDB.ref('rooms/' + syncRoomCode).set(data).catch(function() {
-        fbRestPut('rooms/' + syncRoomCode, data).catch(function() {});
+        fetch(url, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).catch(function(){});
       });
     } else {
-      fbRestPut('rooms/' + syncRoomCode, data).catch(function() {});
+      fetch(url, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).catch(function(){});
     }
   }, 800);
 }
