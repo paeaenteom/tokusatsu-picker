@@ -787,20 +787,100 @@
 
   @media (max-width: 480px) {
     header { padding: 30px 15px 20px; }
-    .filter-btn { padding: 8px 14px; font-size: 0.78rem; }
-    .slot-window { height: 180px; }
-    .slot-item { height: 54px; font-size: 0.9rem; }
-    .slot-item.center { font-size: 1rem; }
-    .slot-highlight { height: 54px; }
-    .card-inner { padding: 22px; }
+    .jp-title { font-size: clamp(1.5rem, 7vw, 2.2rem); }
+    .kr-subtitle { font-size: clamp(0.8rem, 3vw, 1rem); }
+    .lang-toggle { top: 8px; left: 8px; border-radius: 18px; }
+    .lang-opt { padding: 5px 8px; font-size: 0.6rem; }
+    .theme-toggle { top: 8px; right: 8px; border-radius: 18px; }
+    .theme-opt { padding: 5px 8px; font-size: 0.6rem; gap: 3px; }
+    .theme-opt .dot { width: 6px; height: 6px; }
+    .theme-opt img { height: 11px !important; }
+    .filter-section { gap: 6px; padding: 0 12px 20px; }
+    .filter-btn { padding: 7px 12px; font-size: 0.72rem; }
+    .filter-btn .count { font-size: 0.6rem; }
+    .slot-window { height: 170px; }
+    .slot-item { height: 52px; font-size: 0.85rem; }
+    .slot-item.center { font-size: 0.95rem; }
+    .slot-highlight { height: 52px; }
+    .btn-row { gap: 8px; padding: 0 12px; }
+    .spin-btn { width: 140px; font-size: 0.95rem; padding: 14px; }
+    .list-toggle-btn { padding: 0 14px; font-size: 0.78rem; }
+    .norepeat-row { gap: 6px; }
+    .norepeat-toggle { font-size: 0.7rem; }
+    .result-card { padding: 0 12px; margin-bottom: 30px; }
+    .card-inner { padding: 18px; border-radius: 12px; }
+    .card-title { font-size: clamp(1.1rem, 5vw, 1.5rem); }
+    .card-title-jp { font-size: 0.8rem; }
+    .card-meta { gap: 10px; font-size: 0.75rem; }
+    .poster-wrap { max-height: 160px; }
+    .poster-wrap img { max-height: 160px; }
+    .ttfc-link { padding: 8px 14px; font-size: 0.78rem; }
+    .ttfc-row { flex-wrap: wrap; gap: 6px; }
+    .ttfc-mode-toggle { font-size: 0.6rem; }
+    .tl-item { font-size: 0.7rem; padding: 6px 8px; }
+    .tl-tag { font-size: 0.58rem; min-width: 34px; padding: 2px 5px; }
     .list-items { grid-template-columns: 1fr; }
-    .btn-row { gap: 10px; }
-    .spin-btn { width: 150px; font-size: 1rem; }
-    .list-toggle-btn { padding: 0 16px; font-size: 0.82rem; }
-    .tl-item { font-size: 0.72rem; }
-    .tl-tag { font-size: 0.62rem; min-width: 38px; }
-    .lang-toggle { top: 10px; left: 10px; }
-    .lang-opt { padding: 6px 8px; font-size: 0.65rem; }
+    .list-search { font-size: 0.8rem; }
+    /* 하단 플로팅 버튼 */
+    .history-float-btn { bottom: 12px; right: auto; left: 12px; height: 32px; padding: 0 10px; font-size: 0.62rem; }
+    .history-float-btn .hf-count { font-size: 0.55rem; padding: 1px 5px; }
+    .sync-btn { bottom: 12px; right: 50px; width: 32px; height: 32px; font-size: 13px; }
+    .admin-btn { bottom: 12px; right: 12px; width: 32px; height: 32px; font-size: 14px; }
+    /* 팝업 풀스크린 */
+    .history-overlay { padding: 10px; }
+    .history-popup { margin: 10px auto; padding: 16px; max-height: 90vh; border-radius: 12px; }
+    .history-popup-header h2 { font-size: 0.9rem; }
+    .hp-item { padding: 8px 10px; gap: 8px; }
+    .hp-name { font-size: 0.72rem; }
+    .hp-num { font-size: 0.55rem; width: 18px; }
+    .hp-cat { font-size: 0.52rem; padding: 2px 5px; }
+    .hp-time { font-size: 0.55rem; }
+    .sync-overlay { padding: 10px; }
+    .sync-popup { padding: 18px; border-radius: 12px; }
+    .sync-popup h2 { font-size: 0.95rem; }
+    .sync-tabs { border-radius: 8px; }
+    .sync-tab { font-size: 0.7rem; padding: 8px; }
+    .sync-code-area { font-size: 0.6rem; min-height: 80px; }
+    .sync-checklist { gap: 4px; }
+    .sync-check { font-size: 0.62rem; padding: 3px 8px; }
+    .sync-info-item { font-size: 0.65rem; padding: 5px 8px; }
+    .sync-info-item .si-val { font-size: 0.58rem; }
+    .sync-btns button { font-size: 0.72rem; padding: 9px; }
+    .admin-overlay { padding: 10px; }
+    .admin-panel { padding: 14px; border-radius: 12px; }
+    .admin-header h2 { font-size: 0.95rem; }
+    .admin-tabs { gap: 4px; }
+    .admin-tab { padding: 5px 10px; font-size: 0.65rem; }
+    .admin-search { font-size: 0.78rem; padding: 8px 10px; }
+    .admin-item { padding: 8px 10px; gap: 6px; font-size: 0.7rem; }
+    .ai-cat { font-size: 0.52rem; padding: 2px 6px; }
+    .ai-name { font-size: 0.7rem; }
+    .ai-btns button { padding: 3px 8px; font-size: 0.62rem; }
+    .af-grid { grid-template-columns: 1fr; }
+    .af-field input, .af-field select { font-size: 0.72rem; padding: 7px 8px; }
+    .af-field label { font-size: 0.58rem; }
+    .admin-actions { gap: 6px; }
+    .admin-actions button { padding: 8px 14px; font-size: 0.72rem; }
+    .gh-row input { font-size: 0.68rem; padding: 6px 8px; }
+    .ai-jp, .ai-year { display: none; }
+  }
+  @media (max-width: 360px) {
+    .lang-toggle { top: 6px; left: 6px; }
+    .lang-opt { padding: 4px 6px; font-size: 0.55rem; }
+    .theme-toggle { top: 6px; right: 6px; }
+    .theme-opt { padding: 4px 6px; font-size: 0.55rem; }
+    .jp-title { font-size: 1.4rem; }
+    .filter-btn { padding: 6px 10px; font-size: 0.65rem; }
+    .spin-btn { width: 120px; font-size: 0.88rem; padding: 12px; }
+    .list-toggle-btn { padding: 0 10px; font-size: 0.72rem; }
+    .history-float-btn { padding: 0 8px; font-size: 0.58rem; }
+    .card-inner { padding: 14px; }
+    .card-title { font-size: 1rem; }
+    .card-meta { font-size: 0.7rem; gap: 8px; }
+    .ttfc-link { padding: 7px 12px; font-size: 0.72rem; }
+    .sync-popup { padding: 14px; }
+    .sync-popup h2 { font-size: 0.85rem; }
+    .history-popup { padding: 14px; }
   }
 
   /* === ADMIN PANEL === */
@@ -809,7 +889,7 @@
   .sync-btn{position:fixed;bottom:16px;right:58px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15);font-size:15px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
   .sync-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
   .sync-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);padding:20px;overflow-y:auto}
-  .sync-overlay.show{display:flex;align-items:center;justify-content:center}
+  .sync-overlay.show{display:flex;align-items:flex-start;justify-content:center;padding-top:min(10vh,60px)}
   .sync-popup{width:100%;max-width:440px;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px;animation:fadeIn .3s ease}
   .sync-popup h2{font-size:1.05rem;color:var(--primary);margin:0 0 6px;font-family:'Zen Dots',sans-serif;display:flex;align-items:center;gap:8px}
   .sync-popup .sync-sub{font-size:.7rem;color:rgba(255,255,255,0.3);margin-bottom:18px}
@@ -895,11 +975,6 @@
   .admin-status{font-size:.73rem;color:rgba(255,255,255,0.35);margin-top:10px;text-align:center;min-height:1.2em}
   .admin-status.ok{color:#4caf50}
   .admin-status.err{color:#ef5350}
-  @media(max-width:600px){
-    .af-grid{grid-template-columns:1fr}
-    .ai-jp,.ai-year{display:none}
-    .admin-panel{padding:14px}
-  }
 </style>
 </head>
 <body>
