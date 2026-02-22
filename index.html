@@ -633,7 +633,7 @@
   /* === HISTORY === */
   /* === HISTORY POPUP === */
   .history-float-btn {
-    position: fixed; bottom: 16px; right: 60px; z-index: 9999;
+    position: fixed; bottom: 16px; right: 100px; z-index: 9999;
     height: 36px; padding: 0 14px;
     border-radius: 18px;
     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
@@ -806,6 +806,41 @@
   /* === ADMIN PANEL === */
   .admin-btn{position:fixed;bottom:16px;right:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15);font-size:16px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
   .admin-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
+  .sync-btn{position:fixed;bottom:16px;right:58px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15);font-size:15px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
+  .sync-btn:hover{background:rgba(var(--primary-rgb),0.15);color:var(--primary);border-color:var(--primary)}
+  .sync-overlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);padding:20px;overflow-y:auto}
+  .sync-overlay.show{display:flex;align-items:center;justify-content:center}
+  .sync-popup{width:100%;max-width:440px;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px;animation:fadeIn .3s ease}
+  .sync-popup h2{font-size:1.05rem;color:var(--primary);margin:0 0 6px;font-family:'Zen Dots',sans-serif;display:flex;align-items:center;gap:8px}
+  .sync-popup .sync-sub{font-size:.7rem;color:rgba(255,255,255,0.3);margin-bottom:18px}
+  .sync-tabs{display:flex;gap:0;margin-bottom:16px;background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+  .sync-tab{flex:1;padding:10px;text-align:center;background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;font-size:.78rem;font-weight:600;transition:all .2s}
+  .sync-tab.active{background:var(--primary);color:#fff}
+  .sync-section{display:none}
+  .sync-section.active{display:block}
+  .sync-code-area{width:100%;min-height:100px;max-height:180px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.68rem;font-family:'Courier New',monospace;resize:vertical;outline:none;word-break:break-all;line-height:1.5;box-sizing:border-box}
+  .sync-code-area:focus{border-color:var(--primary)}
+  .sync-code-area::placeholder{color:rgba(255,255,255,0.15)}
+  .sync-info{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .sync-info-item{display:flex;justify-content:space-between;padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.02);font-size:.72rem}
+  .sync-info-item .si-label{color:rgba(255,255,255,0.35)}
+  .sync-info-item .si-val{color:var(--primary);font-weight:600;font-family:'Zen Dots',sans-serif;font-size:.65rem}
+  .sync-btns{display:flex;gap:8px;margin-top:14px}
+  .sync-btns button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+  .sync-gen{background:var(--primary);color:#fff}
+  .sync-gen:hover{opacity:.85}
+  .sync-copy{background:rgba(255,255,255,0.08);color:#fff}
+  .sync-copy:hover{background:rgba(255,255,255,0.12)}
+  .sync-import{background:#238636;color:#fff}
+  .sync-import:hover{background:#2ea043}
+  .sync-close{position:absolute;top:12px;right:12px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+  .sync-close:hover{color:#fff}
+  .sync-status{font-size:.73rem;margin-top:10px;text-align:center;min-height:1.2em;color:rgba(255,255,255,0.35)}
+  .sync-status.ok{color:#4caf50}
+  .sync-status.err{color:#ef5350}
+  .sync-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .sync-check{display:flex;align-items:center;gap:5px;font-size:.7rem;color:rgba(255,255,255,0.4);padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.02)}
+  .sync-check input{accent-color:var(--primary)}
   .admin-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);overflow-y:auto;padding:20px}
   .admin-overlay.show{display:block}
   .admin-panel{max-width:920px;margin:0 auto;background:#12121f;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:24px}
@@ -973,6 +1008,43 @@
 
 <div class="stats-bar" id="statsBar"></div>
 
+<!-- SYNC -->
+<button class="sync-btn" onclick="openSync()" title="Sync">🔗</button>
+<div class="sync-overlay" id="syncOverlay" onclick="if(event.target===this)closeSync()">
+  <div class="sync-popup" style="position:relative">
+    <button class="sync-close" onclick="closeSync()">✕</button>
+    <h2>🔗 <span id="syncTitle">기기 동기화</span></h2>
+    <div class="sync-sub" id="syncSub">설정과 기록을 다른 기기로 옮기세요</div>
+    <div class="sync-tabs">
+      <button class="sync-tab active" onclick="syncTab('export')" id="syncTabExport">📤 코드 생성</button>
+      <button class="sync-tab" onclick="syncTab('import')" id="syncTabImport">📥 코드 입력</button>
+    </div>
+    <div class="sync-section active" id="syncExport">
+      <div class="sync-checklist" id="syncChecklist">
+        <label class="sync-check"><input type="checkbox" id="syncOptHistory" checked> <span id="syncLblHistory">뽑기 기록</span></label>
+        <label class="sync-check"><input type="checkbox" id="syncOptPicked" checked> <span id="syncLblPicked">중복방지 목록</span></label>
+        <label class="sync-check"><input type="checkbox" id="syncOptChecked" checked> <span id="syncLblChecked">체크한 작품</span></label>
+        <label class="sync-check"><input type="checkbox" id="syncOptSettings" checked> <span id="syncLblSettings">테마/언어 설정</span></label>
+      </div>
+      <div class="sync-info" id="syncInfo"></div>
+      <div class="sync-btns">
+        <button class="sync-gen" onclick="generateSyncCode()">🔑 코드 생성</button>
+      </div>
+      <textarea class="sync-code-area" id="syncExportCode" readonly placeholder="생성된 코드가 여기에 표시됩니다..." style="display:none"></textarea>
+      <div class="sync-btns" id="syncCopyRow" style="display:none">
+        <button class="sync-copy" onclick="copySyncCode()">📋 복사</button>
+      </div>
+    </div>
+    <div class="sync-section" id="syncImport">
+      <textarea class="sync-code-area" id="syncImportCode" placeholder="다른 기기에서 생성한 코드를 여기에 붙여넣기..."></textarea>
+      <div class="sync-btns">
+        <button class="sync-import" onclick="importSyncCode()">📥 불러오기</button>
+      </div>
+    </div>
+    <div class="sync-status" id="syncStatus"></div>
+  </div>
+</div>
+
 <!-- ADMIN -->
 <button class="admin-btn" id="adminBtn" onclick="openAdmin()" title="Admin">⚙</button>
 <div class="admin-overlay" id="adminOverlay">
@@ -1066,6 +1138,14 @@ const I18N = {
     historyBtn: '기록',
     historyClear: '🗑 전체 삭제',
     historyEmpty: '아직 뽑기 기록이 없습니다',
+    syncTitle: '기기 동기화', syncSub: '설정과 기록을 다른 기기로 옮기세요',
+    syncExport: '📤 코드 생성', syncImport: '📥 코드 입력',
+    syncHistory: '뽑기 기록', syncPicked: '중복방지 목록', syncChecked: '체크한 작품', syncSettings: '테마/언어 설정',
+    syncGenBtn: '🔑 코드 생성', syncCopyBtn: '📋 복사', syncImportBtn: '📥 불러오기',
+    syncCopied: '✅ 클립보드에 복사됨!', syncImported: '✅ 불러오기 완료! 페이지를 새로고침합니다...',
+    syncEmpty: '❌ 코드를 입력해주세요', syncInvalid: '❌ 유효하지 않은 코드입니다',
+    syncPlaceholderExport: '생성된 코드가 여기에 표시됩니다...',
+    syncPlaceholderImport: '다른 기기에서 생성한 코드를 여기에 붙여넣기...',
     noResult: '검색 결과가 없습니다',
     tagEp: '본편', tagMovie: '극장판', tagSpecial: '스페셜', tagVs: 'VS'
   },
@@ -1097,6 +1177,14 @@ const I18N = {
     historyBtn: 'History',
     historyClear: '🗑 Clear All',
     historyEmpty: 'No picks yet',
+    syncTitle: 'Device Sync', syncSub: 'Transfer settings and history to another device',
+    syncExport: '📤 Generate Code', syncImport: '📥 Enter Code',
+    syncHistory: 'Pick History', syncPicked: 'No-repeat List', syncChecked: 'Checked Shows', syncSettings: 'Theme/Language',
+    syncGenBtn: '🔑 Generate', syncCopyBtn: '📋 Copy', syncImportBtn: '📥 Import',
+    syncCopied: '✅ Copied to clipboard!', syncImported: '✅ Import complete! Reloading...',
+    syncEmpty: '❌ Please enter a code', syncInvalid: '❌ Invalid code',
+    syncPlaceholderExport: 'Generated code will appear here...',
+    syncPlaceholderImport: 'Paste code from another device here...',
     noResult: 'No results found',
     tagEp: 'EP', tagMovie: 'Movie', tagSpecial: 'Special', tagVs: 'VS'
   },
@@ -1128,6 +1216,14 @@ const I18N = {
     historyBtn: '履歴',
     historyClear: '🗑 全削除',
     historyEmpty: 'まだ履歴がありません',
+    syncTitle: 'デバイス同期', syncSub: '設定と履歴を他のデバイスに移行',
+    syncExport: '📤 コード生成', syncImport: '📥 コード入力',
+    syncHistory: 'ピック履歴', syncPicked: '重複防止リスト', syncChecked: 'チェック済み', syncSettings: 'テーマ/言語',
+    syncGenBtn: '🔑 生成', syncCopyBtn: '📋 コピー', syncImportBtn: '📥 インポート',
+    syncCopied: '✅ コピーしました！', syncImported: '✅ インポート完了！リロードします...',
+    syncEmpty: '❌ コードを入力してください', syncInvalid: '❌ 無効なコードです',
+    syncPlaceholderExport: '生成されたコードがここに表示されます...',
+    syncPlaceholderImport: '他のデバイスで生成したコードをここに貼り付け...',
     noResult: '検索結果がありません',
     tagEp: '本編', tagMovie: '劇場版', tagSpecial: 'スペシャル', tagVs: 'VS'
   }
@@ -2004,6 +2100,174 @@ document.getElementById('historyOverlay').addEventListener('click', e => {
 });
 
 
+
+
+// ==========================================
+//  DEVICE SYNC
+// ==========================================
+function openSync() {
+  document.getElementById('syncOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  applySyncLang();
+  updateSyncInfo();
+  document.getElementById('syncExportCode').style.display = 'none';
+  document.getElementById('syncCopyRow').style.display = 'none';
+  document.getElementById('syncImportCode').value = '';
+  setSyncStatus('');
+}
+function closeSync() {
+  document.getElementById('syncOverlay').classList.remove('show');
+  if (!document.getElementById('adminOverlay').classList.contains('show') &&
+      !document.getElementById('historyOverlay').classList.contains('show')) {
+    document.body.style.overflow = '';
+  }
+}
+function syncTab(tab) {
+  document.getElementById('syncExport').classList.toggle('active', tab === 'export');
+  document.getElementById('syncImport').classList.toggle('active', tab === 'import');
+  document.getElementById('syncTabExport').classList.toggle('active', tab === 'export');
+  document.getElementById('syncTabImport').classList.toggle('active', tab === 'import');
+  setSyncStatus('');
+}
+
+function applySyncLang() {
+  document.getElementById('syncTitle').textContent = t('syncTitle');
+  document.getElementById('syncSub').textContent = t('syncSub');
+  document.getElementById('syncTabExport').textContent = t('syncExport');
+  document.getElementById('syncTabImport').textContent = t('syncImport');
+  document.getElementById('syncExportCode').placeholder = t('syncPlaceholderExport');
+  document.getElementById('syncImportCode').placeholder = t('syncPlaceholderImport');
+  // Checklist labels
+  document.getElementById('syncLblHistory').textContent = t('syncHistory');
+  document.getElementById('syncLblPicked').textContent = t('syncPicked');
+  document.getElementById('syncLblChecked').textContent = t('syncChecked');
+  document.getElementById('syncLblSettings').textContent = t('syncSettings');
+}
+
+function updateSyncInfo() {
+  const info = document.getElementById('syncInfo');
+  const hLen = historyArr.length;
+  const pLen = pickedShows.size;
+  const cLen = checkedShows.size;
+  info.innerHTML = `
+    <div class="sync-info-item"><span class="si-label">📋 ${t('syncHistory')}</span><span class="si-val">${hLen}건</span></div>
+    <div class="sync-info-item"><span class="si-label">🚫 ${t('syncPicked')}</span><span class="si-val">${pLen}건</span></div>
+    <div class="sync-info-item"><span class="si-label">✅ ${t('syncChecked')}</span><span class="si-val">${cLen}건</span></div>
+    <div class="sync-info-item"><span class="si-label">🎨 ${t('syncSettings')}</span><span class="si-val">${document.documentElement.dataset.theme || 'sentai'} / ${currentLang}</span></div>
+  `;
+}
+
+function generateSyncCode() {
+  const data = { _v: 1 };
+
+  if (document.getElementById('syncOptHistory').checked && historyArr.length > 0) {
+    data.h = historyArr;
+  }
+  if (document.getElementById('syncOptPicked').checked && pickedShows.size > 0) {
+    data.p = [...pickedShows];
+  }
+  if (document.getElementById('syncOptChecked').checked && checkedShows.size > 0) {
+    data.c = [...checkedShows];
+  }
+  if (document.getElementById('syncOptSettings').checked) {
+    data.s = {
+      theme: document.documentElement.dataset.theme || 'sentai',
+      lang: currentLang,
+      ttfc: localStorage.getItem('toku_ttfc_app') === 'true',
+      norepeat: localStorage.getItem('toku_norepeat') === 'true'
+    };
+  }
+
+  try {
+    const json = JSON.stringify(data);
+    const code = 'TOKU1_' + btoa(unescape(encodeURIComponent(json)));
+    const el = document.getElementById('syncExportCode');
+    el.value = code;
+    el.style.display = '';
+    document.getElementById('syncCopyRow').style.display = '';
+    const kb = (code.length / 1024).toFixed(1);
+    setSyncStatus(`✅ 코드 생성 완료 (${code.length}자, ${kb}KB)`);
+  } catch(e) {
+    setSyncStatus('❌ 생성 실패: ' + e.message, true);
+  }
+}
+
+function copySyncCode() {
+  const code = document.getElementById('syncExportCode').value;
+  if (!code) return;
+  navigator.clipboard.writeText(code).then(() => {
+    setSyncStatus(t('syncCopied'));
+  }).catch(() => {
+    // 폴백: 선택 후 복사
+    const el = document.getElementById('syncExportCode');
+    el.select();
+    document.execCommand('copy');
+    setSyncStatus(t('syncCopied'));
+  });
+}
+
+function importSyncCode() {
+  const raw = document.getElementById('syncImportCode').value.trim();
+  if (!raw) { setSyncStatus(t('syncEmpty'), true); return; }
+
+  try {
+    let code = raw;
+    if (code.startsWith('TOKU1_')) code = code.slice(6);
+    else { setSyncStatus(t('syncInvalid'), true); return; }
+
+    const json = decodeURIComponent(escape(atob(code)));
+    const data = JSON.parse(json);
+    if (!data._v) { setSyncStatus(t('syncInvalid'), true); return; }
+
+    // 히스토리
+    if (data.h && Array.isArray(data.h)) {
+      // 기존 + 새 기록 합치기 (중복 제거, 최대 50개)
+      const existing = historyArr.map(h => h.jp + h.time);
+      const merged = [...historyArr];
+      data.h.forEach(h => {
+        if (!existing.includes(h.jp + h.time)) merged.push(h);
+      });
+      merged.sort((a, b) => (b.time || 0) - (a.time || 0));
+      localStorage.setItem('toku_history', JSON.stringify(merged.slice(0, 50)));
+    }
+    // 중복방지
+    if (data.p && Array.isArray(data.p)) {
+      const existing = JSON.parse(localStorage.getItem('toku_picked') || '[]');
+      const merged = [...new Set([...existing, ...data.p])];
+      localStorage.setItem('toku_picked', JSON.stringify(merged));
+      localStorage.setItem('toku_norepeat', 'true');
+    }
+    // 체크한 작품
+    if (data.c && Array.isArray(data.c)) {
+      const existing = JSON.parse(localStorage.getItem('toku_checked') || '[]');
+      const merged = [...new Set([...existing, ...data.c])];
+      localStorage.setItem('toku_checked', JSON.stringify(merged));
+    }
+    // 설정
+    if (data.s) {
+      if (data.s.theme) localStorage.setItem('toku_theme', data.s.theme);
+      if (data.s.lang) localStorage.setItem('toku_lang', data.s.lang);
+      if (data.s.ttfc !== undefined) localStorage.setItem('toku_ttfc_app', String(data.s.ttfc));
+      if (data.s.norepeat !== undefined) localStorage.setItem('toku_norepeat', String(data.s.norepeat));
+    }
+
+    setSyncStatus(t('syncImported'));
+    setTimeout(() => location.reload(), 1200);
+  } catch(e) {
+    setSyncStatus(t('syncInvalid'), true);
+    console.error('[Sync] Import error:', e);
+  }
+}
+
+function setSyncStatus(msg, isErr) {
+  const el = document.getElementById('syncStatus');
+  el.textContent = msg;
+  el.className = 'sync-status' + (isErr ? ' err' : msg.includes('✅') ? ' ok' : '');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('syncOverlay').classList.contains('show')) closeSync();
+});
 
 
 // ==========================================
