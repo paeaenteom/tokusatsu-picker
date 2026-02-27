@@ -847,6 +847,9 @@
     .af-grid { grid-template-columns: 1fr; }
     .af-field input, .af-field select { font-size: 0.72rem; padding: 7px 8px; }
     .af-field label { font-size: 0.58rem; }
+    .tl-entry { flex-wrap: wrap; }
+    .tl-entry select { width: 80px; font-size: 0.65rem; }
+    .tl-entry input { font-size: 0.65rem; min-width: 60%; }
     .admin-actions { gap: 6px; }
     .admin-actions button { padding: 8px 14px; font-size: 0.72rem; }
     .gh-row input { font-size: 0.68rem; padding: 6px 8px; }
@@ -910,6 +913,20 @@
   .af-save:hover{opacity:.85}
   .af-cancel{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
   .af-cancel:hover{background:rgba(255,255,255,0.12)}
+  .tl-editor{margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px}
+  .tl-editor h4{font-size:.78rem;color:rgba(255,255,255,0.5);margin:0 0 10px;display:flex;align-items:center;gap:6px}
+  .tl-editor h4 span{font-size:.62rem;color:rgba(255,255,255,0.25)}
+  .tl-entries{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto}
+  .tl-entry{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:6px 8px}
+  .tl-entry select{width:90px;padding:6px;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:.72rem;outline:none;flex-shrink:0}
+  .tl-entry select option{background:#12121f}
+  .tl-entry input{flex:1;padding:6px 8px;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;font-size:.72rem;outline:none;min-width:0}
+  .tl-entry input:focus,.tl-entry select:focus{border-color:var(--primary)}
+  .tl-entry-num{width:20px;text-align:center;font-size:.65rem;color:rgba(255,255,255,0.2);flex-shrink:0}
+  .tl-entry-del{width:24px;height:24px;border-radius:5px;border:none;background:rgba(239,83,80,0.1);color:#ef5350;cursor:pointer;font-size:.7rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .tl-entry-del:hover{background:rgba(239,83,80,0.25)}
+  .tl-add-btn{margin-top:8px;padding:8px;width:100%;border-radius:8px;border:1px dashed rgba(255,255,255,0.1);background:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:.72rem;transition:all .2s}
+  .tl-add-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(var(--primary-rgb),0.05)}
   .admin-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.05);flex-wrap:wrap}
   .admin-actions button{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .2s}
   .aa-push{background:#238636;color:#fff}
@@ -2159,6 +2176,14 @@ function showEditForm(idx) {
   const title = idx >= 0 ? `✏️ 편집: ${d.name}` : '➕ 새 작품 추가';
   const formTarget = idx >= 0 ? 'adminEditForm' : 'adminTabAdd';
   
+  // 타임라인 데이터
+  const tlEvents = (idx >= 0 && TIMELINE[d.jp]) ? TIMELINE[d.jp] : [];
+  
+  let tlHtml = '';
+  tlEvents.forEach((e, i) => {
+    tlHtml += buildTLEntryRow(i, e.t, e.d);
+  });
+  
   document.getElementById(formTarget).style.display = '';
   document.getElementById(formTarget).innerHTML = `
     <div class="admin-form">
@@ -2180,11 +2205,66 @@ function showEditForm(idx) {
         <div class="af-field"><label>TTFC ID</label><input id="afTtfc" type="number" value="${d.ttfcId||''}" placeholder="5534"></div>
         <div class="af-field"><label>로고 이미지 URL</label><input id="afLogo" value="${esc(logoUrl)}" placeholder="https://...png"></div>
       </div>
+      <div class="tl-editor">
+        <h4>📋 시청순서 (타임라인) <span>${tlEvents.length}개 항목</span></h4>
+        <div class="tl-entries" id="tlEntries">${tlHtml}</div>
+        <button class="tl-add-btn" onclick="addTLEntry()">＋ 항목 추가</button>
+      </div>
       <div class="af-btns">
         <button class="af-cancel" onclick="cancelEdit()">취소</button>
         <button class="af-save" onclick="saveEntry()">💾 ${idx >= 0 ? '수정 저장' : '추가'}</button>
       </div>
     </div>`;
+}
+
+function buildTLEntryRow(i, type, desc) {
+  return `<div class="tl-entry" data-idx="${i}">
+    <span class="tl-entry-num">${i + 1}</span>
+    <select class="tl-type" onchange="updateTLNum()">
+      <option value="ep" ${type==='ep'?'selected':''}>📺 본편</option>
+      <option value="movie" ${type==='movie'?'selected':''}>🎬 극장판</option>
+      <option value="special" ${type==='special'?'selected':''}>⭐ 스페셜</option>
+      <option value="vs" ${type==='vs'?'selected':''}>⚔️ VS</option>
+    </select>
+    <input class="tl-desc" value="${esc(desc)}" placeholder="설명 (예: 1화 ~ 24화)">
+    <button class="tl-entry-del" onclick="removeTLEntry(this)" title="삭제">✕</button>
+  </div>`;
+}
+
+function addTLEntry() {
+  const container = document.getElementById('tlEntries');
+  const count = container.querySelectorAll('.tl-entry').length;
+  container.insertAdjacentHTML('beforeend', buildTLEntryRow(count, 'ep', ''));
+  updateTLNum();
+  // 새 항목으로 스크롤 & 포커스
+  const last = container.lastElementChild;
+  last.scrollIntoView({behavior:'smooth', block:'nearest'});
+  last.querySelector('.tl-desc').focus();
+}
+
+function removeTLEntry(btn) {
+  btn.closest('.tl-entry').remove();
+  updateTLNum();
+}
+
+function updateTLNum() {
+  document.querySelectorAll('#tlEntries .tl-entry').forEach((el, i) => {
+    el.querySelector('.tl-entry-num').textContent = i + 1;
+  });
+  // 카운트 업데이트
+  const count = document.querySelectorAll('#tlEntries .tl-entry').length;
+  const h4span = document.querySelector('.tl-editor h4 span');
+  if (h4span) h4span.textContent = count + '개 항목';
+}
+
+function gatherTLData() {
+  const entries = [];
+  document.querySelectorAll('#tlEntries .tl-entry').forEach(el => {
+    const t = el.querySelector('.tl-type').value;
+    const d = el.querySelector('.tl-desc').value.trim();
+    if (d) entries.push({ t, d });
+  });
+  return entries;
 }
 function esc(s) { return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
@@ -2210,22 +2290,23 @@ function saveEntry() {
   const ep = document.getElementById('afEp').value ? parseInt(document.getElementById('afEp').value) : null;
   const ttfcId = document.getElementById('afTtfc').value ? parseInt(document.getElementById('afTtfc').value) : null;
   const logo = document.getElementById('afLogo').value.trim();
+  const tlData = gatherTLData();
   
   if (!name || !jp || !year) { setAdminStatus('이름, 일본어명, 연도는 필수!', true); return; }
   
   const entry = { name, en: en || undefined, jp, year, cat, ep, ttfcId };
   
   if (adminEditIdx >= 0) {
-    // 기존 로고 키가 바뀌면 삭제
     const oldJp = DATA[adminEditIdx].jp;
-    if (oldJp !== jp && LOGO_IMG[oldJp]) {
-      LOGO_IMG[jp] = LOGO_IMG[oldJp];
-      delete LOGO_IMG[oldJp];
+    if (oldJp !== jp) {
+      // 로고 키 변경
+      if (LOGO_IMG[oldJp]) { LOGO_IMG[jp] = LOGO_IMG[oldJp]; delete LOGO_IMG[oldJp]; }
+      // 타임라인 키 변경
+      if (TIMELINE[oldJp]) { delete TIMELINE[oldJp]; }
     }
     DATA[adminEditIdx] = entry;
     setAdminStatus(`✅ "${name}" 수정 완료 (Push해야 반영됨)`);
   } else {
-    // 새 작품 → 같은 카테고리 마지막에 삽입
     let insertIdx = DATA.length;
     for (let i = DATA.length - 1; i >= 0; i--) {
       if (DATA[i].cat === cat) { insertIdx = i + 1; break; }
@@ -2237,9 +2318,12 @@ function saveEntry() {
   if (logo) LOGO_IMG[jp] = logo;
   else if (!logo && LOGO_IMG[jp]) delete LOGO_IMG[jp];
   
+  // 타임라인 저장
+  if (tlData.length > 0) TIMELINE[jp] = tlData;
+  else if (TIMELINE[jp]) delete TIMELINE[jp];
+  
   cancelEdit();
   renderAdminList();
-  // 라이브 반영
   initFilters();
   initReel();
 }
@@ -2248,6 +2332,7 @@ function deleteEntry(i) {
   const d = DATA[i];
   if (!confirm(`정말 "${d.name}" (${d.jp})을(를) 삭제하시겠습니까?`)) return;
   if (LOGO_IMG[d.jp]) delete LOGO_IMG[d.jp];
+  if (TIMELINE[d.jp]) delete TIMELINE[d.jp];
   DATA.splice(i, 1);
   renderAdminList();
   initFilters();
@@ -2308,6 +2393,9 @@ async function pushToGitHub() {
     
     // 3. LOGO_IMG 교체
     newContent = replaceLogoInFile(newContent);
+    
+    // 4. TIMELINE 교체
+    newContent = replaceTimelineInFile(newContent);
     
     setAdminStatus('⏳ GitHub에 Push 중...');
     
@@ -2393,9 +2481,19 @@ function replaceLogoInFile(content) {
   return content.replace(logoRegex, newLogo);
 }
 
+function replaceTimelineInFile(content) {
+  const newTL = 'const TIMELINE = ' + JSON.stringify(TIMELINE) + ';';
+  const tlRegex = /const TIMELINE = \{[\s\S]*?\};/;
+  if (!tlRegex.test(content)) {
+    console.error('[Admin] TIMELINE not found in file');
+    return content;
+  }
+  return content.replace(tlRegex, newTL);
+}
+
 // === Export ===
 function exportJSON() {
-  const data = { DATA: DATA, LOGO_IMG: LOGO_IMG };
+  const data = { DATA: DATA, LOGO_IMG: LOGO_IMG, TIMELINE: TIMELINE };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
