@@ -1800,8 +1800,8 @@ function initReel() {
     emptyDiv.textContent = msg;
     reel.appendChild(emptyDiv);
 
-    const itemH = window.innerWidth <= 480 ? 54 : 64;
-    const windowH = window.innerWidth <= 480 ? 180 : 220;
+    const itemH = window.innerWidth <= 480 ? 52 : 64;
+    const windowH = window.innerWidth <= 480 ? 170 : 220;
     reel.style.top = `${(windowH / 2) - (itemH * 0.5)}px`;
 
     document.getElementById('spinBtn').disabled = true;
@@ -1824,8 +1824,8 @@ function initReel() {
     reel.appendChild(div);
   });
 
-  const itemH = window.innerWidth <= 480 ? 54 : 64;
-  const windowH = window.innerWidth <= 480 ? 180 : 220;
+  const itemH = window.innerWidth <= 480 ? 52 : 64;
+  const windowH = window.innerWidth <= 480 ? 170 : 220;
   reel.style.top = `${(windowH / 2) - (itemH * 2.5)}px`;
 }
 
@@ -1863,8 +1863,8 @@ function spin() {
   btn.textContent = '...';
   resultCard.classList.remove('show');
 
-  const itemH = window.innerWidth <= 480 ? 54 : 64;
-  const windowH = window.innerWidth <= 480 ? 180 : 220;
+  const itemH = window.innerWidth <= 480 ? 52 : 64;
+  const windowH = window.innerWidth <= 480 ? 170 : 220;
   const totalItems = 40 + Math.floor(Math.random() * 20);
   const chosen = pool[Math.floor(Math.random() * pool.length)];
 
