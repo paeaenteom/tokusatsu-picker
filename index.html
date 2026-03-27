@@ -10,18 +10,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0A0A0F">
 <title>東映特撮 ランダムピッカー</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 <style>
   :root, [data-theme="dark"] {
     --primary: #0A84FF;
     --primary-rgb: 10,132,255;
     --accent: #5AC8FA;
     --title-color: #F5F5F7;
-    --title-glow: rgba(10,132,255,0.15);
+    --title-glow: rgba(10,132,255,0.12);
     --dark: #000000;
     --darker: #000000;
     --silver: #98989D;
-    --glow-color: rgba(10,132,255,0.06);
+    --glow-color: rgba(10,132,255,0.05);
     --secondary: #5E5CE6;
     --secondary-rgb: 94,92,230;
     --btn-gradient: linear-gradient(135deg, #0A84FF, #0070E0);
@@ -38,15 +38,15 @@
     --cat-project-rgb: 255,100,130;
     --bg-body: #000000;
     --text-main: rgba(255,255,255,0.92);
-    --text-sub: rgba(255,255,255,0.55);
+    --text-sub: rgba(255,255,255,0.50);
     --card-bg: rgba(255,255,255,0.05);
     --card-border: rgba(255,255,255,0.08);
     --input-bg: rgba(255,255,255,0.06);
-    --input-border: rgba(255,255,255,0.1);
+    --input-border: rgba(255,255,255,0.10);
     --toggle-bg: rgba(255,255,255,0.08);
     --toggle-border: rgba(255,255,255,0.12);
-    --glass-bg: rgba(28,28,30,0.72);
-    --glass-border: rgba(255,255,255,0.1);
+    --glass-bg: rgba(28,28,30,0.80);
+    --glass-border: rgba(255,255,255,0.10);
     --shadow: 0 4px 30px rgba(0,0,0,0.15);
     --shadow-sm: 0 1px 4px rgba(0,0,0,0.3);
   }
@@ -81,7 +81,7 @@
     --card-bg: rgba(255,255,255,0.8);
     --card-border: rgba(0,0,0,0.06);
     --input-bg: rgba(0,0,0,0.03);
-    --input-border: rgba(0,0,0,0.1);
+    --input-border: rgba(0,0,0,0.10);
     --toggle-bg: rgba(0,0,0,0.04);
     --toggle-border: rgba(0,0,0,0.08);
     --glass-bg: rgba(255,255,255,0.72);
@@ -89,6 +89,175 @@
     --shadow: 0 4px 30px rgba(0,0,0,0.06);
     --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
   }
+
+  /* === MELE THEME · 臨獣カメレオン拳使いメレ === */
+  /* 초록 多 · 보라 中 · 골드 少 */
+  [data-theme="mele"] {
+    --primary: #2E7D32;
+    --primary-rgb: 46,125,50;
+    --accent: #8E24AA;
+    --title-color: #66BB6A;
+    --title-glow: rgba(46,125,50,0.08);
+    --dark: #0D0D1A;
+    --darker: #0D0D1A;
+    --silver: #90A4AE;
+    --glow-color: rgba(27,94,32,0.04);
+    --secondary: #8E24AA;
+    --secondary-rgb: 142,36,170;
+    --btn-gradient: linear-gradient(135deg, #2E7D32, #1B5E20);
+    --btn-border-glow: linear-gradient(135deg, #1B5E20, #2E7D32, #1B5E20);
+    --card-top-bar: linear-gradient(90deg, rgba(27,94,32,0.5), rgba(142,36,170,0.2), rgba(27,94,32,0.5));
+    --title-rgb: 102,187,106;
+    --cat-sentai: #EF5350;
+    --cat-sentai-rgb: 239,83,80;
+    --cat-rider: #2E7D32;
+    --cat-rider-rgb: 46,125,50;
+    --cat-metal: #90A4AE;
+    --cat-metal-rgb: 144,164,174;
+    --cat-project: #AB47BC;
+    --cat-project-rgb: 171,71,188;
+    --bg-body: #0D0D1A;
+    --text-main: rgba(200,230,201,0.88);
+    --text-sub: rgba(200,230,201,0.40);
+    --card-bg: rgba(27,94,32,0.04);
+    --card-border: rgba(46,125,50,0.07);
+    --input-bg: rgba(27,94,32,0.05);
+    --input-border: rgba(46,125,50,0.10);
+    --toggle-bg: rgba(27,94,32,0.05);
+    --toggle-border: rgba(46,125,50,0.10);
+    --glass-bg: rgba(13,13,26,0.88);
+    --glass-border: rgba(46,125,50,0.08);
+    --shadow: 0 4px 30px rgba(0,0,0,0.35);
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  /* ── Base ── */
+  [data-theme="mele"] body {
+    background: #0D0D1A; color: var(--text-main);
+    font-family: 'Noto Serif KR', 'Noto Sans KR', serif;
+  }
+  [data-theme="mele"] .bg-glow {
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(27,94,32,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(142,36,170,0.03) 0%, transparent 50%);
+  }
+
+  /* ── Header: 타이틀=초록, 부제=보라, 구분선에만 골드 한줄기 ── */
+  [data-theme="mele"] .jp-title {
+    font-family: 'Ma Shan Zheng', 'Noto Serif KR', serif;
+    letter-spacing: 0.08em; font-weight: 400;
+    color: #66BB6A;
+    text-shadow: 0 0 24px rgba(46,125,50,0.20), 0 2px 4px rgba(0,0,0,0.5);
+  }
+  [data-theme="mele"] .kr-subtitle {
+    font-family: 'Noto Serif KR', serif; font-weight: 400;
+    letter-spacing: 0.25em; color: rgba(142,36,170,0.50);
+  }
+  [data-theme="mele"] .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, #2E7D32, rgba(255,179,0,0.35), #2E7D32, transparent);
+  }
+
+  /* ── Spin button: 초록 몸통, 보라 테두리 힌트 ── */
+  [data-theme="mele"] .spin-btn {
+    border-radius: 4px; letter-spacing: 0.15em;
+    font-family: 'Noto Serif KR', serif; font-weight: 600;
+    background: linear-gradient(135deg, #2E7D32, #1B5E20);
+    box-shadow: 0 2px 14px rgba(27,94,32,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+    border: 1px solid rgba(142,36,170,0.15);
+  }
+  [data-theme="mele"] .spin-btn::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(142,36,170,0.30), transparent);
+  }
+  [data-theme="mele"] .spin-btn:hover {
+    box-shadow: 0 4px 24px rgba(27,94,32,0.35), 0 0 10px rgba(142,36,170,0.08);
+    border-color: rgba(142,36,170,0.25);
+  }
+
+  /* ── Filters: 초록 active, 보라 hover ── */
+  [data-theme="mele"] .filter-btn {
+    border-radius: 4px;
+    font-family: 'Noto Serif KR', serif; font-weight: 400;
+    border: 1px solid rgba(46,125,50,0.10);
+  }
+  [data-theme="mele"] .filter-btn.active {
+    background: linear-gradient(135deg, #2E7D32, #1B5E20); border-color: transparent;
+    box-shadow: 0 0 8px rgba(46,125,50,0.15);
+  }
+  [data-theme="mele"] .filter-btn:hover { border-color: rgba(142,36,170,0.20); color: #AB47BC; }
+
+  /* ── Cards: 초록 보더/배경, 보라 상단바, 골드 포인트 ── */
+  [data-theme="mele"] .card-inner {
+    border-radius: 6px;
+    border: 1px solid rgba(46,125,50,0.07);
+    background: linear-gradient(170deg, rgba(27,94,32,0.05), rgba(13,13,26,0.4));
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(46,125,50,0.04);
+  }
+  [data-theme="mele"] .card-inner::before {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(46,125,50,0.35) 30%, rgba(142,36,170,0.25) 70%, transparent 95%);
+    opacity: 1;
+  }
+  [data-theme="mele"] .card-title {
+    font-family: 'Noto Serif KR', serif; font-weight: 600; color: #C8E6C9;
+  }
+  [data-theme="mele"] .card-title-jp { color: rgba(142,36,170,0.45); }
+  [data-theme="mele"] .card-meta .label { color: rgba(255,179,0,0.40); }
+  [data-theme="mele"] .card-category {
+    border-radius: 3px; font-family: 'Noto Serif KR', serif;
+    font-weight: 400; letter-spacing: 0.04em;
+  }
+  [data-theme="mele"] .card-category.sentai { background: rgba(239,83,80,0.10); }
+  [data-theme="mele"] .card-category.rider { background: rgba(46,125,50,0.12); color: #66BB6A; }
+  [data-theme="mele"] .card-category.metal { background: rgba(144,164,174,0.10); }
+  [data-theme="mele"] .card-category.project { background: rgba(142,36,170,0.10); }
+
+  /* ── TTFC link: 초록 ── */
+  [data-theme="mele"] .ttfc-link {
+    border-radius: 4px; background: rgba(46,125,50,0.07);
+    color: #66BB6A; border: 1px solid rgba(46,125,50,0.10);
+    font-family: 'Noto Serif KR', serif;
+  }
+  [data-theme="mele"] .ttfc-link:hover { background: rgba(46,125,50,0.13); border-color: rgba(46,125,50,0.20); }
+
+  /* ── Slot: 초록 틀, 선택=초록+보라 하이라이트 ── */
+  [data-theme="mele"] .slot-window {
+    border-radius: 6px; border-color: rgba(46,125,50,0.06);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+  }
+  [data-theme="mele"] .slot-window::before { background: linear-gradient(to bottom, #0D0D1A, transparent); }
+  [data-theme="mele"] .slot-window::after { background: linear-gradient(to top, #0D0D1A, transparent); }
+  [data-theme="mele"] .slot-item { font-family: 'Noto Serif KR', serif; }
+  [data-theme="mele"] .slot-item.center { color: #A5D6A7; font-weight: 600; }
+  [data-theme="mele"] .slot-highlight {
+    border-top: 1px solid rgba(46,125,50,0.25);
+    border-bottom: 1px solid rgba(46,125,50,0.25);
+  }
+
+  /* ── List: 초록 기본, 보라 active ── */
+  [data-theme="mele"] .list-toggle-btn {
+    border-radius: 4px; font-family: 'Noto Serif KR', serif;
+  }
+  [data-theme="mele"] .list-toggle-btn:hover { border-color: rgba(46,125,50,0.18); color: #66BB6A; }
+  [data-theme="mele"] .list-toggle-btn.active { border-color: #2E7D32; color: #66BB6A; background: rgba(46,125,50,0.06); }
+  [data-theme="mele"] .list-search { border-radius: 4px; font-family: 'Noto Serif KR', serif; }
+  [data-theme="mele"] .list-search:focus { border-color: #2E7D32; box-shadow: 0 0 6px rgba(46,125,50,0.08); }
+  [data-theme="mele"] .list-entry { font-family: 'Noto Serif KR', serif; }
+  [data-theme="mele"] .list-entry:hover { background: rgba(46,125,50,0.03); }
+  [data-theme="mele"] .list-entry .year { color: rgba(142,36,170,0.40); }
+  [data-theme="mele"] .list-entry .num { color: rgba(255,179,0,0.30); }
+
+  /* ── Toggle bar: 초록 ── */
+  [data-theme="mele"] .theme-toggle {
+    border-radius: 6px; border-color: rgba(46,125,50,0.08);
+    background: rgba(13,13,26,0.92);
+  }
+  [data-theme="mele"] .theme-opt { font-family: 'Noto Serif KR', serif; font-weight: 400; }
+  [data-theme="mele"] .theme-opt.active { background: #1B5E20; border-radius: 4px; }
+
+  /* ── Stats: 골드(작은 글씨) ── */
+  [data-theme="mele"] .stats-bar { font-family: 'Noto Serif KR', serif; letter-spacing: 0.05em; color: rgba(255,179,0,0.30); }
 
   /* Light theme overrides */
   [data-theme="light"] body { background: var(--bg-body); color: var(--text-main); }
@@ -114,7 +283,7 @@
   [data-theme="light"] .filter-btn.active .count { color: var(--text-main); }
   [data-theme="light"] .reel-container { background: var(--card-bg); border-color: var(--card-border); }
   [data-theme="light"] .card { background: #fff; border-color: rgba(0,0,0,0.08); }
-  [data-theme="light"] .card-body { background: #fff; }
+  [data-theme="light"] .card-body { background: rgba(255,255,255,0.9); }
   [data-theme="light"] .card-title { color: rgba(0,0,0,0.85); }
   [data-theme="light"] .card-meta { color: rgba(0,0,0,0.45); }
   [data-theme="light"] .card-category { color: rgba(0,0,0,0.4); }
@@ -140,7 +309,7 @@
   [data-theme="light"] .card-meta .value { color: rgba(0,0,0,0.6); }
   /* Light: reel & slot */
   [data-theme="light"] .slot-item { color: rgba(0,0,0,0.15); }
-  [data-theme="light"] .slot-item.center { color: rgba(0,0,0,0.85); }
+  [data-theme="light"] .slot-item.center { color: var(--text-main); }
   /* Light: list entries */
   [data-theme="light"] .list-entry:hover { background: rgba(var(--primary-rgb),0.04); color: rgba(0,0,0,0.9); }
   [data-theme="light"] .list-entry .num { color: rgba(0,0,0,0.2); }
@@ -194,7 +363,7 @@
 
   /* === THEME TOGGLE === */
   .theme-toggle {
-    position: fixed; top: 16px; right: 16px; z-index: 50;
+    position: fixed; top: 46px; right: 16px; z-index: 50;
     display: flex; background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 28px; overflow: hidden;
@@ -223,6 +392,7 @@
   }
   .theme-opt[data-t="dark"] .dot { background: #1C1C1E; border: 1px solid rgba(255,255,255,0.2); }
   .theme-opt[data-t="light"] .dot { background: #F5F5F7; border: 1px solid rgba(0,0,0,0.1); }
+  .theme-opt[data-t="mele"] .dot { background: linear-gradient(135deg, #1B5E20, #FFB300, #8E24AA); border: none; }
   .theme-opt.active .dot { background: #fff !important; border-color: #fff !important; }
 
   /* === COLOR PICKER === */
@@ -873,7 +1043,7 @@
     .kr-subtitle { font-size: clamp(0.8rem, 3vw, 1rem); }
     .lang-toggle { top: 8px; left: 8px; border-radius: 18px; }
     .lang-opt { padding: 5px 8px; font-size: 0.6rem; }
-    .theme-toggle { top: 8px; right: 8px; border-radius: 18px; }
+    .theme-toggle { top: 44px; right: 8px; border-radius: 18px; }
     .theme-opt { padding: 5px 8px; font-size: 0.6rem; gap: 3px; }
     .theme-opt .dot { width: 6px; height: 6px; }
     .filter-section { gap: 6px; padding: 0 12px 20px; }
@@ -939,7 +1109,7 @@
   @media (max-width: 360px) {
     .lang-toggle { top: 6px; left: 6px; }
     .lang-opt { padding: 4px 6px; font-size: 0.55rem; }
-    .theme-toggle { top: 6px; right: 6px; }
+    .theme-toggle { top: 42px; right: 6px; }
     .theme-opt { padding: 4px 6px; font-size: 0.55rem; }
     .jp-title { font-size: 1.4rem; }
     .filter-btn { padding: 6px 10px; font-size: 0.65rem; }
@@ -1037,7 +1207,8 @@
 <div class="theme-toggle" id="themeToggle">
   <button class="theme-opt active" data-t="dark" onclick="setTheme('dark')"><span class="dot"></span>Dark</button>
   <button class="theme-opt" data-t="light" onclick="setTheme('light')"><span class="dot"></span>Light</button>
-  <label class="color-pick" title="강조색 변경">
+  <button class="theme-opt" data-t="mele" onclick="setTheme('mele')"><span class="dot mele-dot"></span>Mele</button>
+  <label class="color-pick" id="colorPickLabel" title="강조색 변경">
     <input type="color" id="accentPicker" value="#0A84FF" onchange="setAccent(this.value)">
     <span class="color-dot" id="colorDot"></span>
   </label>
@@ -1183,17 +1354,37 @@
 <script>
 // === THEME ===
 function setTheme(t) {
-  if (t !== 'dark' && t !== 'light') t = 'dark';
+  if (t !== 'dark' && t !== 'light' && t !== 'mele') t = 'dark';
   document.documentElement.setAttribute('data-theme', t);
   try { localStorage.setItem('toku_theme', t); } catch(e) {}
   document.querySelectorAll('.theme-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.t === t);
   });
-  // Re-apply accent for theme
-  try {
-    const c = localStorage.getItem('toku_accent');
-    if (c) setAccent(c, true);
-  } catch(e) {}
+
+  const colorPick = document.getElementById('colorPickLabel');
+  if (t === 'mele') {
+    // Hide color picker — Mele palette is locked
+    if (colorPick) colorPick.style.display = 'none';
+    // Clear any custom accent overrides so CSS vars take effect
+    const root = document.documentElement;
+    root.style.removeProperty('--primary');
+    root.style.removeProperty('--primary-rgb');
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--btn-gradient');
+    root.style.removeProperty('--btn-border-glow');
+    root.style.removeProperty('--card-top-bar');
+    root.style.removeProperty('--glow-color');
+    root.style.removeProperty('--cat-rider');
+    root.style.removeProperty('--cat-rider-rgb');
+  } else {
+    // Show color picker
+    if (colorPick) colorPick.style.display = '';
+    // Re-apply saved accent
+    try {
+      const c = localStorage.getItem('toku_accent');
+      if (c) setAccent(c, true);
+    } catch(e) {}
+  }
 }
 
 function hexToRgb(hex) {
@@ -1244,7 +1435,7 @@ function setAccent(hex, noSave) {
 (function() {
   let saved = 'dark';
   try { saved = localStorage.getItem('toku_theme') || 'dark'; } catch(e) {}
-  if (saved !== 'dark' && saved !== 'light') saved = 'dark';
+  if (saved !== 'dark' && saved !== 'light' && saved !== 'mele') saved = 'dark';
   setTheme(saved);
 
   // Restore accent color
